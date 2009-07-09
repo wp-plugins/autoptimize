@@ -1,0 +1,32 @@
+=== Autoptimize ===
+Contributors: turl
+Donate link: http://www.turleando.com.ar/autoptimize/
+Tags: css, html, javascript, js, optimize, speed, cache
+Requires at least: 2.6
+Tested up to: 2.8
+Stable tag: 0.1
+
+Autoptimize is a Wordpress plugin that automatically merges, minifies and compresses CSS, Javascript and HTML code. It speeds up your visitor's browsing, and helps you save bandwidth. 
+
+== Description ==
+
+Autoptimize makes optimizing your site really easy. It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
+
+I also recommend using WP Super Cache in conjuction with Autoptimize to speed up your blog.
+
+== Installation ==
+
+1. Upload the `autoptimize` folder to  to the `/wp-content/plugins/` directory
+1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Go to `Settings -> Autoptimize` and enable the options you want. Generally this means all the options, but if you experience problems you might want to disable some.
+
+== Frequently Asked Questions ==
+
+= What does the plugin do to help speed up my site? =
+
+It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
+
+== Changelog ==
+
+= 0.1 =
+* First released version.
