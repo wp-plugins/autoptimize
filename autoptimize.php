@@ -10,18 +10,18 @@ Released under the GNU General Public License (GPL)
 http://www.gnu.org/licenses/gpl.txt
 */
 
+//Pre-2.6 compatibility
+if(!defined('WP_PLUGIN_URL'))
+	define('WP_PLUGIN_URL',WP_CONTENT_URL.'/plugins');
+if(!defined('WP_PLUGIN_DIR'))
+	define('WP_PLUGIN_DIR',WP_CONTENT_DIR.'/plugins');
+
 //Load config class
 @include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
 
 //Set up the buffering
 function autoptimize_start_buffering()
 {
-	//Pre-2.6 compatibility
-	if(!defined('WP_PLUGIN_URL'))
-		define('WP_PLUGIN_URL',WP_CONTENT_URL.'/plugins');
-	if(!defined('WP_PLUGIN_DIR'))
-		define('WP_PLUGIN_DIR',WP_CONTENT_DIR.'/plugins');
-	
 	//Config element
 	$conf = autoptimizeConfig::instance();
 	

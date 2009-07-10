@@ -5,14 +5,24 @@ class autoptimizeConfig
 	private $config = null;
 	static private $instance = null;
 	
+	//Singleton: private construct
 	private function __construct()
 	{
-		//Singleton
 		if(is_admin())
 		{
 			//Add the admin page and settings
 			add_action('admin_menu',array($this,'addmenu'));
 			add_action('admin_init',array($this,'registersettings'));
+			//Set meta info
+			if(function_exists('plugin_row_meta'))
+			{
+				//2.8+
+				add_filter('plugin_row_meta',array($this,'setmeta'),10,2);
+			}elseif(function_exists('post_class')){
+				//2.7
+				$plugin = plugin_basename(WP_PLUGIN_DIR.'/autoptimize/autoptimize.php');
+				add_filter('plugin_action_links_'.$plugin,array($this,'setmeta'));
+			}
 		}
 	}
 	
@@ -73,6 +83,33 @@ class autoptimizeConfig
 		register_setting('autoptimize','autoptimize_html');
 		register_setting('autoptimize','autoptimize_js');
 		register_setting('autoptimize','autoptimize_css');
+	}
+	
+	public function setmeta($links,$file=null)
+	{
+		//Inspired on http://wpengineer.com/meta-links-for-wordpress-plugins/
+		
+		//Do it only once - saves time
+		static $plugin;
+		if(empty($plugin))
+			$plugin = plugin_basename(WP_PLUGIN_DIR.'/autoptimize/autoptimize.php');
+		
+		if($file===null)
+		{
+			//2.7
+			$settings_link = sprintf('<a href="options-general.php?page=autoptimize">%s</a>', __('Settings'));
+			array_unshift($links,$settings_link);
+		}else{
+			//2.8
+			//If it's us, add the link
+			if($file === $plugin)
+			{
+				$newlink = array(sprintf('<a href="options-general.php?page=autoptimize">%s</a>',__('Settings')));
+				$links = array_merge($links,$newlink);
+			}
+		}
+		
+		return $links;
 	}
 	
 	public function get($key)
