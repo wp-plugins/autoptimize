@@ -18,7 +18,7 @@ class autoptimizeStyles extends autoptimizeBase
 	public function read()
 	{
 		//Save IE hacks
-		$this->content = preg_replace('#(<\!--\[if IE.*\]>.*<\!\[endif\]-->)#Usie',
+		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie',
 			'\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
 		
 		//Get <style> and <link>
@@ -204,10 +204,11 @@ class autoptimizeStyles extends autoptimizeBase
 		
 		if(preg_match_all('#url\((.*)\)#Usi',$code,$matches))
 		{
+			$replace = array();
 			foreach($matches[1] as $url)
 			{
 				//Remove quotes
-				$url = preg_replace('#^(?:"|\')(.*)(?:"|\')$#','$1',$url);
+				$url = preg_replace('#^.*(?:"|\')(.*)(?:"|\').*$#','$1',$url);
 				if(substr($url,0,1)=='/' || preg_match('#^(https?|ftp)://#i',$url))
 				{
 					//URL is absolute
@@ -215,9 +216,12 @@ class autoptimizeStyles extends autoptimizeBase
 				}else{
 					//relative URL. Let's fix it!
 					$newurl = get_settings('home').str_replace('//','/',$dir.'/'.$url); //http://yourblog.com/wp-content/../image.png
-					$code = str_replace($url,$newurl,$code);
+					$replace[$url] = $newurl;
 				}
 			}
+			
+			//Do the replacing here to avoid breaking URLs
+			$code = str_replace(array_keys($replace),array_values($replace),$code);
 		}
 		
 		return $code;
