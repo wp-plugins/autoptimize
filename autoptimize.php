@@ -2,7 +2,7 @@
 /*
 Plugin Name: Autoptimize
 Plugin URI: http://www.turleando.com.ar/
-Description: Optimiza tu sitio web, uniendo el CSS y JavaScript, y comprimi&eacute;ndolo.
+Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
 Version: 0.3
 Author: Emilio López
 Author URI: http://www.turleando.com.ar/
