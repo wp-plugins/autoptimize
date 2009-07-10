@@ -4,7 +4,7 @@ Donate link: http://www.turleando.com.ar/autoptimize/
 Tags: css, html, javascript, js, optimize, speed, cache
 Requires at least: 2.6
 Tested up to: 2.8
-Stable tag: 0.1
+Stable tag: 0.2
 
 Autoptimize is a Wordpress plugin that speeds up your website, and helps you save bandwidth. 
 
@@ -27,6 +27,11 @@ I also recommend using WP Super Cache in conjuction with Autoptimize to speed up
 It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
 
 == Changelog ==
+
+= 0.2 =
+* Support CSS media
+* Fix an issue in the IE Hacks preservation mechanism
+* Fix an issue with some urls getting broken in CSS
 
 = 0.1 =
 * First released version.
