@@ -80,9 +80,9 @@ class autoptimizeConfig
 		if(!is_array($this->config))
 		{
 			//Default config
-			$config = array('autoptimize_html' => 1,
-				'autoptimize_js' => 1,
-				'autoptimize_css' => 1);
+			$config = array('autoptimize_html' => 0,
+				'autoptimize_js' => 0,
+				'autoptimize_css' => 0);
 			
 			//Override with user settings
 			if(get_option('autoptimize_html')!==false)
