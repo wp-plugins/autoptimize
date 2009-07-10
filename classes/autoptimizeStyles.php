@@ -129,14 +129,16 @@ class autoptimizeStyles extends autoptimizeBase
 					if(file_exists($path) && is_readable($path))
 					{
 						$code = $this->fixurls($path,file_get_contents($path));
-						$media = preg_replace('#^.*(?:\)|"|\')(.*)(?:\s|;).*$#','$1',$import);
+						/*$media = preg_replace('#^.*(?:\)|"|\')(.*)(?:\s|;).*$#','$1',$import);
 						$media = array_map('trim',explode(' ',$media));
 						if(empty($media))
 						{
-							$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us',$code.'$1',$thiscss);
-						}/*else{
+							$thiscss = [...] (Line under)
+						}else{
 							//media in @import - how should I handle these?
+							//TODO: Infinite recursion!
 						}*/
+						$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us',$code.'$1',$thiscss);
 					}/*else{
 						//getpath is not working?
 					}*/
