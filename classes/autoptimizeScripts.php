@@ -32,6 +32,9 @@ class autoptimizeScripts extends autoptimizeBase
 						if($this->ismovable($tag))
 						{
 							$this->move[] = $tag;
+						}else{
+							//We shouldn't touch this
+							$tag = '';
 						}
 					}
 				}else{
@@ -47,9 +50,10 @@ class autoptimizeScripts extends autoptimizeBase
 						if($this->ismovable($tag))
 						{
 							$this->move[] = $tag;
-						}/*else{
+						}else{
 							//We shouldn't touch this
-						}*/
+							$tag = '';
+						}
 					}
 				}
 				
