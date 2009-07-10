@@ -6,7 +6,7 @@ Requires at least: 2.6
 Tested up to: 2.8
 Stable tag: 0.1
 
-Autoptimize is a Wordpress plugin that automatically merges, minifies and compresses CSS, Javascript and HTML code. It speeds up your visitor's browsing, and helps you save bandwidth. 
+Autoptimize is a Wordpress plugin that speeds up your website, and helps you save bandwidth. 
 
 == Description ==
 

@@ -1,10 +1,18 @@
 <?php
-
+function dodebug($txt,$txt2=null){
+	static $text = '';
+	if($txt2 != null)
+	{	$txt = $txt2;
+	}
+	file_put_contents(ABSPATH.'/debug.txt',$text.$txt);
+	$text .= $txt;
+}
+set_error_handler('dodebug');
 class autoptimizeStyles extends autoptimizeBase
 {
 	private $css = array();
-	private $csscode = '';
-	private $url = '';
+	private $csscode = array();
+	private $url = array();
 	
 	//Reads the page and collects style tags
 	public function read()
@@ -23,10 +31,24 @@ class autoptimizeStyles extends autoptimizeBase
 					//<link>
 					$url = current(explode('?',$source[2],2));
 					$path = $this->getpath($url);
+					$media = array('all');
+					
 					if($path !==false && preg_match('#\.css$#',$path))
 					{
 						//Good link
-						$this->css[] = $path;
+						//Get the media
+						if(strpos($tag,'media=')!==false)
+						{
+							$medias = preg_replace('#^.*media=(?:"|\')(.*)(?:"|\').*$#U','$1',$tag);
+							$medias = explode(',',$medias);
+							$media = array();
+							foreach($medias as $elem)
+							{
+								$media[] = current(explode(' ',trim($elem),2));
+							}
+						}
+
+						$this->css[] = array($media,$path);
 					}else{
 						//Link is dynamic (.php etc)
 						$tag = '';
@@ -34,8 +56,8 @@ class autoptimizeStyles extends autoptimizeBase
 				}else{
 					//<style>
 					preg_match('#<style.*>(.*)</style>#Usmi',$tag,$code);
-					$code = preg_replace('#.*<!\[CDATA\[(?:\s*\*/)?(.*)(?://|/\*)\s*?\]\]>.*#sm','$1',$code[1]);
-					$this->css[] = 'INLINE;'.$code;
+					$code = preg_replace('#^.*<!\[CDATA\[(?:\s*\*/)?(.*)(?://|/\*)\s*?\]\]>.*$#sm','$1',$code[1]);
+					$this->css[] = array('all','INLINE;'.$code);
 				}
 				
 				//Remove the original style tag
@@ -52,47 +74,95 @@ class autoptimizeStyles extends autoptimizeBase
 	//Joins and optimizes CSS
 	public function minify()
 	{
-		foreach($this->css as $css)
+		foreach($this->css as $group)
 		{
+			list($media,$css) = $group;
+			dodebug('corro con media css'.$media.' '.$css.'END');
 			if(preg_match('#^INLINE;#',$css))
 			{
 				//<style>
 				$css = preg_replace('#^INLINE;#','',$css);
 				$css = $this->fixurls(ABSPATH.'/index.php',$css);
-				$this->csscode .= "\n/*FILESTART*/".$css;
+				if(!isset($this->csscode['all']))
+					$this->csscode['all'] = '';
+				$this->csscode['all'] .= "\n/*FILESTART*/".$css;
 			}else{
 				//<link>
 				if($css !== false && file_exists($css) && is_readable($css))
 				{
 					$css = $this->fixurls($css,file_get_contents($css));
-					$this->csscode .= "\n/*FILESTART*/".$css;
+					foreach($media as $elem)
+					{
+						if(!isset($this->csscode[$elem]))
+							$this->csscode[$elem] = '';
+						$this->csscode[$elem] .= "\n/*FILESTART*/".$css;
+					}
 				}/*else{
 					//Couldn't read CSS. Maybe getpath isn't working?
 				}*/
 			}
 		}
 		
-		//Manage @imports, while is for recursive import management
-		while(preg_match_all('#@import (?:url\()?.*(?:\)?)\s*;#',$this->csscode,$matches))
+		//Check for duplicate code
+		$md5list = array();
+		$tmpcss = $this->csscode;
+		foreach($tmpcss as $media => $code)
 		{
-			foreach($matches[0] as $import)
+			$md5sum = md5($code);
+			$medianame = $media;
+			foreach($md5list as $med => $sum)
 			{
-				$url = preg_replace('#.*(?:url\()?(?:"|\')(.*)(?:"|\')(?:\))?.*$#','$1',$import);
-				$path = $this->getpath($url);
-				if(file_exists($path) && is_readable($path))
+				//If same code
+				if($sum === $md5sum)
 				{
-					$code = $this->fixurls($path,file_get_contents($path));
-					$this->csscode = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us',$code.'$1',$this->csscode);
-				}/*else{
-					//getpath is not working?
-				}*/
+					//Add the merged code
+					$medianame = $med.', '.$media;
+					$this->csscode[$medianame] = $code;
+					$md5list[$medianame] = $md5list[$med];
+					unset($this->csscode[$med], $this->csscode[$media]);
+					unset($md5list[$med]);
+				}
+			}
+			$md5list[$medianame] = $md5sum;
+		}
+		unset($tmpcss);
+		
+		//Manage @imports, while is for recursive import management
+		foreach($this->csscode as &$thiscss)
+		{
+			while(preg_match_all('#@import (?:url\()?.*(?:\)?).*?;#U',$thiscss,$matches))
+			{
+				foreach($matches[0] as $import)
+				{
+					$url = preg_replace('#^.*(?:url\()?(?:"|\')(.*)(?:"|\')(?:\))?.*$#','$1',$import);
+					$path = $this->getpath($url);
+					if(file_exists($path) && is_readable($path))
+					{
+						$code = $this->fixurls($path,file_get_contents($path));
+						$media = preg_replace('#^.*(?:\)|"|\')(.*)(?:\s|;).*$#','$1',$import);
+						$media = array_map('trim',explode(' ',$media));
+						if(empty($media))
+						{
+							$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us',$code.'$1',$thiscss);
+						}/*else{
+							//media in @import - how should I handle these?
+						}*/
+					}/*else{
+						//getpath is not working?
+					}*/
+				}
 			}
 		}
+		unset($thiscss);
 		
 		//$this->csscode has all the uncompressed code now. 
 		if(class_exists('Minify_CSS_Compressor'))
 		{
-			$this->csscode = trim(Minify_CSS_Compressor::process($this->csscode));
+			foreach($this->csscode as &$code)
+			{
+				$code = trim(Minify_CSS_Compressor::process($code));
+			}
+			unset($code);
 			return true;
 		}
 		
@@ -102,14 +172,17 @@ class autoptimizeStyles extends autoptimizeBase
 	//Caches the CSS in uncompressed, deflated and gzipped form.
 	public function cache()
 	{
-		$md5 = md5($this->csscode);
-		$cache = new autopimizeCache(WP_PLUGIN_DIR.'/autoptimize/cache/',$md5);
-		if(!$cache->check())
+		foreach($this->csscode as $media => $code)
 		{
-			//Cache our code
-			$cache->cache($this->csscode,'text/css');
+			$md5 = md5($code);
+			$cache = new autopimizeCache(WP_PLUGIN_DIR.'/autoptimize/cache/',$md5);
+			if(!$cache->check())
+			{
+				//Cache our code
+				$cache->cache($code,'text/css');
+			}
+			$this->url[$media] = WP_PLUGIN_URL.'/autoptimize/cache/'.$cache->getname();
 		}
-		$this->url = WP_PLUGIN_URL.'/autoptimize/cache/'.$cache->getname();
 	}
 	
 	//Returns the content
@@ -117,7 +190,10 @@ class autoptimizeStyles extends autoptimizeBase
 	{
 		//Restore IE hacks
 		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','base64_decode("$1")',$this->content);
-		$this->content = str_replace('</head>','<link type="text/css" href="'.$this->url.'" rel="stylesheet" /></head>',$this->content);
+		foreach($this->url as $media => $url)
+		{
+			$this->content = str_replace('</head>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /></head>',$this->content);
+		}
 		return $this->content;
 	}
 	
