@@ -1,13 +1,4 @@
 <?php
-function dodebug($txt,$txt2=null){
-	static $text = '';
-	if($txt2 != null)
-	{	$txt = $txt2;
-	}
-	file_put_contents(ABSPATH.'/debug.txt',$text.$txt);
-	$text .= $txt;
-}
-set_error_handler('dodebug');
 class autoptimizeStyles extends autoptimizeBase
 {
 	private $css = array();
@@ -77,7 +68,6 @@ class autoptimizeStyles extends autoptimizeBase
 		foreach($this->css as $group)
 		{
 			list($media,$css) = $group;
-			dodebug('corro con media css'.$media.' '.$css.'END');
 			if(preg_match('#^INLINE;#',$css))
 			{
 				//<style>
