@@ -41,24 +41,24 @@ class autoptimizeConfig
 	{
 ?>
 <div class="wrap">
-<h2>Autoptimize Settings</h2>
+<h2><?php _e('Autoptimize Settings','autoptimize'); ?></h2>
 
 <form method="post" action="options.php">
 <?php settings_fields('autoptimize'); ?>
 <table class="form-table">
 
 <tr valign="top">
-<th scope="row">Optimize HTML Code?</th>
+<th scope="row"><?php _e('Optimize HTML Code?','autoptimize'); ?></th>
 <td><input type="checkbox" name="autoptimize_html" <?php echo get_option('autoptimize_html')?'checked="checked" ':''; ?>/></td>
 </tr>
  
 <tr valign="top">
-<th scope="row">Optimize JavaScript Code?</th>
+<th scope="row"><?php _e('Optimize JavaScript Code?','autoptimize'); ?></th>
 <td><input type="checkbox" name="autoptimize_js" <?php echo get_option('autoptimize_js')?'checked="checked" ':''; ?>/></td>
 </tr>
 
 <tr valign="top">
-<th scope="row">Optimize CSS Code? </th>
+<th scope="row"><?php _e('Optimize CSS Code?','autoptimize'); ?></th>
 <td><input type="checkbox" name="autoptimize_css" <?php echo get_option('autoptimize_css')?'checked="checked" ':''; ?>/></td>
 </tr>
 
@@ -75,7 +75,7 @@ class autoptimizeConfig
 	
 	public function addmenu()
 	{
-		add_options_page('Autoptimize Options','Autoptimize',8,'autoptimize',array($this,'show'));
+		add_options_page(__('Autoptimize Options','autoptimize'),'Autoptimize',8,'autoptimize',array($this,'show'));
 	}
 	
 	public function registersettings()

@@ -19,6 +19,10 @@ if(!defined('WP_PLUGIN_DIR'))
 //Load config class
 @include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
 
+//Load translations
+$plugin_dir = basename(dirname(__FILE__));
+load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localization',$plugin_dir.'/localization');
+
 //Set up the buffering
 function autoptimize_start_buffering()
 {
