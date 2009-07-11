@@ -3,11 +3,12 @@
 class autoptimizeScripts extends autoptimizeBase
 {
 	private $scripts = array();
-	private $dontmove = array('document.write','google_ad_client','show_ads.js');
+	private $dontmove = array('document.write','show_ads.js','google_ad');
 	private $domove = array('gaJsHost');
+	private $domovelast = array('addthis.com');
 	private $jscode = '';
 	private $url = '';
-	private $move = array();
+	private $move = array('first' => array(), 'last' => array());
 	
 	//Reads the page and collects script tags
 	public function read()
@@ -31,7 +32,12 @@ class autoptimizeScripts extends autoptimizeBase
 						//OR Script is dynamic (.php etc)
 						if($this->ismovable($tag))
 						{
-							$this->move[] = $tag;
+							if($this->movetolast($tag))
+							{
+								$this->move['last'][] = $tag;
+							}else{
+								$this->move['first'][] = $tag;
+							}
 						}else{
 							//We shouldn't touch this
 							$tag = '';
@@ -116,7 +122,9 @@ class autoptimizeScripts extends autoptimizeBase
 	//Returns the content
 	public function getcontent()
 	{
-		$bodyreplacement = implode('',$this->move).'<script type="text/javascript" src="'.$this->url.'"></script></body>';
+		$bodyreplacement = implode('',$this->move['first']);
+		$bodyreplacement .= '<script type="text/javascript" src="'.$this->url.'"></script>';
+		$bodyreplacement .= implode('',$this->move['last']).'</body>';
 		$this->content = str_replace('</body>',$bodyreplacement,$this->content);
 		return $this->content;
 	}
@@ -133,6 +141,15 @@ class autoptimizeScripts extends autoptimizeBase
 			}
 		}
 		
+		foreach($this->dontmove as $match)
+		{
+			if(strpos($tag,$match)!==false)
+			{
+				//Matched something
+				return false;
+			}
+		}
+		
 		//If we're here it's safe to merge
 		return true;
 	}
@@ -140,11 +157,14 @@ class autoptimizeScripts extends autoptimizeBase
 	//Checks agains the blacklist
 	private function ismovable($tag)
 	{
-		$allowed = !$this->ismergeable($tag);
 		
-		if($allowed == true)
+		foreach($this->domove as $match)
 		{
-			return true;
+			if(strpos($tag,$match)!==false)
+			{
+				//Matched something
+				return true;
+			}
 		}
 		
 		foreach($this->dontmove as $match)
@@ -158,5 +178,20 @@ class autoptimizeScripts extends autoptimizeBase
 		
 		//If we're here it's safe to move
 		return true;
+	}
+	
+	private function movetolast($tag)
+	{
+		foreach($this->domovelast as $match)
+		{
+			if(strpos($tag,$match)!==false)
+			{
+				//Matched, return true
+				return true;
+			}
+		}
+		
+		//Should be in 'first'
+		return false;
 	}
 }

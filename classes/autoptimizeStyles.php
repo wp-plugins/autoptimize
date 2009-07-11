@@ -120,11 +120,13 @@ class autoptimizeStyles extends autoptimizeBase
 		//Manage @imports, while is for recursive import management
 		foreach($this->csscode as &$thiscss)
 		{
-			while(preg_match_all('#@import (?:url\()?.*(?:\)?).*?;#U',$thiscss,$matches))
+			//Flag to trigger import reconstitution
+			$fiximports = false;
+			while(preg_match_all('#@import.*(?:;|$)#Um',$thiscss,$matches))
 			{
 				foreach($matches[0] as $import)
 				{
-					$url = preg_replace('#^.*(?:url\()?(?:"|\')(.*)(?:"|\')(?:\))?.*$#','$1',$import);
+					$url = trim(preg_replace('#.+((?:https?|ftp)://.*\.css)(?:\s|"|\').+#','$1',$import)," \t\n\r\0\x0B\"'");
 					$path = $this->getpath($url);
 					if(file_exists($path) && is_readable($path))
 					{
@@ -139,10 +141,19 @@ class autoptimizeStyles extends autoptimizeBase
 							//TODO: Infinite recursion!
 						}*/
 						$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us',$code.'$1',$thiscss);
-					}/*else{
+					}else{
 						//getpath is not working?
-					}*/
+						//Encode so preg_match doesn't see it
+						$thiscss = str_replace($import,'/*IMPORT*/'.base64_encode($import).'/*IMPORT*/',$thiscss);
+						$fiximports = true;
+					}
 				}
+			}
+			
+			//Recover imports
+			if($fiximports)
+			{
+				$thiscss = preg_replace('#/\*IMPORT\*/(.*)/\*IMPORT\*/#Use','base64_decode("$1")',$thiscss);
 			}
 		}
 		unset($thiscss);
@@ -200,7 +211,7 @@ class autoptimizeStyles extends autoptimizeBase
 			foreach($matches[1] as $url)
 			{
 				//Remove quotes
-				$url = preg_replace('#^.*(?:"|\')(.*)(?:"|\').*$#','$1',$url);
+				$url = trim($url," \t\n\r\0\x0B\"'");
 				if(substr($url,0,1)=='/' || preg_match('#^(https?|ftp)://#i',$url))
 				{
 					//URL is absolute
