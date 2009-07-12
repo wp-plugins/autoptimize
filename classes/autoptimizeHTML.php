@@ -2,10 +2,9 @@
 
 class autoptimizeHTML extends autoptimizeBase
 {
-	private $url = '';
 	
 	//Does nothing
-	public function read()
+	public function read($justhead)
 	{
 		//Nothing to read for HTML
 		return true;

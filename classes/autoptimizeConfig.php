@@ -45,22 +45,40 @@ class autoptimizeConfig
 
 <form method="post" action="options.php">
 <?php settings_fields('autoptimize'); ?>
-<table class="form-table">
 
+<h3><?php _e('HTML Options','autoptimize'); ?></h3>
+<table class="form-table">
 <tr valign="top">
 <th scope="row"><?php _e('Optimize HTML Code?','autoptimize'); ?></th>
 <td><input type="checkbox" name="autoptimize_html" <?php echo get_option('autoptimize_html')?'checked="checked" ':''; ?>/></td>
 </tr>
- 
+</table>
+
+<h3><?php _e('JavaScript Options','autoptimize'); ?></h3>
+<table class="form-table"> 
 <tr valign="top">
 <th scope="row"><?php _e('Optimize JavaScript Code?','autoptimize'); ?></th>
 <td><input type="checkbox" name="autoptimize_js" <?php echo get_option('autoptimize_js')?'checked="checked" ':''; ?>/></td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('Look for scripts only in &lt;head&gt;?','autoptimize'); ?></th>
+<td><label for="autoptimize_js_justhead"><input type="checkbox" name="autoptimize_js_justhead" <?php echo get_option('autoptimize_js_justhead')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. If the cache gets big, you might want to enable this.','autoptimize'); ?></label></td>
+</tr>
+</table>
 
+<h3><?php _e('CSS Options','autoptimize'); ?></h3>
+<table class="form-table"> 
 <tr valign="top">
 <th scope="row"><?php _e('Optimize CSS Code?','autoptimize'); ?></th>
 <td><input type="checkbox" name="autoptimize_css" <?php echo get_option('autoptimize_css')?'checked="checked" ':''; ?>/></td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('Look for styles on just &lt;head&gt;?','autoptimize'); ?></th>
+<td><label for="autoptimize_css_justhead"><input type="checkbox" name="autoptimize_css_justhead" <?php echo get_option('autoptimize_css_justhead')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. If the cache gets big, you might want to enable this.','autoptimize'); ?></label></td>
+</tr>
+</table>
 
 </table>
 
@@ -82,7 +100,9 @@ class autoptimizeConfig
 	{
 		register_setting('autoptimize','autoptimize_html');
 		register_setting('autoptimize','autoptimize_js');
+		register_setting('autoptimize','autoptimize_js_justhead');
 		register_setting('autoptimize','autoptimize_css');
+		register_setting('autoptimize','autoptimize_css_justhead');
 	}
 	
 	public function setmeta($links,$file=null)
@@ -119,15 +139,20 @@ class autoptimizeConfig
 			//Default config
 			$config = array('autoptimize_html' => 0,
 				'autoptimize_js' => 0,
-				'autoptimize_css' => 0);
+				'autoptimize_js_justhead' => 0,
+				'autoptimize_css' => 0,
+				'autoptimize_css_justhead' => 0);
 			
 			//Override with user settings
-			if(get_option('autoptimize_html')!==false)
-				$config['autoptimize_html'] = get_option('autoptimize_html');
-			if(get_option('autoptimize_js')!==false)
-				$config['autoptimize_js'] = get_option('autoptimize_js');
-			if(get_option('autoptimize_css')!==false)
-				$config['autoptimize_css'] = get_option('autoptimize_css');
+			foreach(array_keys($config) as $name)
+			{
+				$conf = get_option($name);
+				if($conf!==false)
+				{
+					//It was set before!
+					$config[$name] = $conf;
+				}
+			}
 			
 			//Save for next question
 			$this->config = $config;

@@ -4,10 +4,19 @@ class autoptimizeStyles extends autoptimizeBase
 	private $css = array();
 	private $csscode = array();
 	private $url = array();
+	private $restofcontent = '';
 	
 	//Reads the page and collects style tags
-	public function read()
+	public function read($justhead)
 	{
+		//Remove everything that's not the header
+		if($justhead == true)
+		{
+			$content = explode('</head>',$this->content,2);
+			$this->content = $content[0].'</head>';
+			$this->restofcontent = $content[1];
+		}
+		
 		//Save IE hacks
 		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie',
 			'\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
@@ -193,10 +202,21 @@ class autoptimizeStyles extends autoptimizeBase
 	{
 		//Restore IE hacks
 		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','base64_decode("$1")',$this->content);
+		
+		//Restore the full content
+		if(!empty($this->restofcontent))
+		{
+			$this->content .= $this->restofcontent;
+			$this->restofcontent = '';
+		}
+		
+		//Add the new stylesheets
 		foreach($this->url as $media => $url)
 		{
 			$this->content = str_replace('</head>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /></head>',$this->content);
 		}
+		
+		//Return the modified stylesheet
 		return $this->content;
 	}
 	

@@ -73,12 +73,26 @@ function autoptimize_end_buffering($content)
 		$classes[] = 'autoptimizeStyles';
 	if($conf->get('autoptimize_html'))
 		$classes[] = 'autoptimizeHTML';
+		
+	//Set some options
+	$classoptions = array(
+		'autoptimizeScripts' => array(
+			'justhead' => $conf->get('autoptimize_js_justhead')
+		),
+		'autoptimizeStyles' => array(
+			'justhead' => $conf->get('autoptimize_css_justhead')
+		),
+		'autoptimizeHTML' => array(
+			'justhead' => 0
+		)
+	);
+		
 	
 	//Run the classes
 	foreach($classes as $name)
 	{
 		$instance = new $name($content);
-		if($instance->read())
+		if($instance->read($classoptions[$name]['justhead']))
 		{
 			$instance->minify();
 			$instance->cache();

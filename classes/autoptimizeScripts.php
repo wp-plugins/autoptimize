@@ -9,10 +9,19 @@ class autoptimizeScripts extends autoptimizeBase
 	private $jscode = '';
 	private $url = '';
 	private $move = array('first' => array(), 'last' => array());
+	private $restofcontent = '';
 	
 	//Reads the page and collects script tags
-	public function read()
+	public function read($justhead)
 	{
+		//Remove everything that's not the header
+		if($justhead == true)
+		{
+			$content = explode('</head>',$this->content,2);
+			$this->content = $content[0].'</head>';
+			$this->restofcontent = $content[1];
+		}
+		
 		//Get script files
 		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches))
 		{
@@ -122,10 +131,20 @@ class autoptimizeScripts extends autoptimizeBase
 	//Returns the content
 	public function getcontent()
 	{
+		//Restore the full content
+		if(!empty($this->restofcontent))
+		{
+			$this->content .= $this->restofcontent;
+			$this->restofcontent = '';
+		}
+		
+		//Add the scripts
 		$bodyreplacement = implode('',$this->move['first']);
 		$bodyreplacement .= '<script type="text/javascript" src="'.$this->url.'"></script>';
 		$bodyreplacement .= implode('',$this->move['last']).'</body>';
 		$this->content = str_replace('</body>',$bodyreplacement,$this->content);
+		
+		//Return the modified HTML
 		return $this->content;
 	}
 	

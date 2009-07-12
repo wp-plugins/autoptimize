@@ -11,7 +11,7 @@ abstract class autoptimizeBase
 	}
 	
 	//Reads the page and collects tags
-	abstract public function read();
+	abstract public function read($justhead);
 	
 	//Joins and optimizes collected things
 	abstract public function minify();
