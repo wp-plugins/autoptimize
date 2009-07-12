@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Autoptimize
-Plugin URI: http://www.turleando.com.ar/
+Plugin URI: http://www.turleando.com.ar/autoptimize/
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
 Version: 0.4
 Author: Emilio López
