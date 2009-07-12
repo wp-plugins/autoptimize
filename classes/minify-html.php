@@ -117,6 +117,12 @@ class Minify_HTML {
             '/\\s*(<textarea\\b[^>]*?>[\\s\\S]*?<\\/textarea>)\\s*/i'
             ,array($this, '_removeTextareaCB')
             ,$this->_html);
+			
+		// replace data: URIs with placeholders
+        $this->_html = preg_replace_callback(
+            '/(=("|\')data:.*\\2)/Ui'
+            ,array($this, '_removeDataURICB')
+            ,$this->_html);
         
         // trim each line.
         // @todo take into account attribute values that span multiple lines.
@@ -136,7 +142,7 @@ class Minify_HTML {
             ,$this->_html);
         
         // use newlines before 1st attribute in open tags (to limit line lengths)
-        $this->_html = preg_replace('/(<[a-z\\-]+)\\s+([^>]+>)/i', "$1\n$2", $this->_html);
+        //$this->_html = preg_replace('/(<[a-z\\-]+)\\s+([^>]+>)/i', "$1\n$2", $this->_html);
         
         // fill placeholders
         $this->_html = str_replace(
@@ -178,6 +184,11 @@ class Minify_HTML {
     }
     
     protected function _removeTextareaCB($m)
+    {
+        return $this->_reservePlace($m[1]);
+    }
+	
+	protected function _removeDataURICB($m)
     {
         return $this->_reservePlace($m[1]);
     }
