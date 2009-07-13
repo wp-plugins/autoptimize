@@ -3,7 +3,7 @@
 class autoptimizeScripts extends autoptimizeBase
 {
 	private $scripts = array();
-	private $dontmove = array('document.write','show_ads.js','google_ad');
+	private $dontmove = array('document.write','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/');
 	private $domove = array('gaJsHost');
 	private $domovelast = array('addthis.com');
 	private $jscode = '';
