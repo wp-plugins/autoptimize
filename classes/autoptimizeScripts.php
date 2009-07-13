@@ -5,7 +5,7 @@ class autoptimizeScripts extends autoptimizeBase
 	private $scripts = array();
 	private $dontmove = array('document.write','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/');
 	private $domove = array('gaJsHost');
-	private $domovelast = array('addthis.com');
+	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js');
 	private $jscode = '';
 	private $url = '';
 	private $move = array('first' => array(), 'last' => array());
