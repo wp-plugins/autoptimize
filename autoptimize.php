@@ -3,7 +3,7 @@
 Plugin Name: Autoptimize
 Plugin URI: http://www.turleando.com.ar/autoptimize/
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 0.5
+Version: 0.6
 Author: Emilio López
 Author URI: http://www.turleando.com.ar/
 Released under the GNU General Public License (GPL)
