@@ -4,7 +4,7 @@ class autoptimizeScripts extends autoptimizeBase
 {
 	private $scripts = array();
 	private $dontmove = array('document.write','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','swfobject.embedSWF(');
-	private $domove = array('gaJsHost');
+	private $domove = array('gaJsHost','load_cmc');
 	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js');
 	private $trycatch = false;
 	private $jscode = '';
@@ -69,7 +69,12 @@ class autoptimizeScripts extends autoptimizeBase
 						//Can we move this?
 						if($this->ismovable($tag))
 						{
-							$this->move[] = $tag;
+							if($this->movetolast($tag))
+							{
+								$this->move['last'][] = $tag;
+							}else{
+								$this->move['first'][] = $tag;
+							}
 						}else{
 							//We shouldn't touch this
 							$tag = '';
