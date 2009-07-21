@@ -231,7 +231,7 @@ class autoptimizeStyles extends autoptimizeBase
 		if(preg_match_all('#url\((.*)\)#Usi',$code,$matches))
 		{
 			$replace = array();
-			foreach($matches[1] as $url)
+			foreach($matches[1] as $k => $url)
 			{
 				//Remove quotes
 				$url = trim($url," \t\n\r\0\x0B\"'");
@@ -242,7 +242,9 @@ class autoptimizeStyles extends autoptimizeBase
 				}else{
 					//relative URL. Let's fix it!
 					$newurl = get_settings('home').str_replace('//','/',$dir.'/'.$url); //http://yourblog.com/wp-content/../image.png
-					$replace[$url] = $newurl;
+					$hash = md5($url);
+					$code = str_replace($matches[0][$k],$hash,$code);
+					$replace[$hash] = 'url('.$newurl.')';
 				}
 			}
 			
