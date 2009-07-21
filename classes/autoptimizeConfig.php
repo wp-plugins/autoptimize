@@ -65,6 +65,11 @@ class autoptimizeConfig
 <td><label for="autoptimize_js_justhead"><input type="checkbox" name="autoptimize_js_justhead" <?php echo get_option('autoptimize_js_justhead')?'checked="checked" ':''; ?>/>
 <?php _e('Disabled by default. If the cache gets big, you might want to enable this.','autoptimize'); ?></label></td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('Add try-catch wrapping?','autoptimize'); ?></th>
+<td><label for="autoptimize_js_trycatch"><input type="checkbox" name="autoptimize_js_trycatch" <?php echo get_option('autoptimize_js_trycatch')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. If your scripts break because of an script error, you might want to try this.','autoptimize'); ?></label></td>
+</tr>
 </table>
 
 <h3><?php _e('CSS Options','autoptimize'); ?></h3>
@@ -100,6 +105,7 @@ class autoptimizeConfig
 	{
 		register_setting('autoptimize','autoptimize_html');
 		register_setting('autoptimize','autoptimize_js');
+		register_setting('autoptimize','autoptimize_js_trycatch');
 		register_setting('autoptimize','autoptimize_js_justhead');
 		register_setting('autoptimize','autoptimize_css');
 		register_setting('autoptimize','autoptimize_css_justhead');
@@ -139,6 +145,7 @@ class autoptimizeConfig
 			//Default config
 			$config = array('autoptimize_html' => 0,
 				'autoptimize_js' => 0,
+				'autoptimize_js_trycatch' => 0,
 				'autoptimize_js_justhead' => 0,
 				'autoptimize_css' => 0,
 				'autoptimize_css_justhead' => 0);

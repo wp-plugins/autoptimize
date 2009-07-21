@@ -7,10 +7,10 @@ class autoptimizeStyles extends autoptimizeBase
 	private $restofcontent = '';
 	
 	//Reads the page and collects style tags
-	public function read($justhead)
+	public function read($options)
 	{
 		//Remove everything that's not the header
-		if($justhead == true)
+		if($options['justhead'] == true)
 		{
 			$content = explode('</head>',$this->content,2);
 			$this->content = $content[0].'</head>';

@@ -6,21 +6,26 @@ class autoptimizeScripts extends autoptimizeBase
 	private $dontmove = array('document.write','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','swfobject.embedSWF(');
 	private $domove = array('gaJsHost');
 	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js');
+	private $trycatch = false;
 	private $jscode = '';
 	private $url = '';
 	private $move = array('first' => array(), 'last' => array());
 	private $restofcontent = '';
 	
 	//Reads the page and collects script tags
-	public function read($justhead)
+	public function read($options)
 	{
 		//Remove everything that's not the header
-		if($justhead == true)
+		if($options['justhead'] == true)
 		{
 			$content = explode('</head>',$this->content,2);
 			$this->content = $content[0].'</head>';
 			$this->restofcontent = $content[1];
 		}
+		
+		//Should we add try-catch?
+		if($options['trycatch'] == true)
+			$this->trycatch = true;
 		
 		//Get script files
 		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches))
@@ -92,12 +97,18 @@ class autoptimizeScripts extends autoptimizeBase
 			{
 				//Inline script
 				$script = preg_replace('#^INLINE;#','',$script);
+				//Add try-catch?
+				if($this->trycatch)
+					$script = 'try{'.$script.'}catch(e){}';
 				$this->jscode .= "\n".$script;
 			}else{
 				//External script
 				if($script !== false && file_exists($script) && is_readable($script))
 				{
 					$script = file_get_contents($script);
+					//Add try-catch?
+					if($this->trycatch)
+						$script = 'try{'.$script.'}catch(e){}';
 					$this->jscode .= "\n".$script;
 				}/*else{
 					//Couldn't read JS. Maybe getpath isn't working?
