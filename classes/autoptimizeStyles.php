@@ -46,6 +46,9 @@ class autoptimizeStyles extends autoptimizeBase
 							{
 								$media[] = current(explode(' ',trim($elem),2));
 							}
+						}else{
+							//No media specified - applies to all
+							$media = array('all');
 						}
 
 						$this->css[] = array($media,$path);
