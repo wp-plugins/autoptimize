@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/autoptimize\n"
-"POT-Creation-Date: 2009-07-12 03:12+0000\n"
+"POT-Creation-Date: 2009-07-21 03:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,32 +40,42 @@ msgstr ""
 msgid "Look for scripts only in &lt;head&gt;?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:66 classes/autoptimizeConfig.php:79
+#: classes/autoptimizeConfig.php:66 classes/autoptimizeConfig.php:84
 msgid ""
 "Disabled by default. If the cache gets big, you might want to enable this."
 msgstr ""
 
-#: classes/autoptimizeConfig.php:70
+#: classes/autoptimizeConfig.php:69
+msgid "Add try-catch wrapping?"
+msgstr ""
+
+#: classes/autoptimizeConfig.php:71
+msgid ""
+"Disabled by default. If your scripts break because of an script error, you "
+"might want to try this."
+msgstr ""
+
+#: classes/autoptimizeConfig.php:75
 msgid "CSS Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:73
+#: classes/autoptimizeConfig.php:78
 msgid "Optimize CSS Code?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:77
+#: classes/autoptimizeConfig.php:82
 msgid "Look for styles on just &lt;head&gt;?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:86
+#: classes/autoptimizeConfig.php:91
 msgid "Save Changes"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:96
+#: classes/autoptimizeConfig.php:101
 msgid "Autoptimize Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:120 classes/autoptimizeConfig.php:127
+#: classes/autoptimizeConfig.php:126 classes/autoptimizeConfig.php:133
 msgid "Settings"
 msgstr ""
 
@@ -78,4 +88,3 @@ msgid ""
 "Optimizes your website, concatenating the CSS and JavaScript code, and "
 "compressing it."
 msgstr ""
-
