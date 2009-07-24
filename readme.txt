@@ -3,7 +3,7 @@ Contributors: turl
 Donate link: http://www.turleando.com.ar/autoptimize/
 Tags: css, html, javascript, js, optimize, speed, cache
 Requires at least: 2.7
-Tested up to: 2.8.1
+Tested up to: 2.8.2
 Stable tag: 0.8
 
 Autoptimize is a Wordpress plugin that speeds up your website, and helps you save bandwidth. 
@@ -37,6 +37,15 @@ You can fill in a bug in our [bug tracker](https://bugs.launchpad.net/autoptimiz
 Sure, you can help with translations in the [Launchpad translation page](https://translations.launchpad.net/autoptimize)
 
 == Changelog ==
+
+= 0.9 =
+* Add workaround for networkedblogs.
+* Add workarounds for histats and statscounter
+* Add workaround for smowtion and infolinks. 
+* Add workaround for Featured Content Gallery
+* Simplified Chinese translation
+* Modify the cache system so it uses wp-content/cache/
+* Add a clear cache button
 
 = 0.8 =
 * Add workaround for Vipers Video Quicktags
