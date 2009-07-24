@@ -17,7 +17,7 @@ if(!defined('WP_PLUGIN_DIR'))
 	define('WP_PLUGIN_DIR',WP_CONTENT_DIR.'/plugins');
 
 //Load config class
-@include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
+include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
 
 //Load translations
 $plugin_dir = basename(dirname(__FILE__));
@@ -30,19 +30,19 @@ function autoptimize_start_buffering()
 	$conf = autoptimizeConfig::instance();
 	
 	//Load our always-on classes
-	@include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeBase.php');
-	@include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
+	include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeBase.php');
+	include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
 	
 	//Load extra classes and set some vars
 	if($conf->get('autoptimize_html'))
 	{
-		@include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeHTML.php');	
+		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeHTML.php');	
 		@include(WP_PLUGIN_DIR.'/autoptimize/classes/minify-html.php');
 	}
 	
 	if($conf->get('autoptimize_js'))
 	{
-		@include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeScripts.php');
+		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeScripts.php');
 		@include(WP_PLUGIN_DIR.'/autoptimize/classes/jsmin-1.1.1.php');
 		define('CONCATENATE_SCRIPTS',false);
 		define('COMPRESS_SCRIPTS',false);
@@ -50,7 +50,7 @@ function autoptimize_start_buffering()
 	
 	if($conf->get('autoptimize_css'))
 	{
-		@include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeStyles.php');
+		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeStyles.php');
 		@include(WP_PLUGIN_DIR.'/autoptimize/classes/minify-css-compressor.php');
 		define('COMPRESS_CSS',false);
 	}
