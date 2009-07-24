@@ -10,14 +10,13 @@ Released under the GNU General Public License (GPL)
 http://www.gnu.org/licenses/gpl.txt
 */
 
-//Pre-2.6 compatibility
-if(!defined('WP_PLUGIN_URL'))
-	define('WP_PLUGIN_URL',WP_CONTENT_URL.'/plugins');
-if(!defined('WP_PLUGIN_DIR'))
-	define('WP_PLUGIN_DIR',WP_CONTENT_DIR.'/plugins');
-
-//Load config class
+//Load config and cache class
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
+include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
+
+//Plugin constants
+define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
+define('AUTOPTIMIZE_CACHE_URL',WP_CONTENT_URL.'/cache/autoptimize/');
 
 //Load translations
 $plugin_dir = basename(dirname(__FILE__));
@@ -29,9 +28,8 @@ function autoptimize_start_buffering()
 	//Config element
 	$conf = autoptimizeConfig::instance();
 	
-	//Load our always-on classes
+	//Load our base class
 	include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeBase.php');
-	include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
 	
 	//Load extra classes and set some vars
 	if($conf->get('autoptimize_html'))
@@ -103,10 +101,12 @@ function autoptimize_end_buffering($content)
 	return $content;
 }
 
-
-$conf = autoptimizeConfig::instance();
-if($conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css'))
+if(autoptimizeCache::cacheavail())
 {
-	//Hook to wordpress
-	add_action('template_redirect','autoptimize_start_buffering',2);
+	$conf = autoptimizeConfig::instance();
+	if($conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css'))
+	{
+		//Hook to wordpress
+		add_action('template_redirect','autoptimize_start_buffering',2);
+	}
 }

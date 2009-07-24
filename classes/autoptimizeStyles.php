@@ -190,13 +190,13 @@ class autoptimizeStyles extends autoptimizeBase
 		foreach($this->csscode as $media => $code)
 		{
 			$md5 = md5($code);
-			$cache = new autopimizeCache(WP_PLUGIN_DIR.'/autoptimize/cache/',$md5);
+			$cache = new autoptimizeCache($md5);
 			if(!$cache->check())
 			{
 				//Cache our code
 				$cache->cache($code,'text/css');
 			}
-			$this->url[$media] = WP_PLUGIN_URL.'/autoptimize/cache/'.$cache->getname();
+			$this->url[$media] = AUTOPTIMIZE_CACHE_URL.$cache->getname();
 		}
 	}
 	

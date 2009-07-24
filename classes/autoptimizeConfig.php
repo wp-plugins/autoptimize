@@ -23,6 +23,12 @@ class autoptimizeConfig
 				$plugin = plugin_basename(WP_PLUGIN_DIR.'/autoptimize/autoptimize.php');
 				add_filter('plugin_action_links_'.$plugin,array($this,'setmeta'));
 			}
+			//Clean cache?
+			if(get_option('autoptimize_cache_clean'))
+			{
+				autoptimizeCache::clearall();
+				update_option('autoptimize_cache_clean',0);
+			}
 		}
 	}
 	
@@ -85,10 +91,27 @@ class autoptimizeConfig
 </tr>
 </table>
 
+<h3><?php _e('Cache Info','autoptimize'); ?></h3>
+<table class="form-table"> 
+<tr valign="top">
+<th scope="row"><?php _e('Cache folder','autoptimize'); ?></th>
+<td><?php echo htmlentities(AUTOPTIMIZE_CACHE_DIR); ?></td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Can we write?','autoptimize'); ?></th>
+<td><?php echo (autoptimizeCache::cacheavail() ? __('Yes','autoptimize') : __('No','autoptimize')); ?></td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Cached styles and scripts','autoptimize'); ?></th>
+<td><?php echo autoptimizeCache::stats(); ?></td>
+</tr>
+</table>
+
 </table>
 
 <p class="submit">
 <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
+<input type="submit" name="autoptimize_cache_clean" value="<?php _e('Save Changes and Empty Cache') ?>" />
 </p>
 
 </form>
@@ -109,6 +132,7 @@ class autoptimizeConfig
 		register_setting('autoptimize','autoptimize_js_justhead');
 		register_setting('autoptimize','autoptimize_css');
 		register_setting('autoptimize','autoptimize_css_justhead');
+		register_setting('autoptimize','autoptimize_cache_clean');
 	}
 	
 	public function setmeta($links,$file=null)

@@ -135,13 +135,13 @@ class autoptimizeScripts extends autoptimizeBase
 	public function cache()
 	{
 		$md5 = md5($this->jscode);
-		$cache = new autopimizeCache(WP_PLUGIN_DIR.'/autoptimize/cache/',$md5);
+		$cache = new autoptimizeCache($md5);
 		if(!$cache->check())
 		{
 			//Cache our code
 			$cache->cache($this->jscode,'text/javascript');
 		}
-		$this->url = WP_PLUGIN_URL.'/autoptimize/cache/'.$cache->getname();
+		$this->url = AUTOPTIMIZE_CACHE_URL.$cache->getname();
 	}
 	
 	//Returns the content
