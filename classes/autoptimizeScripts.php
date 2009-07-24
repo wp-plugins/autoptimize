@@ -3,9 +3,9 @@
 class autoptimizeScripts extends autoptimizeBase
 {
 	private $scripts = array();
-	private $dontmove = array('document.write','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','swfobject.embedSWF(','var s_sid = ','histats.com/js');
+	private $dontmove = array('document.write','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','swfobject.embedSWF(','var s_sid = ','histats.com/js','smowtion_size','ads.smowtion.com/ad.js');
 	private $domove = array('gaJsHost','load_cmc');
-	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js','networkedblogs.com/getnetworkwidget');
+	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js','networkedblogs.com/getnetworkwidget','infolinks.com/js/');
 	private $trycatch = false;
 	private $jscode = '';
 	private $url = '';
