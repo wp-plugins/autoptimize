@@ -2,10 +2,14 @@
 
 class autoptimizeHTML extends autoptimizeBase
 {
+	private $keepcomments = false;
 	
 	//Does nothing
-	public function read($justhead)
+	public function read($options)
 	{
+		//Remove the HTML comments?
+		$this->keepcomments = $options['keepcomments'];
+		
 		//Nothing to read for HTML
 		return true;
 	}
@@ -15,8 +19,9 @@ class autoptimizeHTML extends autoptimizeBase
 	{
 		if(class_exists('Minify_HTML'))
 		{
-			//Remove whitespace
-			$this->content = Minify_HTML::minify($this->content);
+			//Minify html
+			$options = array('keepComments' => $this->keepcomments);
+			$this->content = Minify_HTML::minify($this->content,$options);
 			return true;
 		}
 		

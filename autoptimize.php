@@ -82,6 +82,7 @@ function autoptimize_end_buffering($content)
 			'justhead' => $conf->get('autoptimize_css_justhead')
 		),
 		'autoptimizeHTML' => array(
+			'keepcomments' => $conf->get('autoptimize_html_keepcomments')
 		)
 	);
 		

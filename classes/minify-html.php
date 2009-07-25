@@ -33,6 +33,9 @@ class Minify_HTML {
      * 
      * 'xhtml' : (optional boolean) should content be treated as XHTML1.0? If
      * unset, minify will sniff for an XHTML doctype.
+	 * 
+     * 'keepComments' : (optional boolean) should the HTML comments be kept
+     * in the HTML Code?
      * 
      * @return string
      */
@@ -57,6 +60,9 @@ class Minify_HTML {
      * 
      * 'xhtml' : (optional boolean) should content be treated as XHTML1.0? If
      * unset, minify will sniff for an XHTML doctype.
+	 * 
+     * 'xhtml' : (optional boolean) should content be treated as XHTML1.0? If
+     * unset, minify will sniff for an XHTML doctype.
      * 
      * @return null
      */
@@ -71,6 +77,9 @@ class Minify_HTML {
         }
         if (isset($options['jsMinifier'])) {
             $this->_jsMinifier = $options['jsMinifier'];
+        }
+        if (isset($options['keepComments'])) {
+            $this->_keepComments = $options['keepComments'];
         }
     }
     
@@ -102,11 +111,13 @@ class Minify_HTML {
             ,$this->_html);
         
         // remove HTML comments (not containing IE conditional comments).
-        $this->_html = preg_replace_callback(
-            '/<!--([\\s\\S]*?)-->/'
-            ,array($this, '_commentCB')
-            ,$this->_html);
-        
+		if  ($this->_keepComments === false) {
+			$this->_html = preg_replace_callback(
+				'/<!--([\\s\\S]*?)-->/'
+				,array($this, '_commentCB')
+				,$this->_html);
+        }
+		
         // replace PREs with placeholders
         $this->_html = preg_replace_callback('/\\s*(<pre\\b[^>]*?>[\\s\\S]*?<\\/pre>)\\s*/i'
             ,array($this, '_removePreCB')
@@ -172,6 +183,7 @@ class Minify_HTML {
     protected $_placeholders = array();
     protected $_cssMinifier = null;
     protected $_jsMinifier = null;
+	protected $_keepComments = null;
 
     protected function _outsideTagCB($m)
     {

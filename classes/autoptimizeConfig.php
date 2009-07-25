@@ -58,6 +58,11 @@ class autoptimizeConfig
 <th scope="row"><?php _e('Optimize HTML Code?','autoptimize'); ?></th>
 <td><input type="checkbox" name="autoptimize_html" <?php echo get_option('autoptimize_html')?'checked="checked" ':''; ?>/></td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('Keep HTML comments?','autoptimize'); ?></th>
+<td><label for="autoptimize_html_keepcomments"><input type="checkbox" name="autoptimize_html_keepcomments" <?php echo get_option('autoptimize_html_keepcomments')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. Enable it if you want HTML comments to remain in the page.','autoptimize'); ?></label></td>
+</tr>
 </table>
 
 <h3><?php _e('JavaScript Options','autoptimize'); ?></h3>
@@ -127,6 +132,7 @@ class autoptimizeConfig
 	public function registersettings()
 	{
 		register_setting('autoptimize','autoptimize_html');
+		register_setting('autoptimize','autoptimize_html_keepcomments');
 		register_setting('autoptimize','autoptimize_js');
 		register_setting('autoptimize','autoptimize_js_trycatch');
 		register_setting('autoptimize','autoptimize_js_justhead');
@@ -168,11 +174,13 @@ class autoptimizeConfig
 		{
 			//Default config
 			$config = array('autoptimize_html' => 0,
+				'autoptimize_html_keepcomments' => 0,
 				'autoptimize_js' => 0,
 				'autoptimize_js_trycatch' => 0,
 				'autoptimize_js_justhead' => 0,
 				'autoptimize_css' => 0,
-				'autoptimize_css_justhead' => 0);
+				'autoptimize_css_justhead' => 0
+				);
 			
 			//Override with user settings
 			foreach(array_keys($config) as $name)
