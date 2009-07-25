@@ -61,7 +61,7 @@ class autoptimizeConfig
 <tr valign="top">
 <th scope="row"><?php _e('Keep HTML comments?','autoptimize'); ?></th>
 <td><label for="autoptimize_html_keepcomments"><input type="checkbox" name="autoptimize_html_keepcomments" <?php echo get_option('autoptimize_html_keepcomments')?'checked="checked" ':''; ?>/>
-<?php _e('Disabled by default. Enable it if you want HTML comments to remain in the page.','autoptimize'); ?></label></td>
+<?php _e('Disabled by default. Enable this if you want HTML comments to remain in the page.','autoptimize'); ?></label></td>
 </tr>
 </table>
 
