@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/autoptimize\n"
-"POT-Creation-Date: 2009-07-24 22:40+0000\n"
+"POT-Creation-Date: 2009-07-25 17:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,82 +28,92 @@ msgstr ""
 msgid "Optimize HTML Code?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:63
+#: classes/autoptimizeConfig.php:62
+msgid "Keep HTML comments?"
+msgstr ""
+
+#: classes/autoptimizeConfig.php:64
+msgid ""
+"Disabled by default. Enable this if you want HTML comments to remain in the "
+"page."
+msgstr ""
+
+#: classes/autoptimizeConfig.php:68
 msgid "JavaScript Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:66
+#: classes/autoptimizeConfig.php:71
 msgid "Optimize JavaScript Code?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:70
+#: classes/autoptimizeConfig.php:75
 msgid "Look for scripts only in &lt;head&gt;?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:72 classes/autoptimizeConfig.php:90
+#: classes/autoptimizeConfig.php:77 classes/autoptimizeConfig.php:95
 msgid ""
 "Disabled by default. If the cache gets big, you might want to enable this."
 msgstr ""
 
-#: classes/autoptimizeConfig.php:75
+#: classes/autoptimizeConfig.php:80
 msgid "Add try-catch wrapping?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:77
+#: classes/autoptimizeConfig.php:82
 msgid ""
 "Disabled by default. If your scripts break because of an script error, you "
 "might want to try this."
 msgstr ""
 
-#: classes/autoptimizeConfig.php:81
+#: classes/autoptimizeConfig.php:86
 msgid "CSS Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:84
+#: classes/autoptimizeConfig.php:89
 msgid "Optimize CSS Code?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:88
+#: classes/autoptimizeConfig.php:93
 msgid "Look for styles on just &lt;head&gt;?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:94
+#: classes/autoptimizeConfig.php:99
 msgid "Cache Info"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:97
+#: classes/autoptimizeConfig.php:102
 msgid "Cache folder"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:101
+#: classes/autoptimizeConfig.php:106
 msgid "Can we write?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:102
+#: classes/autoptimizeConfig.php:107
 msgid "Yes"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:102
+#: classes/autoptimizeConfig.php:107
 msgid "No"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:105
+#: classes/autoptimizeConfig.php:110
 msgid "Cached styles and scripts"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:113
+#: classes/autoptimizeConfig.php:118
 msgid "Save Changes"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:114
+#: classes/autoptimizeConfig.php:119
 msgid "Save Changes and Empty Cache"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:124
+#: classes/autoptimizeConfig.php:129
 msgid "Autoptimize Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:150 classes/autoptimizeConfig.php:157
+#: classes/autoptimizeConfig.php:156 classes/autoptimizeConfig.php:163
 msgid "Settings"
 msgstr ""
 
