@@ -49,6 +49,22 @@ class autoptimizeConfig
 <div class="wrap">
 <h2><?php _e('Autoptimize Settings','autoptimize'); ?></h2>
 
+<div style="position:absolute;right:50px;background:#FFFFE0;border:1px solid #E6DB55;padding:5px;text-align:center;">
+Like Autoptimize?
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_donations">
+<input type="hidden" name="business" value="webmaster@turl.com.ar">
+<input type="hidden" name="lc" value="AR">
+<input type="hidden" name="item_name" value="Autoptimize">
+<input type="hidden" name="item_number" value="autoptimize">
+<input type="hidden" name="currency_code" value="USD">
+<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_SM.gif:NonHostedGuest">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypal.com/es_XC/i/scr/pixel.gif" width="1" height="1">
+</form>
+Buy me a coffee :-)
+</div>
+
 <form method="post" action="options.php">
 <?php settings_fields('autoptimize'); ?>
 
