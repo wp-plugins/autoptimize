@@ -26,9 +26,9 @@ if (isset($encoding) && $encoding != 'none')
 {
 	// Send compressed contents
 	header('Content-Encoding: '.$encoding);
-	header('Content-Length: '.strlen($contents));
 }
 header('Vary: Accept-Encoding');
+header('Content-Length: '.strlen($contents));
 
 header('Content-type: %%CONTENT%%; charset=utf-8');
 header('Cache-Control: max-age=315360000, public, must-revalidate');

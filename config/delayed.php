@@ -19,8 +19,8 @@ if (!strstr($_SERVER['HTTP_USER_AGENT'], 'Opera') &&
 		$encoding = 'none';
 }
 
-$iscompressed = (file_exists(__FILE__.'.'.$encoding) && $encoding != 'none');
-if($iscompressed == false)
+$iscompressed = file_exists(__FILE__.'.'.$encoding);
+if($encoding != 'none' && $iscompressed == false)
 {
 	$flag = ($encoding == 'gzip' ? FORCE_GZIP : FORCE_DEFLATE);
 	$code = file_get_contents(__FILE__.'.none');
@@ -30,7 +30,7 @@ if($iscompressed == false)
 	$contents = file_get_contents(__FILE__.'.'.$encoding);
 }
 
-if (isset($encoding) && $encoding != 'none') 
+if ($encoding != 'none') 
 {
 	// Send compressed contents
 	header('Content-Encoding: '.$encoding);
@@ -45,7 +45,7 @@ header('Expires: '.gmdate('D, d M Y H:i:s', time() + 315360000).' GMT'); //10 ye
 echo $contents;
 
 //Write it here
-if($iscompressed == false)
+if($encoding != 'none' && $iscompressed == false)
 {
 	//Write the content we sent
 	file_put_contents(__FILE__.'.'.$encoding,$contents);
