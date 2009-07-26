@@ -8,7 +8,7 @@ class autoptimizeHTML extends autoptimizeBase
 	public function read($options)
 	{
 		//Remove the HTML comments?
-		$this->keepcomments = $options['keepcomments'];
+		$this->keepcomments = (bool) $options['keepcomments'];
 		
 		//Nothing to read for HTML
 		return true;

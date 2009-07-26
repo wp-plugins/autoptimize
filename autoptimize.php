@@ -17,6 +17,8 @@ include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
 //Plugin constants
 define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_URL',WP_CONTENT_URL.'/cache/autoptimize/');
+define('AUTOPTIMIZE_CACHE_DELAY',true);
+
 
 //Load translations
 $plugin_dir = basename(dirname(__FILE__));

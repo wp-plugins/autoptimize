@@ -111,7 +111,7 @@ class Minify_HTML {
             ,$this->_html);
         
         // remove HTML comments (not containing IE conditional comments).
-		if  ($this->_keepComments === false) {
+		if  ($this->_keepComments == false) {
 			$this->_html = preg_replace_callback(
 				'/<!--([\\s\\S]*?)-->/'
 				,array($this, '_commentCB')
@@ -183,7 +183,7 @@ class Minify_HTML {
     protected $_placeholders = array();
     protected $_cssMinifier = null;
     protected $_jsMinifier = null;
-	protected $_keepComments = null;
+	protected $_keepComments = false;
 
     protected function _outsideTagCB($m)
     {
