@@ -39,8 +39,27 @@ class autoptimizeScripts extends autoptimizeBase
 					$path = $this->getpath($url);
 					if($path !==false && preg_match('#\.js$#',$path))
 					{
-						//Good script
-						$this->scripts[] = $path;
+						//Inline
+						if($this->ismergeable($tag))
+						{
+							//We can merge it
+							$this->scripts[] = $path;
+						}else{
+							//No merge, but maybe we can move it
+							if($this->ismovable($tag))
+							{
+								//Yeah, move it
+								if($this->movetolast($tag))
+								{
+									$this->move['last'][] = $tag;
+								}else{
+									$this->move['first'][] = $tag;
+								}
+							}else{
+								//We shouldn't touch this
+								$tag = '';
+							}
+						}
 					}else{
 						//External script (example: google analytics)
 						//OR Script is dynamic (.php etc)
