@@ -70,7 +70,6 @@ class autoptimizeCache
 			$prefix = $matches[2];
 			wp_cache_clean_cache($prefix);
 			unset($cacheconfig,$prefix);
-			echo 'WPSUPERCACHEEEE XD';
 		}
 		
 		return true;
