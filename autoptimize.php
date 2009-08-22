@@ -55,6 +55,11 @@ function autoptimize_start_buffering()
 		define('COMPRESS_CSS',false);
 	}
 	
+	if($conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css'))
+	{
+		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCDN.php');
+	}
+	
 	//Now, start the real thing!
 	ob_start('autoptimize_end_buffering');
 }
@@ -71,6 +76,8 @@ function autoptimize_end_buffering($content)
 		$classes[] = 'autoptimizeScripts';
 	if($conf->get('autoptimize_css'))
 		$classes[] = 'autoptimizeStyles';
+	if($conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css'))
+		$classes[] = 'autoptimizeCDN';
 	if($conf->get('autoptimize_html'))
 		$classes[] = 'autoptimizeHTML';
 		
@@ -82,6 +89,12 @@ function autoptimize_end_buffering($content)
 		),
 		'autoptimizeStyles' => array(
 			'justhead' => $conf->get('autoptimize_css_justhead')
+		),
+		'autoptimizeCDN' => array(
+			'js' => $conf->get('autoptimize_cdn_js'),
+			'jsurl' => $conf->get('autoptimize_cdn_js_url'),
+			'css' => $conf->get('autoptimize_cdn_css'),
+			'cssurl' => $conf->get('autoptimize_cdn_css_url')
 		),
 		'autoptimizeHTML' => array(
 			'keepcomments' => $conf->get('autoptimize_html_keepcomments')
@@ -107,7 +120,7 @@ function autoptimize_end_buffering($content)
 if(autoptimizeCache::cacheavail())
 {
 	$conf = autoptimizeConfig::instance();
-	if($conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css'))
+	if($conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css') || $conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css'))
 	{
 		//Hook to wordpress
 		add_action('template_redirect','autoptimize_start_buffering',2);

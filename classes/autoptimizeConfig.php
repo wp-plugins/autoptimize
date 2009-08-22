@@ -112,6 +112,30 @@ Buy me a coffee :-)
 </tr>
 </table>
 
+<h3><?php _e('CDN Options','autoptimize'); ?></h3>
+<table class="form-table"> 
+<tr valign="top">
+<th scope="row"><?php _e('Rewrite JavaScript URLs?','autoptimize'); ?></th>
+<td><label for="autoptimize_cdn_js"><input type="checkbox" name="autoptimize_cdn_js" <?php echo get_option('autoptimize_cdn_js')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. Do not enable this unless you know what you are doing.','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('JavaScript Base URL','autoptimize'); ?></th>
+<td><label for="autoptimize_cdn_js_url"><input type="text" name="autoptimize_cdn_js_url" value="<?php $it = get_option('autoptimize_cdn_css_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Rewrite CSS URLs?','autoptimize'); ?></th>
+<td><label for="autoptimize_cdn_css"><input type="checkbox" name="autoptimize_cdn_css" <?php echo get_option('autoptimize_cdn_css')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. Do not enable this unless you know what you are doing.','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('CSS Base URL','autoptimize'); ?></th>
+<td><label for="autoptimize_cdn_css_url"><input type="text" name="autoptimize_cdn_css_url" value="<?php $it = get_option('autoptimize_cdn_css_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
+</tr>
+</table>
+
 <h3><?php _e('Cache Info','autoptimize'); ?></h3>
 <table class="form-table"> 
 <tr valign="top">
@@ -154,6 +178,10 @@ Buy me a coffee :-)
 		register_setting('autoptimize','autoptimize_js_justhead');
 		register_setting('autoptimize','autoptimize_css');
 		register_setting('autoptimize','autoptimize_css_justhead');
+		register_setting('autoptimize','autoptimize_cdn_js');
+		register_setting('autoptimize','autoptimize_cdn_js_url');
+		register_setting('autoptimize','autoptimize_cdn_css');
+		register_setting('autoptimize','autoptimize_cdn_css_url');
 		register_setting('autoptimize','autoptimize_cache_clean');
 	}
 	
@@ -195,7 +223,11 @@ Buy me a coffee :-)
 				'autoptimize_js_trycatch' => 0,
 				'autoptimize_js_justhead' => 0,
 				'autoptimize_css' => 0,
-				'autoptimize_css_justhead' => 0
+				'autoptimize_css_justhead' => 0,
+				'autoptimize_cdn_js' => 0,
+				'autoptimize_cdn_js_url' => get_bloginfo('siteurl'),
+				'autoptimize_cdn_css' => 0,
+				'autoptimize_cdn_css_url' => get_bloginfo('siteurl'),
 				);
 			
 			//Override with user settings
