@@ -134,6 +134,16 @@ Buy me a coffee :-)
 <td><label for="autoptimize_cdn_css_url"><input type="text" name="autoptimize_cdn_css_url" value="<?php $it = get_option('autoptimize_cdn_css_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
 <?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('Rewrite Image URLs?','autoptimize'); ?></th>
+<td><label for="autoptimize_cdn_img"><input type="checkbox" name="autoptimize_cdn_img" <?php echo get_option('autoptimize_cdn_img')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. Do not enable this unless you know what you are doing.','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Image Base URL','autoptimize'); ?></th>
+<td><label for="autoptimize_cdn_img_url"><input type="text" name="autoptimize_cdn_img_url" value="<?php $it = get_option('autoptimize_cdn_img_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
+</tr>
 </table>
 
 <h3><?php _e('Cache Info','autoptimize'); ?></h3>
@@ -187,6 +197,8 @@ Buy me a coffee :-)
 		register_setting('autoptimize','autoptimize_cdn_js_url');
 		register_setting('autoptimize','autoptimize_cdn_css');
 		register_setting('autoptimize','autoptimize_cdn_css_url');
+		register_setting('autoptimize','autoptimize_cdn_img');
+		register_setting('autoptimize','autoptimize_cdn_img_url');
 		register_setting('autoptimize','autoptimize_cache_clean');
 		register_setting('autoptimize','autoptimize_cache_nogzip');
 	}
@@ -234,6 +246,8 @@ Buy me a coffee :-)
 				'autoptimize_cdn_js_url' => get_bloginfo('siteurl'),
 				'autoptimize_cdn_css' => 0,
 				'autoptimize_cdn_css_url' => get_bloginfo('siteurl'),
+				'autoptimize_cdn_img' => 0,
+				'autoptimize_cdn_img_url' => get_bloginfo('siteurl'),
 				'autoptimize_cache_nogzip' => 0,
 				);
 			

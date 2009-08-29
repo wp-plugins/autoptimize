@@ -97,7 +97,9 @@ function autoptimize_end_buffering($content)
 			'js' => $conf->get('autoptimize_cdn_js'),
 			'jsurl' => $conf->get('autoptimize_cdn_js_url'),
 			'css' => $conf->get('autoptimize_cdn_css'),
-			'cssurl' => $conf->get('autoptimize_cdn_css_url')
+			'cssurl' => $conf->get('autoptimize_cdn_css_url'),
+			'img' => $conf->get('autoptimize_cdn_img'),
+			'imgurl' => $conf->get('autoptimize_cdn_img_url')
 		),
 		'autoptimizeHTML' => array(
 			'keepcomments' => $conf->get('autoptimize_html_keepcomments')
