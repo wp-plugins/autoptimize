@@ -150,6 +150,11 @@ Buy me a coffee :-)
 <th scope="row"><?php _e('Cached styles and scripts','autoptimize'); ?></th>
 <td><?php echo autoptimizeCache::stats(); ?></td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('Do not compress cache files','autoptimize'); ?></th>
+<td><label for="autoptimize_cache_nogzip"><input type="checkbox" name="autoptimize_cache_nogzip" <?php echo get_option('autoptimize_cache_nogzip')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. Enable this if you want to compress the served files using your webserver.','autoptimize'); ?></label></td>
+</tr>
 </table>
 
 </table>
@@ -183,6 +188,7 @@ Buy me a coffee :-)
 		register_setting('autoptimize','autoptimize_cdn_css');
 		register_setting('autoptimize','autoptimize_cdn_css_url');
 		register_setting('autoptimize','autoptimize_cache_clean');
+		register_setting('autoptimize','autoptimize_cache_nogzip');
 	}
 	
 	public function setmeta($links,$file=null)
@@ -228,6 +234,7 @@ Buy me a coffee :-)
 				'autoptimize_cdn_js_url' => get_bloginfo('siteurl'),
 				'autoptimize_cdn_css' => 0,
 				'autoptimize_cdn_css_url' => get_bloginfo('siteurl'),
+				'autoptimize_cache_nogzip' => 0,
 				);
 			
 			//Override with user settings

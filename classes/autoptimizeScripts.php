@@ -154,7 +154,7 @@ class autoptimizeScripts extends autoptimizeBase
 	public function cache()
 	{
 		$md5 = md5($this->jscode);
-		$cache = new autoptimizeCache($md5);
+		$cache = new autoptimizeCache($md5,'js');
 		if(!$cache->check())
 		{
 			//Cache our code

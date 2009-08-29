@@ -30,6 +30,9 @@ function autoptimize_start_buffering()
 	//Config element
 	$conf = autoptimizeConfig::instance();
 	
+	//Do we gzip when caching?
+	define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'));
+	
 	//Load our base class
 	include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeBase.php');
 	

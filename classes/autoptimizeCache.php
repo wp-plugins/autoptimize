@@ -7,11 +7,15 @@ class autoptimizeCache
 	private $cachedir;
 	private $delayed;
 	
-	public function __construct($md5)
+	public function __construct($md5,$ext='php')
 	{
 		$this->cachedir = AUTOPTIMIZE_CACHE_DIR;
 		$this->delayed = AUTOPTIMIZE_CACHE_DELAY;
-		$this->filename = 'autoptimize_'.$md5.'.php';
+		$this->nogzip = AUTOPTIMIZE_CACHE_NOGZIP;
+		if($this->nogzip == false)
+			$this->filename = 'autoptimize_'.$md5.'.php';
+		else
+			$this->filename = 'autoptimize_'.$md5.'.'.$ext;
 	}
 	
 	public function check()
@@ -27,18 +31,23 @@ class autoptimizeCache
 	
 	public function cache($code,$mime)
 	{
-		$file = ($this->delayed ? 'delayed.php' : 'default.php');
-		$phpcode = file_get_contents(WP_PLUGIN_DIR.'/autoptimize/config/'.$file);
-		$phpcode = str_replace(array('%%CONTENT%%','exit;'),array($mime,''),$phpcode);
-		file_put_contents($this->cachedir.$this->filename,$phpcode);
-		file_put_contents($this->cachedir.$this->filename.'.none',$code);
-		if(!$this->delayed)
+		if($this->nogzip == false)
 		{
-			//Compress now!
-			file_put_contents($this->cachedir.$this->filename.'.deflate',gzencode($code,9,FORCE_DEFLATE));
-			file_put_contents($this->cachedir.$this->filename.'.gzip',gzencode($code,9,FORCE_GZIP));
+			$file = ($this->delayed ? 'delayed.php' : 'default.php');
+			$phpcode = file_get_contents(WP_PLUGIN_DIR.'/autoptimize/config/'.$file);
+			$phpcode = str_replace(array('%%CONTENT%%','exit;'),array($mime,''),$phpcode);
+			file_put_contents($this->cachedir.$this->filename,$phpcode);
+			file_put_contents($this->cachedir.$this->filename.'.none',$code);
+			if(!$this->delayed)
+			{
+				//Compress now!
+				file_put_contents($this->cachedir.$this->filename.'.deflate',gzencode($code,9,FORCE_DEFLATE));
+				file_put_contents($this->cachedir.$this->filename.'.gzip',gzencode($code,9,FORCE_GZIP));
+			}
+		}else{
+			//Write code to cache without doing anything else
+			file_put_contents($this->cachedir.$this->filename,$code);			
 		}
-		
 	}
 	
 	public function getname()

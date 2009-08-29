@@ -138,7 +138,7 @@ class autoptimizeStyles extends autoptimizeBase
 			{
 				foreach($matches[0] as $import)
 				{
-					$url = trim(preg_replace('#.+((?:https?|ftp)://.*\.css)(?:\s|"|\').+#','$1',$import)," \t\n\r\0\x0B\"'");
+					$url = trim(preg_replace('#^.*((?:https?|ftp)://.*\.css).*$#','$1',$import)," \t\n\r\0\x0B\"'");
 					$path = $this->getpath($url);
 					if(file_exists($path) && is_readable($path))
 					{
@@ -152,7 +152,7 @@ class autoptimizeStyles extends autoptimizeBase
 							//media in @import - how should I handle these?
 							//TODO: Infinite recursion!
 						}*/
-						$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us',$code.'$1',$thiscss);
+						$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
 					}else{
 						//getpath is not working?
 						//Encode so preg_match doesn't see it
@@ -160,6 +160,8 @@ class autoptimizeStyles extends autoptimizeBase
 						$fiximports = true;
 					}
 				}
+				$thiscss = preg_replace('#/\*FILESTART\*/#','',$thiscss);
+				$thiscss = preg_replace('#/\*FILESTART2\*/#','/*FILESTART*/',$thiscss);
 			}
 			
 			//Recover imports
@@ -190,7 +192,7 @@ class autoptimizeStyles extends autoptimizeBase
 		foreach($this->csscode as $media => $code)
 		{
 			$md5 = md5($code);
-			$cache = new autoptimizeCache($md5);
+			$cache = new autoptimizeCache($md5,'css');
 			if(!$cache->check())
 			{
 				//Cache our code
