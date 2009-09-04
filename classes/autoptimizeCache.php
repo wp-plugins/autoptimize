@@ -97,12 +97,17 @@ class autoptimizeCache
 		{
 			if(!in_array($file,array('.','..')) && strpos($file,'autoptimize') !== false)
 			{
-				if(is_file(AUTOPTIMIZE_CACHE_DIR.$file) && strpos($file,'none') !== false)
+				if(is_file(AUTOPTIMIZE_CACHE_DIR.$file))
 				{
-					++$count;
-				}/*else{
-					//Tricky one... it was a dir or a gzip/deflate file
-				}*/
+					if(AUTOPTIMIZE_CACHE_NOGZIP && (strpos($file,'.js') !== false || strpos($file,'.css') !== false))
+					{
+						++$count;
+					}elseif(!AUTOPTIMIZE_CACHE_NOGZIP && strpos($file,'.none') !== false){
+						++$count;
+					}/*else{
+						//Tricky one... it was a dir or a gzip/deflate file
+					}*/
+				}
 			}
 		}
 		
