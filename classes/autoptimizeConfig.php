@@ -121,7 +121,7 @@ Buy me a coffee :-)
 </tr>
 <tr valign="top">
 <th scope="row"><?php _e('JavaScript Base URL','autoptimize'); ?></th>
-<td><label for="autoptimize_cdn_js_url"><input type="text" name="autoptimize_cdn_js_url" value="<?php $it = get_option('autoptimize_cdn_css_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<td><label for="autoptimize_cdn_js_url"><input type="text" name="autoptimize_cdn_js_url" value="<?php $it = get_option('autoptimize_cdn_js_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
 <?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top">
