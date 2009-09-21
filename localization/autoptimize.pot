@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/autoptimize\n"
-"POT-Creation-Date: 2009-08-29 18:14+0000\n"
+"POT-Creation-Date: 2009-09-21 19:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,94 +77,102 @@ msgstr ""
 msgid "Look for styles on just &lt;head&gt;?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:115
+#: classes/autoptimizeConfig.php:114
+msgid "Generate data: URIs for images?"
+msgstr ""
+
+#: classes/autoptimizeConfig.php:116
+msgid "Disabled by default. Enable this to include images on the CSS itself."
+msgstr ""
+
+#: classes/autoptimizeConfig.php:120
 msgid "CDN Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:118
-msgid "Rewrite JavaScript URLs?"
-msgstr ""
-
-#: classes/autoptimizeConfig.php:120 classes/autoptimizeConfig.php:130
-#: classes/autoptimizeConfig.php:140
-msgid ""
-"Disabled by default. Do not enable this unless you know what you are doing."
-msgstr ""
-
 #: classes/autoptimizeConfig.php:123
-msgid "JavaScript Base URL"
+msgid "Rewrite JavaScript URLs?"
 msgstr ""
 
 #: classes/autoptimizeConfig.php:125 classes/autoptimizeConfig.php:135
 #: classes/autoptimizeConfig.php:145
 msgid ""
+"Disabled by default. Do not enable this unless you know what you are doing."
+msgstr ""
+
+#: classes/autoptimizeConfig.php:128
+msgid "JavaScript Base URL"
+msgstr ""
+
+#: classes/autoptimizeConfig.php:130 classes/autoptimizeConfig.php:140
+#: classes/autoptimizeConfig.php:150
+msgid ""
 "This is the new base URL that will be used when rewriting. It should point "
 "to the blog root directory."
 msgstr ""
 
-#: classes/autoptimizeConfig.php:128
+#: classes/autoptimizeConfig.php:133
 msgid "Rewrite CSS URLs?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:133
+#: classes/autoptimizeConfig.php:138
 msgid "CSS Base URL"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:138
+#: classes/autoptimizeConfig.php:143
 msgid "Rewrite Image URLs?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:143
+#: classes/autoptimizeConfig.php:148
 msgid "Image Base URL"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:149
+#: classes/autoptimizeConfig.php:154
 msgid "Cache Info"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:152
+#: classes/autoptimizeConfig.php:157
 msgid "Cache folder"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:156
+#: classes/autoptimizeConfig.php:161
 msgid "Can we write?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:157
+#: classes/autoptimizeConfig.php:162
 msgid "Yes"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:157
+#: classes/autoptimizeConfig.php:162
 msgid "No"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:160
+#: classes/autoptimizeConfig.php:165
 msgid "Cached styles and scripts"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:164
+#: classes/autoptimizeConfig.php:169
 msgid "Do not compress cache files"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:166
+#: classes/autoptimizeConfig.php:171
 msgid ""
 "Disabled by default. Enable this if you want to compress the served files "
 "using your webserver."
 msgstr ""
 
-#: classes/autoptimizeConfig.php:173
+#: classes/autoptimizeConfig.php:178
 msgid "Save Changes"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:174
+#: classes/autoptimizeConfig.php:179
 msgid "Save Changes and Empty Cache"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:184
+#: classes/autoptimizeConfig.php:189
 msgid "Autoptimize Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:218 classes/autoptimizeConfig.php:225
+#: classes/autoptimizeConfig.php:224 classes/autoptimizeConfig.php:231
 msgid "Settings"
 msgstr ""
 
