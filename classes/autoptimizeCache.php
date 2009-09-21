@@ -101,9 +101,9 @@ class autoptimizeCache
 				{
 					if(AUTOPTIMIZE_CACHE_NOGZIP && (strpos($file,'.js') !== false || strpos($file,'.css') !== false))
 					{
-						++$count;
+						$count++;
 					}elseif(!AUTOPTIMIZE_CACHE_NOGZIP && strpos($file,'.none') !== false){
-						++$count;
+						$count++;
 					}/*else{
 						//Tricky one... it was a dir or a gzip/deflate file
 					}*/

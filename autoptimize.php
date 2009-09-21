@@ -91,7 +91,8 @@ function autoptimize_end_buffering($content)
 			'trycatch' => $conf->get('autoptimize_js_trycatch')
 		),
 		'autoptimizeStyles' => array(
-			'justhead' => $conf->get('autoptimize_css_justhead')
+			'justhead' => $conf->get('autoptimize_css_justhead'),
+			'datauris' => $conf->get('autoptimize_css_datauris'),
 		),
 		'autoptimizeCDN' => array(
 			'js' => $conf->get('autoptimize_cdn_js'),

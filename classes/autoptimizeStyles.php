@@ -5,6 +5,8 @@ class autoptimizeStyles extends autoptimizeBase
 	private $csscode = array();
 	private $url = array();
 	private $restofcontent = '';
+	private $mhtml = '';
+	private $datauris = false;
 	
 	//Reads the page and collects style tags
 	public function read($options)
@@ -16,6 +18,9 @@ class autoptimizeStyles extends autoptimizeBase
 			$this->content = $content[0].'</head>';
 			$this->restofcontent = $content[1];
 		}
+		
+		//Store data: URIs setting for later use
+		$this->datauris = $options['datauris'];
 		
 		//Save IE hacks
 		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie',
@@ -175,8 +180,61 @@ class autoptimizeStyles extends autoptimizeBase
 		//$this->csscode has all the uncompressed code now. 
 		if(class_exists('Minify_CSS_Compressor'))
 		{
+			$mhtmlcount = 0;
 			foreach($this->csscode as &$code)
 			{
+				if(!function_exists('base64_encode') || $this->datauris == false)
+				{
+					//No Base64 support :( // User chose not to make data:uris
+					$code = trim(Minify_CSS_Compressor::process($code));
+					continue;
+				}
+				
+				$imgreplace = array();
+				//Do the imaging!
+				if(preg_match_all('#(background[^;}]*url\((.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches))
+				foreach($matches[2] as $count => $quotedurl)
+				{
+					$url = trim($quotedurl," \t\n\r\0\x0B\"'");
+					$path = $this->getpath($url);
+					if($path != false && preg_match('#\.(jpe?j|png|gif|bmp)$#',$path) && file_exists($path) && is_readable($path) && filesize($path) <= 5120)
+					{
+						//It's an image
+						//Get type
+						switch(end(explode('.',$path)))
+						{
+							case 'jpej':
+							case 'jpg':
+								$dataurihead = 'data:image/jpeg;base64,';
+								break;
+							case 'gif':
+								$dataurihead = 'data:image/gif;base64,';
+								break;
+							case 'png':
+								$dataurihead = 'data:image/png;base64,';
+								break;
+							case 'bmp':
+								$dataurihead = 'data:image/bmp;base64,';
+								break;
+							default:
+								$dataurihead = 'data:application/octet-stream;base64,';
+						}
+						
+						//Encode the data
+						$base64data = base64_encode(file_get_contents($path));
+						
+						//Add it to the list for replacement
+						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$dataurihead.$base64data,$matches[1][$count]).";\n*".str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
+						
+						//Store image on the mhtml document
+						$this->mhtml .= "--_\r\nContent-Location:{$mhtmlcount}\r\nContent-Transfer-Encoding:base64\r\n\r\n{$base64data}\r\n";
+						$mhtmlcount++;
+					}
+				}
+				//Replace the images
+				$code = str_replace(array_keys($imgreplace),array_values($imgreplace),$code);
+				
+				//Minify
 				$code = trim(Minify_CSS_Compressor::process($code));
 			}
 			unset($code);
@@ -189,8 +247,29 @@ class autoptimizeStyles extends autoptimizeBase
 	//Caches the CSS in uncompressed, deflated and gzipped form.
 	public function cache()
 	{
+		if($this->datauris)
+		{
+			//MHTML Preparation
+			$this->mhtml = "/*\r\nContent-Type: multipart/related; boundary=\"_\"\r\n\r\n".$this->mhtml."*/\r\n";
+			$md5 = md5($this->mhtml);
+			$cache = new autoptimizeCache($md5,'txt');
+			if(!$cache->check())
+			{
+				//Cache our images for IE
+				$cache->cache($this->mhtml,'text/plain');
+			}
+			$mhtml = AUTOPTIMIZE_CACHE_URL.$cache->getname();
+		}
+		
+		//CSS cache
 		foreach($this->csscode as $media => $code)
 		{
+			if($this->datauris)
+			{
+				//Images for ie! Get the right url
+				$code = str_replace('%%MHTML%%',$mhtml,$code);
+			}
+			
 			$md5 = md5($code);
 			$cache = new autoptimizeCache($md5,'css');
 			if(!$cache->check())
