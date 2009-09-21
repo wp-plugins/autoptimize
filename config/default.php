@@ -1,4 +1,11 @@
 <?php exit;
+
+//Check everything exists before using it
+if(!isset($_SERVER['HTTP_ACCEPT_ENCODING']))
+	$_SERVER['HTTP_ACCEPT_ENCODING'] = '';
+if(!isset($_SERVER['HTTP_USER_AGENT']))
+	$_SERVER['HTTP_USER_AGENT'] = '';
+	
 // Determine supported compression method
 $gzip = strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip');
 $deflate = strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate');
