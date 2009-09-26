@@ -132,3 +132,6 @@ if(autoptimizeCache::cacheavail())
 		add_action('template_redirect','autoptimize_start_buffering',2);
 	}
 }
+
+//Initialize the cache at least once
+autoptimizeConfig::instance();
