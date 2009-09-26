@@ -26,10 +26,14 @@ if (!strstr($_SERVER['HTTP_USER_AGENT'], 'Opera') &&
 		$encoding = 'none';
 }
 
+//Some servers compress the output of PHP - Don't break in those cases
+if(ini_get('output_handler') == 'ob_gzhandler' || ini_get('zlib.output_compression') == 1)
+	$encoding = 'none';
+
 //Get data
 $contents = file_get_contents(__FILE__.'.'.$encoding);
 
-if (isset($encoding) && $encoding != 'none') 
+if(isset($encoding) && $encoding != 'none') 
 {
 	// Send compressed contents
 	header('Content-Encoding: '.$encoding);

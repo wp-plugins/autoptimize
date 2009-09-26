@@ -26,6 +26,10 @@ if (!strstr($_SERVER['HTTP_USER_AGENT'], 'Opera') &&
 		$encoding = 'none';
 }
 
+//Some servers compress the output of PHP - Don't break in those cases
+if(ini_get('output_handler') == 'ob_gzhandler' || ini_get('zlib.output_compression') == 1)
+	$encoding = 'none';
+
 $iscompressed = file_exists(__FILE__.'.'.$encoding);
 if($encoding != 'none' && $iscompressed == false)
 {
