@@ -19,6 +19,11 @@ define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_URL',WP_CONTENT_URL.'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_DELAY',true);
 
+//Initialize the cache at least once
+$conf = autoptimizeConfig::instance();
+
+//Do we gzip when caching?
+define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'));
 
 //Load translations
 $plugin_dir = basename(dirname(__FILE__));
@@ -29,9 +34,6 @@ function autoptimize_start_buffering()
 {
 	//Config element
 	$conf = autoptimizeConfig::instance();
-	
-	//Do we gzip when caching?
-	define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'));
 	
 	//Load our base class
 	include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeBase.php');
@@ -133,5 +135,5 @@ if(autoptimizeCache::cacheavail())
 	}
 }
 
-//Initialize the cache at least once
-autoptimizeConfig::instance();
+//Do not pollute other plugins
+unset($conf);
