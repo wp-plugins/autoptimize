@@ -97,6 +97,11 @@ Buy me a coffee :-)
 <td><label for="autoptimize_js_trycatch"><input type="checkbox" name="autoptimize_js_trycatch" <?php echo get_option('autoptimize_js_trycatch')?'checked="checked" ':''; ?>/>
 <?php _e('Disabled by default. If your scripts break because of an script error, you might want to try this.','autoptimize'); ?></label></td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('Use YUI compression?','autoptimize'); ?></th>
+<td><label for="autoptimize_js_yui"><input type="checkbox" name="autoptimize_js_yui" <?php echo get_option('autoptimize_js_yui')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. Read [autoptimize]/yui/README.txt for more information.','autoptimize'); ?></label></td>
+</tr>
 </table>
 
 <h3><?php _e('CSS Options','autoptimize'); ?></h3>
@@ -114,6 +119,11 @@ Buy me a coffee :-)
 <th scope="row"><?php _e('Generate data: URIs for images?','autoptimize'); ?></th>
 <td><label for="autoptimize_css_datauris"><input type="checkbox" name="autoptimize_css_datauris" <?php echo get_option('autoptimize_css_datauris')?'checked="checked" ':''; ?>/>
 <?php _e('Disabled by default. Enable this to include images on the CSS itself.','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Use YUI compression?','autoptimize'); ?></th>
+<td><label for="autoptimize_css_yui"><input type="checkbox" name="autoptimize_css_yui" <?php echo get_option('autoptimize_css_yui')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. Read [autoptimize]/yui/README.txt for more information.','autoptimize'); ?></label></td>
 </tr>
 </table>
 
@@ -196,9 +206,11 @@ Buy me a coffee :-)
 		register_setting('autoptimize','autoptimize_js');
 		register_setting('autoptimize','autoptimize_js_trycatch');
 		register_setting('autoptimize','autoptimize_js_justhead');
+		register_setting('autoptimize','autoptimize_js_yui');
 		register_setting('autoptimize','autoptimize_css');
 		register_setting('autoptimize','autoptimize_css_justhead');
 		register_setting('autoptimize','autoptimize_css_datauris');
+		register_setting('autoptimize','autoptimize_css_yui');
 		register_setting('autoptimize','autoptimize_cdn_js');
 		register_setting('autoptimize','autoptimize_cdn_js_url');
 		register_setting('autoptimize','autoptimize_cdn_css');
@@ -246,9 +258,11 @@ Buy me a coffee :-)
 				'autoptimize_js' => 0,
 				'autoptimize_js_trycatch' => 0,
 				'autoptimize_js_justhead' => 0,
+				'autoptimize_js_yui' => 0,
 				'autoptimize_css' => 0,
 				'autoptimize_css_justhead' => 0,
 				'autoptimize_css_datauris' => 0,
+				'autoptimize_css_yui' => 0,
 				'autoptimize_cdn_js' => 0,
 				'autoptimize_cdn_js_url' => get_bloginfo('siteurl'),
 				'autoptimize_cdn_css' => 0,

@@ -60,6 +60,11 @@ function autoptimize_start_buffering()
 		define('COMPRESS_CSS',false);
 	}
 	
+	if($conf->get('autoptimize_js_yui') || $conf->get('autoptimize_css_yui'))
+	{
+		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeYUI.php');
+	}
+	
 	if($conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css'))
 	{
 		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCDN.php');
@@ -90,11 +95,13 @@ function autoptimize_end_buffering($content)
 	$classoptions = array(
 		'autoptimizeScripts' => array(
 			'justhead' => $conf->get('autoptimize_js_justhead'),
-			'trycatch' => $conf->get('autoptimize_js_trycatch')
+			'trycatch' => $conf->get('autoptimize_js_trycatch'),
+			'yui' => $conf->get('autoptimize_js_yui'),
 		),
 		'autoptimizeStyles' => array(
 			'justhead' => $conf->get('autoptimize_css_justhead'),
 			'datauris' => $conf->get('autoptimize_css_datauris'),
+			'yui' => $conf->get('autoptimize_css_yui'),
 		),
 		'autoptimizeCDN' => array(
 			'js' => $conf->get('autoptimize_cdn_js'),

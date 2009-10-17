@@ -7,6 +7,7 @@ class autoptimizeScripts extends autoptimizeBase
 	private $domove = array('gaJsHost','load_cmc','jd.gallery.transitions.js','swfobject.embedSWF(');
 	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js','networkedblogs.com/getnetworkwidget','infolinks.com/js/','jd.gallery.js.php','jd.gallery.transitions.js','swfobject.embedSWF(');
 	private $trycatch = false;
+	private $yui = false;
 	private $jscode = '';
 	private $url = '';
 	private $move = array('first' => array(), 'last' => array());
@@ -26,6 +27,9 @@ class autoptimizeScripts extends autoptimizeBase
 		//Should we add try-catch?
 		if($options['trycatch'] == true)
 			$this->trycatch = true;
+		
+		//Do we use yui?
+		$this->yui = $options['yui'];
 		
 		//Get script files
 		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches))
@@ -141,13 +145,16 @@ class autoptimizeScripts extends autoptimizeBase
 		}
 		
 		//$this->jscode has all the uncompressed code now. 
-		if(class_exists('JSMin'))
+		if($this->yui == false && class_exists('JSMin'))
 		{
 			$this->jscode = trim(JSMin::minify($this->jscode));
 			return true;
+		}elseif($this->yui == true && autoptimizeYUI::available()){
+			$this->jscode = autoptimizeYUI::compress('js',$this->jscode);
+			return true;
+		}else{
+			return false;
 		}
-		
-		return false;
 	}
 	
 	//Caches the JS in uncompressed, deflated and gzipped form.

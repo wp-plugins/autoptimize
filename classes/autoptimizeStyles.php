@@ -7,6 +7,7 @@ class autoptimizeStyles extends autoptimizeBase
 	private $restofcontent = '';
 	private $mhtml = '';
 	private $datauris = false;
+	private $yui = false;
 	
 	//Reads the page and collects style tags
 	public function read($options)
@@ -21,6 +22,9 @@ class autoptimizeStyles extends autoptimizeBase
 		
 		//Store data: URIs setting for later use
 		$this->datauris = $options['datauris'];
+		
+		//Do we use yui?
+		$this->yui = $options['yui'];
 		
 		//Save IE hacks
 		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie',
@@ -178,21 +182,13 @@ class autoptimizeStyles extends autoptimizeBase
 		unset($thiscss);
 		
 		//$this->csscode has all the uncompressed code now. 
-		if(class_exists('Minify_CSS_Compressor'))
+		$mhtmlcount = 0;
+		foreach($this->csscode as &$code)
 		{
-			$mhtmlcount = 0;
-			foreach($this->csscode as &$code)
+			$imgreplace = array();
+			//Do the imaging!
+			if($this->datauris == true && function_exists('base64_encode') && preg_match_all('#(background[^;}]*url\((.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches))
 			{
-				if(!function_exists('base64_encode') || $this->datauris == false)
-				{
-					//No Base64 support :( // User chose not to make data:uris
-					$code = trim(Minify_CSS_Compressor::process($code));
-					continue;
-				}
-				
-				$imgreplace = array();
-				//Do the imaging!
-				if(preg_match_all('#(background[^;}]*url\((.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches))
 				foreach($matches[2] as $count => $quotedurl)
 				{
 					$url = trim($quotedurl," \t\n\r\0\x0B\"'");
@@ -233,15 +229,18 @@ class autoptimizeStyles extends autoptimizeBase
 				}
 				//Replace the images
 				$code = str_replace(array_keys($imgreplace),array_values($imgreplace),$code);
-				
-				//Minify
-				$code = trim(Minify_CSS_Compressor::process($code));
 			}
-			unset($code);
-			return true;
+			
+			//Minify
+			if($this->yui == false && class_exists('Minify_CSS_Compressor'))
+			{
+				$code = trim(Minify_CSS_Compressor::process($code));
+			}elseif($this->yui == true && autoptimizeYUI::available()){
+				$code = autoptimizeYUI::compress('css',$code);
+			}
 		}
-		
-		return false;
+		unset($code);
+		return true;
 	}
 	
 	//Caches the CSS in uncompressed, deflated and gzipped form.
