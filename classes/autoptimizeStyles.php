@@ -8,6 +8,7 @@ class autoptimizeStyles extends autoptimizeBase
 	private $mhtml = '';
 	private $datauris = false;
 	private $yui = false;
+	private $hashmap = array();
 	
 	//Reads the page and collects style tags
 	public function read($options)
@@ -185,6 +186,17 @@ class autoptimizeStyles extends autoptimizeBase
 		$mhtmlcount = 0;
 		foreach($this->csscode as &$code)
 		{
+			//Check for already-minified code
+			$hash = md5($code);
+			$ccheck = new autoptimizeCache($hash,'css');
+			if($ccheck->check())
+			{
+				$code = $ccheck->retrieve();
+				$this->hashmap[md5($code)] = $hash;
+				continue;
+			}
+			unset($ccheck);
+			
 			$imgreplace = array();
 			//Do the imaging!
 			if($this->datauris == true && function_exists('base64_encode') && preg_match_all('#(background[^;}]*url\((.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches))
@@ -238,6 +250,8 @@ class autoptimizeStyles extends autoptimizeBase
 			}elseif($this->yui == true && autoptimizeYUI::available()){
 				$code = autoptimizeYUI::compress('css',$code);
 			}
+			
+			$this->hashmap[md5($code)] = $hash;
 		}
 		unset($code);
 		return true;
@@ -269,7 +283,7 @@ class autoptimizeStyles extends autoptimizeBase
 				$code = str_replace('%%MHTML%%',$mhtml,$code);
 			}
 			
-			$md5 = md5($code);
+			$md5 = $this->hashmap[md5($code)];
 			$cache = new autoptimizeCache($md5,'css');
 			if(!$cache->check())
 			{

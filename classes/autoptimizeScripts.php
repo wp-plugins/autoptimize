@@ -12,6 +12,7 @@ class autoptimizeScripts extends autoptimizeBase
 	private $url = '';
 	private $move = array('first' => array(), 'last' => array());
 	private $restofcontent = '';
+	private $md5hash = '';
 	
 	//Reads the page and collects script tags
 	public function read($options)
@@ -144,6 +145,16 @@ class autoptimizeScripts extends autoptimizeBase
 			}
 		}
 		
+		//Check for already-minified code
+		$this->md5hash = md5($this->jscode);
+		$ccheck = new autoptimizeCache($this->md5hash,'js');
+		if($ccheck->check())
+		{
+			$this->jscode = $ccheck->retrieve();
+			return true;
+		}
+		unset($ccheck);
+		
 		//$this->jscode has all the uncompressed code now. 
 		if($this->yui == false && class_exists('JSMin'))
 		{
@@ -160,8 +171,7 @@ class autoptimizeScripts extends autoptimizeBase
 	//Caches the JS in uncompressed, deflated and gzipped form.
 	public function cache()
 	{
-		$md5 = md5($this->jscode);
-		$cache = new autoptimizeCache($md5,'js');
+		$cache = new autoptimizeCache($this->md5hash,'js');
 		if(!$cache->check())
 		{
 			//Cache our code

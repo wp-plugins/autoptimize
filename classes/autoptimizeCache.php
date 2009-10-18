@@ -29,6 +29,18 @@ class autoptimizeCache
 		return true;
 	}
 	
+	public function retrieve()
+	{
+		if($this->check())
+		{
+			if($this->nogzip == false)
+				return file_get_contents($this->cachedir.$this->filename.'.none');
+			else
+				return file_get_contents($this->cachedir.$this->filename);
+		}
+		return false;
+	}
+	
 	public function cache($code,$mime)
 	{
 		if($this->nogzip == false)
