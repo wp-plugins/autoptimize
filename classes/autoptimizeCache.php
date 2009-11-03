@@ -84,13 +84,16 @@ class autoptimizeCache
 		}
 		
 		//Do we need to clean WP Super Cache's cache files?
-		if(function_exists('wp_cache_clean_cache') && file_exists(WP_CONTENT_DIR.'/wp-cache-config.php'))
+		if(function_exists('wp_cache_clear_cache'))
 		{
-			$cacheconfig = file_get_contents(WP_CONTENT_DIR.'/wp-cache-config.php');
-			preg_match('#^\$file_prefix\s*=\s*(\'|")(.*)\\1;$#Um',$cacheconfig,$matches);
-			$prefix = $matches[2];
-			wp_cache_clean_cache($prefix);
-			unset($cacheconfig,$prefix);
+			//Newer WP-Super-Cache
+			//See http://ocaoimh.ie/wp-super-cache-developers/
+			wp_cache_clear_cache();
+		}elseif(file_exists(WP_CONTENT_DIR.'/wp-cache-config.php') && function_exists('prune_super_cache')){
+			//Old WP-Super-Cache
+			global $cache_path;
+			prune_super_cache($cache_path.'supercache/',true);
+			prune_super_cache($cache_path,true);
 		}
 		
 		return true;
