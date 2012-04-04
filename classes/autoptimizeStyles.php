@@ -36,31 +36,30 @@ class autoptimizeStyles extends autoptimizeBase
 		{
 			foreach($matches[0] as $tag)
 			{
+				//Get the media
+				if(strpos($tag,'media=')!==false)
+				{
+					preg_match('#media=(?:"|\')([^>]*)(?:"|\')#Ui',$tag,$medias);
+					$medias = explode(',',$medias[1]);
+					$media = array();
+					foreach($medias as $elem)
+					{
+						$media[] = current(explode(' ',trim($elem),2));
+					}
+				}else{
+					//No media specified - applies to all
+					$media = array('all');
+				}
+			
 				if(preg_match('#<link.*href=("|\')(.*)("|\')#Usmi',$tag,$source))
 				{
 					//<link>
 					$url = current(explode('?',$source[2],2));
 					$path = $this->getpath($url);
-					$media = array('all');
 					
 					if($path !==false && preg_match('#\.css$#',$path))
 					{
 						//Good link
-						//Get the media
-						if(strpos($tag,'media=')!==false)
-						{
-							$medias = preg_replace('#^.*media=(?:"|\')(.*)(?:"|\').*$#U','$1',$tag);
-							$medias = explode(',',$medias);
-							$media = array();
-							foreach($medias as $elem)
-							{
-								$media[] = current(explode(' ',trim($elem),2));
-							}
-						}else{
-							//No media specified - applies to all
-							$media = array('all');
-						}
-
 						$this->css[] = array($media,$path);
 					}else{
 						//Link is dynamic (.php etc)
@@ -70,7 +69,7 @@ class autoptimizeStyles extends autoptimizeBase
 					//<style>
 					preg_match('#<style.*>(.*)</style>#Usmi',$tag,$code);
 					$code = preg_replace('#^.*<!\[CDATA\[(?:\s*\*/)?(.*)(?://|/\*)\s*?\]\]>.*$#sm','$1',$code[1]);
-					$this->css[] = array('all','INLINE;'.$code);
+					$this->css[] = array($media,'INLINE;'.$code);
 				}
 				
 				//Remove the original style tag
@@ -95,23 +94,22 @@ class autoptimizeStyles extends autoptimizeBase
 				//<style>
 				$css = preg_replace('#^INLINE;#','',$css);
 				$css = $this->fixurls(ABSPATH.'/index.php',$css);
-				if(!isset($this->csscode['all']))
-					$this->csscode['all'] = '';
-				$this->csscode['all'] .= "\n/*FILESTART*/".$css;
 			}else{
 				//<link>
 				if($css !== false && file_exists($css) && is_readable($css))
 				{
 					$css = $this->fixurls($css,file_get_contents($css));
-					foreach($media as $elem)
-					{
-						if(!isset($this->csscode[$elem]))
-							$this->csscode[$elem] = '';
-						$this->csscode[$elem] .= "\n/*FILESTART*/".$css;
-					}
-				}/*else{
+				}else{
 					//Couldn't read CSS. Maybe getpath isn't working?
-				}*/
+					$css = '';
+				}
+			}
+			
+			foreach($media as $elem)
+			{
+				if(!isset($this->csscode[$elem]))
+					$this->csscode[$elem] = '';
+				$this->csscode[$elem] .= "\n/*FILESTART*/".$css;
 			}
 		}
 		
