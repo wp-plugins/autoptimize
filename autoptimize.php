@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Autoptimize
-Plugin URI: http://www.turleando.com.ar/autoptimize/
+Plugin URI: http://blog.futtta.be/category/autoptimize/
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.4
-Author: Emilio López
-Author URI: http://www.turleando.com.ar/
+Version: 1.4.1
+Author: Frank Goossens (futtta)
+Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
 http://www.gnu.org/licenses/gpl.txt
 */
@@ -32,6 +32,9 @@ load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localiz
 //Set up the buffering
 function autoptimize_start_buffering()
 {
+	// fgo: not for logged in users, to prevent new admin bar issue in wp3.5
+	if (!is_user_logged_in()) {
+
 	//Config element
 	$conf = autoptimizeConfig::instance();
 	
@@ -72,6 +75,8 @@ function autoptimize_start_buffering()
 	
 	//Now, start the real thing!
 	ob_start('autoptimize_end_buffering');
+
+	}
 }
 
 //Action on end - 
@@ -135,7 +140,7 @@ function autoptimize_end_buffering($content)
 if(autoptimizeCache::cacheavail())
 {
 	$conf = autoptimizeConfig::instance();
-	if($conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css') || $conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css'))
+	if( $conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css') || $conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css'))
 	{
 		//Hook to wordpress
 		add_action('template_redirect','autoptimize_start_buffering',2);
