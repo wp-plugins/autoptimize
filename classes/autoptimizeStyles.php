@@ -313,14 +313,14 @@ class autoptimizeStyles extends autoptimizeBase
 		if(!empty($this->restofcontent))
 		{
 			$this->content .= $this->restofcontent;
-			$this-> nt = '';
+			$this->restofcontent = '';
 		}
 		
 		//Add the new stylesheets
 		foreach($this->url as $media => $url)
 		{
-			// fgo: these were added before </head> but that overrides iehack-stylesheets, so adding after </title> for now
-			$this->content = str_replace('</title>','</title><link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" />',$this->content);
+			// fgo: these were added before </head> but that overrides iehack-stylesheets, so adding before <title>
+			$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
 		}
 
 		//Return the modified stylesheet
