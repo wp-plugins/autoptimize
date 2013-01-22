@@ -1,10 +1,9 @@
 === Autoptimize ===
-Contributors: turl
-Donate link: http://www.turleando.com.ar/autoptimize/
-Tags: css, html, javascript, js, optimize, speed, cache
+Contributors: turl, futtta
+Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize
 Requires at least: 2.7
-Tested up to: 3.3.1
-Stable tag: 1.4
+Tested up to: 3.5
+Stable tag: 1.5.1
 
 Autoptimize is a Wordpress plugin that speeds up your website, and helps you save bandwidth. 
 
@@ -14,8 +13,6 @@ Autoptimize makes optimizing your site really easy. It concatenates all scripts 
 
 I also recommend using WP Super Cache in conjuction with Autoptimize to speed up your blog.
 
-You can [report bugs](https://bugs.launchpad.net/autoptimize), [ask questions](https://answers.launchpad.net/autoptimize) and [help with translations](https://translations.launchpad.net/autoptimize) in our [Launchpad page](https://launchpad.net/autoptimize).
-
 == Installation ==
 
 1. Upload the `autoptimize` folder to  to the `/wp-content/plugins/` directory
@@ -24,19 +21,27 @@ You can [report bugs](https://bugs.launchpad.net/autoptimize), [ask questions](h
 
 == Frequently Asked Questions ==
 
+= Autoptimize doesn't work when I'm logged on? =
+
+Correct; given the recurring problems with the WordPress admin bar, Autoptimize only works for anonymous users starting from version 1.5.
+
 = What does the plugin do to help speed up my site? =
 
 It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
 
 = Where can I report an error? =
 
-You can fill in a bug in our [bug tracker](https://bugs.launchpad.net/autoptimize), or contact the author through Twitter (@turl) or email (turl at tuxfamily dot org).
+You can report problems on the [wordpress.org support forum](http://wordpress.org/support/plugin/autoptimize), or [contact the author using this contact form](http://blog.futtta.be/contact/).
 
-= Can I help translating the plugin? =
-
-Sure, you can help with translations in the [Launchpad translation page](https://translations.launchpad.net/autoptimize)
 
 == Changelog ==
+
+= 1.5.1 =
+* bugfix: add CSS before opening title-tag instead of after closing title, to avoid CSS being loaded in wrong order, as reported by [fotofashion](http://fotoandfashion.de/) and [blogitsolutions](www.blog-it-solutions.de) (thanks guys)
+
+= 1.5 =
+* first bugfix release by [futtta](http://blog.futtta.be/2013/01/07/adopting-an-oss-orphan-autoptimize/), thanks for a great plugin Turl!
+* misc bug fixes, a.o. support for Twenty Twelve theme, admin bar problem in WP3.5, data-uri breaking CSS file naming
 
 = 1.4 =
 * Add support for inline style tags with CSS media

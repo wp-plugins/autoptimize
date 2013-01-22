@@ -28,8 +28,7 @@ class autoptimizeStyles extends autoptimizeBase
 		$this->yui = $options['yui'];
 		
 		//Save IE hacks
-		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie',
-			'\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
+		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
 		
 		//Get <style> and <link>
 		if(preg_match_all('#(<style[^>]*>.*</style>)|(<link[^>]*text/css[^>]*>)#Usmi',$this->content,$matches))
@@ -202,14 +201,22 @@ class autoptimizeStyles extends autoptimizeBase
 				foreach($matches[2] as $count => $quotedurl)
 				{
 					$url = trim($quotedurl," \t\n\r\0\x0B\"'");
+					// fgo: if querystring, remove it from url
+					if (strpos($url,'?') !== false) { $url = reset(explode('?',$url)); }
 					$path = $this->getpath($url);
-					if($path != false && preg_match('#\.(jpe?j|png|gif|bmp)$#',$path) && file_exists($path) && is_readable($path) && filesize($path) <= 5120)
+
+					// fgo: jpe?j should be jpe?g I guess + 5KB seems like a lot, lower to 2.5KB
+					if($path != false && preg_match('#\.(jpe?g|png|gif|bmp)$#',$path) && file_exists($path) && is_readable($path) && filesize($path) <= 2560)
 					{
 						//It's an image
 						//Get type
-						switch(end(explode('.',$path)))
+						$type=end(explode('.',$path));
+						switch($type)
 						{
-							case 'jpej':
+							// fgo: jpeg and jpg
+							case 'jpeg':
+								$dataurihead = 'data:image/jpeg;base64,';
+								break;
 							case 'jpg':
 								$dataurihead = 'data:image/jpeg;base64,';
 								break;
@@ -275,13 +282,16 @@ class autoptimizeStyles extends autoptimizeBase
 		//CSS cache
 		foreach($this->csscode as $media => $code)
 		{
+			// fgo, moved from below to prevent empty md5 resulting in filenames without hash autoptimize_.php
+			$md5 = $this->hashmap[md5($code)];
+
 			if($this->datauris)
 			{
 				//Images for ie! Get the right url
 				$code = str_replace('%%MHTML%%',$mhtml,$code);
 			}
 			
-			$md5 = $this->hashmap[md5($code)];
+			// $md5 = $this->hashmap[md5($code)];
 			$cache = new autoptimizeCache($md5,'css');
 			if(!$cache->check())
 			{
@@ -296,8 +306,9 @@ class autoptimizeStyles extends autoptimizeBase
 	public function getcontent()
 	{
 		//Restore IE hacks
-		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','base64_decode("$1")',$this->content);
-		
+		// fgo: added stripslashes as e modifier escapes stuff
+		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);
+
 		//Restore the full content
 		if(!empty($this->restofcontent))
 		{
@@ -308,9 +319,10 @@ class autoptimizeStyles extends autoptimizeBase
 		//Add the new stylesheets
 		foreach($this->url as $media => $url)
 		{
-			$this->content = str_replace('</head>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /></head>',$this->content);
+			// fgo: these were added before </head> but that overrides iehack-stylesheets, so adding before <title>
+			$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
 		}
-		
+
 		//Return the modified stylesheet
 		return $this->content;
 	}
