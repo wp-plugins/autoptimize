@@ -37,7 +37,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 == Changelog ==
 
 = 1.5.1 =
-* bugfix: add CSS before opening title-tag instead of after closing title, to avoid CSS being loaded in wrong order, as reported by [fotofashion](http://fotoandfashion.de/) and [blogitsolutions](www.blog-it-solutions.de) (thanks guys)
+* bugfix: add CSS before opening title-tag instead of after closing title, to avoid CSS being loaded in wrong order, as reported by [fotofashion](http://fotoandfashion.de/) and [Josef from blog it solutions](http://www.blog-it-solutions.de/) (thanks guys)
 
 = 1.5 =
 * first bugfix release by [futtta](http://blog.futtta.be/2013/01/07/adopting-an-oss-orphan-autoptimize/), thanks for a great plugin Turl!
