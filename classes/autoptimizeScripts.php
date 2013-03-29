@@ -3,8 +3,7 @@
 class autoptimizeScripts extends autoptimizeBase
 {
 	private $scripts = array();
-	// fgo: add html5.js to avoid aggregating html5 support for older IE browsers
-	private $dontmove = array('document.write','html5.js','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','var s_sid = ','histats.com/js','smowtion_size','ads.smowtion.com/ad.js','sc_project','statcounter.com/counter/counter.js','widgets.amung.us','WAU_','wau_add','ws.amazon.com/widgets','media.fastclick.net','/ads/','comment-form-quicktags/quicktags.php','edToolbar','intensedebate.com','ch_client','scripts.chitika.net/','_gaq.push','jotform.com/');
+	private $dontmove = array('document.write','html5.js','show_ads.js','google_ad','_gaq.push','/ads/');
 	private $domove = array('gaJsHost','load_cmc','jd.gallery.transitions.js','swfobject.embedSWF(','tiny_mce.js','tinyMCEPreInit.go');
 	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js','networkedblogs.com/getnetworkwidget','infolinks.com/js/','jd.gallery.js.php','jd.gallery.transitions.js','swfobject.embedSWF(','linkwithin.com/widget.js','tiny_mce.js','tinyMCEPreInit.go');
 	private $trycatch = false;
@@ -24,6 +23,12 @@ class autoptimizeScripts extends autoptimizeBase
 			$content = explode('</head>',$this->content,2);
 			$this->content = $content[0].'</head>';
 			$this->restofcontent = $content[1];
+		}
+
+		$excludeJS = $options['exclude'];
+		if ($excludeJS!=="") {
+			$exclJSArr = array_map('trim',explode(",",$excludeJS));
+			$this->dontmove = array_merge($exclJSArr,$this->dontmove);
 		}
 		
 		//Should we add try-catch?

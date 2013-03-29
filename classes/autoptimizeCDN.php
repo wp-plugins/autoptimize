@@ -18,7 +18,7 @@ class autoptimizeCDN extends autoptimizeBase
 		$this->cssurl = $options['cssurl'];
 		$this->img = (bool) $options['img'];
 		$this->imgurl = $options['imgurl'];
-		$siteurl = get_bloginfo('siteurl');
+		$siteurl = site_url();
 		
 		if($this->js)
 		{

@@ -35,6 +35,7 @@ class autoptimizeStyles extends autoptimizeBase
 		{
 			foreach($matches[0] as $tag)
 			{
+				if (strpos($tag,"admin-bar.min.css")===false) {
 				//Get the media
 				if(strpos($tag,'media=')!==false)
 				{
@@ -73,6 +74,7 @@ class autoptimizeStyles extends autoptimizeBase
 				
 				//Remove the original style tag
 				$this->content = str_replace($tag,'',$this->content);
+				}
 			}
 			
 			return true;
@@ -329,7 +331,8 @@ class autoptimizeStyles extends autoptimizeBase
 	
 	private function fixurls($file,$code)
 	{
-		$file = str_replace(ABSPATH,'/',$file); //Sth like /wp-content/file.css
+		// $file = str_replace(ABSPATH,'/',$file); //Sth like /wp-content/file.css
+		$file = str_replace(WP_CONTENT_DIR,'/',$file);
 		$dir = dirname($file); //Like /wp-content
 		
 		if(preg_match_all('#url\((.*)\)#Usi',$code,$matches))
@@ -345,7 +348,8 @@ class autoptimizeStyles extends autoptimizeBase
 					continue;
 				}else{
 					//relative URL. Let's fix it!
-					$newurl = get_settings('home').str_replace('//','/',$dir.'/'.$url); //http://yourblog.com/wp-content/../image.png
+					// $newurl = get_settings('home').str_replace('//','/',$dir.'/'.$url); //http://yourblog.com/wp-content/../image.png
+					$newurl = WP_CONTENT_URL.str_replace('//','/',$dir.'/'.$url);
 					$hash = md5($url);
 					$code = str_replace($matches[0][$k],$hash,$code);
 					$replace[$hash] = 'url('.$newurl.')';

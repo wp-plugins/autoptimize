@@ -8,7 +8,7 @@ class autoptimizeConfig
 	//Singleton: private construct
 	private function __construct()
 	{
-		if(is_admin())
+		if( is_admin() )
 		{
 			//Add the admin page and settings
 			add_action('admin_menu',array($this,'addmenu'));
@@ -19,11 +19,12 @@ class autoptimizeConfig
 			{
 				//2.8+
 				add_filter('plugin_row_meta',array($this,'setmeta'),10,2);
-			}elseif(function_exists('post_class')){
+			} elseif(function_exists('post_class')) {
 				//2.7
 				$plugin = plugin_basename(WP_PLUGIN_DIR.'/autoptimize/autoptimize.php');
 				add_filter('plugin_action_links_'.$plugin,array($this,'setmeta'));
 			}
+
 			//Clean cache?
 			if(get_option('autoptimize_cache_clean'))
 			{
@@ -74,6 +75,11 @@ class autoptimizeConfig
 <td><input type="checkbox" name="autoptimize_js" <?php echo get_option('autoptimize_js')?'checked="checked" ':''; ?>/></td>
 </tr>
 <tr valign="top">
+<th scope="row"><?php _e('Exclude scripts from autoptimize:','autoptimize'); ?></th>
+<td><label for="autoptimize_js_exclude"><input type="text" style="width:100%;" name="autoptimize_js_exclude" value="<?php echo get_option('autoptimize_js_exclude',"s_sid,smowtion_size,sc_project,WAU_,wau_add,comment-form-quicktags,edToolbar,ch_client"); ?>"/><br />
+<?php _e('A comma-seperated list of scripts you want to exclude from being Autoptimized, for example \'whatever.js, another.js\' (without the quotes) to exclude those scripts from being aggregated and minimized by Autoptimize.','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top">
 <th scope="row"><?php _e('Look for scripts only in &lt;head&gt;?','autoptimize'); ?></th>
 <td><label for="autoptimize_js_justhead"><input type="checkbox" name="autoptimize_js_justhead" <?php echo get_option('autoptimize_js_justhead')?'checked="checked" ':''; ?>/>
 <?php _e('Disabled by default. If the cache gets big, you might want to enable this.','autoptimize'); ?></label></td>
@@ -122,7 +128,7 @@ class autoptimizeConfig
 </tr>
 <tr valign="top">
 <th scope="row"><?php _e('JavaScript Base URL','autoptimize'); ?></th>
-<td><label for="autoptimize_cdn_js_url"><input type="text" name="autoptimize_cdn_js_url" value="<?php $it = get_option('autoptimize_cdn_js_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<td><label for="autoptimize_cdn_js_url"><input type="text" name="autoptimize_cdn_js_url" value="<?php $it = get_option('autoptimize_cdn_js_url');echo htmlentities($it?$it:site_url()); ?>" />
 <?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top">
@@ -132,7 +138,7 @@ class autoptimizeConfig
 </tr>
 <tr valign="top">
 <th scope="row"><?php _e('CSS Base URL','autoptimize'); ?></th>
-<td><label for="autoptimize_cdn_css_url"><input type="text" name="autoptimize_cdn_css_url" value="<?php $it = get_option('autoptimize_cdn_css_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<td><label for="autoptimize_cdn_css_url"><input type="text" name="autoptimize_cdn_css_url" value="<?php $it = get_option('autoptimize_cdn_css_url');echo htmlentities($it?$it:site_url()); ?>" />
 <?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top">
@@ -142,7 +148,7 @@ class autoptimizeConfig
 </tr>
 <tr valign="top">
 <th scope="row"><?php _e('Image Base URL','autoptimize'); ?></th>
-<td><label for="autoptimize_cdn_img_url"><input type="text" name="autoptimize_cdn_img_url" value="<?php $it = get_option('autoptimize_cdn_img_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<td><label for="autoptimize_cdn_img_url"><input type="text" name="autoptimize_cdn_img_url" value="<?php $it = get_option('autoptimize_cdn_img_url');echo htmlentities($it?$it:site_url()); ?>" />
 <?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
 </tr>
 </table>
@@ -225,14 +231,14 @@ class autoptimizeConfig
 	
 	public function addmenu()
 	{
-		$hook=add_options_page(__('Autoptimize Options','autoptimize'),'Autoptimize',8,'autoptimize',array($this,'show'));
+		$hook=add_options_page(__('Autoptimize Options','autoptimize'),'Autoptimize','manage_options','autoptimize',array($this,'show'));
         	add_action( 'admin_print_scripts-'.$hook,array($this,'autoptimize_admin_scripts'));
         	add_action( 'admin_print_styles-'.$hook,array($this,'autoptimize_admin_styles'));
 	}
 
 	public function autoptimize_admin_scripts() {
-		wp_enqueue_script('jqzrssfeed', plugins_url('/external/jquery.zrssfeed.min.js', __FILE__), array(jquery),null,true);
-		wp_enqueue_script('jqcookie', plugins_url('/external/jquery.cookie.min.js', __FILE__), array(jquery),null,true);
+		wp_enqueue_script('jqzrssfeed', plugins_url('/external/jquery.zrssfeed.min.js', __FILE__), array('jquery'),null,true);
+		wp_enqueue_script('jqcookie', plugins_url('/external/jquery.cookie.min.js', __FILE__), array('jquery'),null,true);
 	}
 
 	public function autoptimize_admin_styles() {
@@ -245,6 +251,7 @@ class autoptimizeConfig
 		register_setting('autoptimize','autoptimize_html');
 		register_setting('autoptimize','autoptimize_html_keepcomments');
 		register_setting('autoptimize','autoptimize_js');
+		register_setting('autoptimize','autoptimize_js_exclude');
 		register_setting('autoptimize','autoptimize_js_trycatch');
 		register_setting('autoptimize','autoptimize_js_justhead');
 		register_setting('autoptimize','autoptimize_js_yui');
@@ -297,6 +304,7 @@ class autoptimizeConfig
 			$config = array('autoptimize_html' => 0,
 				'autoptimize_html_keepcomments' => 0,
 				'autoptimize_js' => 0,
+				'autoptimize_js_exclude' => "s_sid, smowtion_size, sc_project, WAU_, wau_add, comment-form-quicktags, edToolbar, ch_client",
 				'autoptimize_js_trycatch' => 0,
 				'autoptimize_js_justhead' => 0,
 				'autoptimize_js_yui' => 0,
@@ -305,11 +313,11 @@ class autoptimizeConfig
 				'autoptimize_css_datauris' => 0,
 				'autoptimize_css_yui' => 0,
 				'autoptimize_cdn_js' => 0,
-				'autoptimize_cdn_js_url' => get_bloginfo('siteurl'),
+				'autoptimize_cdn_js_url' => site_url(),
 				'autoptimize_cdn_css' => 0,
-				'autoptimize_cdn_css_url' => get_bloginfo('siteurl'),
+				'autoptimize_cdn_css_url' => site_url(),
 				'autoptimize_cdn_img' => 0,
-				'autoptimize_cdn_img_url' => get_bloginfo('siteurl'),
+				'autoptimize_cdn_img_url' => site_url(),
 				'autoptimize_cache_nogzip' => 0,
 				);
 			

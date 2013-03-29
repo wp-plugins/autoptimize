@@ -25,13 +25,23 @@ abstract class autoptimizeBase
 	//Converts an URL to a full path
 	protected function getpath($url)
 	{
-		$path = str_replace(get_settings('home'),'',$url);
-		if(preg_match('#^(https?|ftp)://#i',$path))
-		{
-			//External script (adsense, etc)
-			return false;
-		}
-		$path = str_replace('//','/',ABSPATH.$path);
-		return $path;
+        	$path = str_replace(WP_CONTENT_URL,'',$url);
+        	if(preg_match('#^(https?|ftp)://#i',$path))
+            	{
+                	/** 
+			External script/css (adsense, etc)
+			Or script/ css just not in wp_content
+			*/
+                	return false;
+            	}
+        	$path = str_replace('//','/',WP_CONTENT_DIR.$path);
+        	return $path;
+	}
+
+	// coz I'm a crappy developer and I need easy access to whatever I want to log
+	protected function ao_logger($logmsg) {
+		$logfile=WP_CONTENT_DIR.'/ao_log.txt';
+		echo $logmsg.="\n";
+		file_put_contents($logfile,$logmsg,FILE_APPEND);
 	}
 }

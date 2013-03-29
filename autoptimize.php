@@ -3,7 +3,7 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/category/autoptimize/
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.5.1
+Version: 1.5.999
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
@@ -15,8 +15,9 @@ include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
 
 //Plugin constants
+$WP_CONTENT_URL_SSLFIX=(empty($_SERVER['HTTPS'])) ? WP_CONTENT_URL : str_replace("http://", "https://", WP_CONTENT_URL);
 define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
-define('AUTOPTIMIZE_CACHE_URL',WP_CONTENT_URL.'/cache/autoptimize/');
+define('AUTOPTIMIZE_CACHE_URL',$WP_CONTENT_URL_SSLFIX.'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_DELAY',true);
 
 //Initialize the cache at least once
@@ -33,7 +34,7 @@ load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localiz
 function autoptimize_start_buffering()
 {
 	// fgo: not for logged in users, to prevent new admin bar issue in wp3.5
-	if (!is_user_logged_in()) {
+	// if (!is_user_logged_in()) {
 
 	//Config element
 	$conf = autoptimizeConfig::instance();
@@ -76,7 +77,7 @@ function autoptimize_start_buffering()
 	//Now, start the real thing!
 	ob_start('autoptimize_end_buffering');
 
-	}
+	// }
 }
 
 //Action on end - 
@@ -102,6 +103,7 @@ function autoptimize_end_buffering($content)
 			'justhead' => $conf->get('autoptimize_js_justhead'),
 			'trycatch' => $conf->get('autoptimize_js_trycatch'),
 			'yui' => $conf->get('autoptimize_js_yui'),
+			'exclude' => $conf->get('autoptimize_js_exclude')
 		),
 		'autoptimizeStyles' => array(
 			'justhead' => $conf->get('autoptimize_css_justhead'),
