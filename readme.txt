@@ -3,9 +3,9 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed
 Requires at least: 2.7
 Tested up to: 3.5
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 
-Autoptimize is a Wordpress plugin that speeds up your website, and helps you save bandwidth. 
+Autoptimize is a WordPress plugin that speeds up your website, and helps you save bandwidth. 
 
 == Description ==
 

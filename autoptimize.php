@@ -3,46 +3,46 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/category/autoptimize/
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.5.999
+Version: 1.6.0
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
 http://www.gnu.org/licenses/gpl.txt
 */
 
-//Load config and cache class
+// Load config and cache class
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
 
-//Plugin constants
-$WP_CONTENT_URL_SSLFIX=(empty($_SERVER['HTTPS'])) ? WP_CONTENT_URL : str_replace("http://", "https://", WP_CONTENT_URL);
+// Plugin constants
 define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
-define('AUTOPTIMIZE_CACHE_URL',$WP_CONTENT_URL_SSLFIX.'/cache/autoptimize/');
+define('AUTOPTIMIZE_CACHE_URL',content_url().'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_DELAY',true);
+define('WP_ROOT_URL',str_replace('/wp-content','',content_url()));
+define('WP_ROOT_PATH',str_replace('/wp-content','',WP_CONTENT_DIR));
 
-//Initialize the cache at least once
+// Initialize the cache at least once
 $conf = autoptimizeConfig::instance();
 
-//Do we gzip when caching?
+// Do we gzip when caching?
 define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'));
 
-//Load translations
+// Load translations
 $plugin_dir = basename(dirname(__FILE__));
 load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localization',$plugin_dir.'/localization');
 
-//Set up the buffering
+// Set up the buffering
 function autoptimize_start_buffering()
 {
-	// fgo: not for logged in users, to prevent new admin bar issue in wp3.5
 	// if (!is_user_logged_in()) {
 
-	//Config element
+	// Config element
 	$conf = autoptimizeConfig::instance();
 	
-	//Load our base class
+	// Load our base class
 	include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeBase.php');
 	
-	//Load extra classes and set some vars
+	// Load extra classes and set some vars
 	if($conf->get('autoptimize_html'))
 	{
 		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeHTML.php');	
@@ -74,7 +74,7 @@ function autoptimize_start_buffering()
 		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCDN.php');
 	}
 	
-	//Now, start the real thing!
+	// Now, start the real thing!
 	ob_start('autoptimize_end_buffering');
 
 	// }
@@ -83,10 +83,10 @@ function autoptimize_start_buffering()
 //Action on end - 
 function autoptimize_end_buffering($content)
 {
-	//Config element
+	// Config element
 	$conf = autoptimizeConfig::instance();
 	
-	//Choose the classes
+	// Choose the classes
 	$classes = array();
 	if($conf->get('autoptimize_js'))
 		$classes[] = 'autoptimizeScripts';
@@ -97,7 +97,7 @@ function autoptimize_end_buffering($content)
 	if($conf->get('autoptimize_html'))
 		$classes[] = 'autoptimizeHTML';
 		
-	//Set some options
+	// Set some options
 	$classoptions = array(
 		'autoptimizeScripts' => array(
 			'justhead' => $conf->get('autoptimize_js_justhead'),
@@ -124,7 +124,7 @@ function autoptimize_end_buffering($content)
 	);
 		
 	
-	//Run the classes
+	// Run the classes
 	foreach($classes as $name)
 	{
 		$instance = new $name($content);
@@ -144,10 +144,10 @@ if(autoptimizeCache::cacheavail())
 	$conf = autoptimizeConfig::instance();
 	if( $conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css') || $conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css'))
 	{
-		//Hook to wordpress
+		// Hook to wordpress
 		add_action('template_redirect','autoptimize_start_buffering',2);
 	}
 }
 
-//Do not pollute other plugins
+// Do not pollute other plugins
 unset($conf);
