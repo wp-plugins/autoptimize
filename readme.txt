@@ -3,7 +3,7 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed
 Requires at least: 2.7
 Tested up to: 3.5
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 
 Autoptimize is a WordPress plugin that speeds up your website, and helps you save bandwidth. 
 
@@ -31,6 +31,9 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 
 
 == Changelog ==
+
+= 1.6.2 =
+* Yet another emergency bugfix I'm afraid: apache_request_headers (again in config/delayed.php) is only available on ... Apache (duh), breaking non-Apache systems such as ngnix, Lighttpd and MS IIS badly. Reported by multiple users, thanks all!
 
 = 1.6.1 =
 * fixed stupid typo in config/delayed.php which broke things badly (april fools-wise); strpos instead of str_pos as reported by Takahiro.

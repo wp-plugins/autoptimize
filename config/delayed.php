@@ -47,9 +47,8 @@ if($encoding != 'none' && $iscompressed == false)
 $eTag=md5($contents);
 $modTime=filemtime(__FILE__.'.none');
 
-$headers = apache_request_headers();
-$eTagMatch = (isset($headers['If-None-Match']) && strpos($headers['If-None-Match'],$eTag));
-$modTimeMatch = (isset($headers['If-Modified-Since']) && strtotime($headers['If-Modified-Since']) === $modTime);
+$eTagMatch = (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strpos($_SERVER['HTTP_IF_NONE_MATCH'],$eTag));
+$modTimeMatch = (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) === $modTime);
 
 if (($modTimeMatch)||($eTagMatch)) {
 	header('HTTP/1.1 304 Not Modified');
