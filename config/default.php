@@ -38,7 +38,7 @@ $eTag=md5($contents);
 $modTime=filemtime(__FILE__.'.none');
 
 $headers = apache_request_headers();
-$eTagMatch = (isset($headers['If-None-Match']) && str_pos($headers['If-None-Match'],$eTag));
+$eTagMatch = (isset($headers['If-None-Match']) && strpos($headers['If-None-Match'],$eTag));
 $modTimeMatch = (isset($headers['If-Modified-Since']) && strtotime($headers['If-Modified-Since']) === $modTime);
 
 if (($modTimeMatch)||($eTagMatch)) {
