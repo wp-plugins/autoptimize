@@ -1,20 +1,17 @@
 === Autoptimize ===
-Contributors: turl
-Donate link: http://www.turleando.com.ar/autoptimize/
-Tags: css, html, javascript, js, optimize, speed, cache
+Contributors: futtta, turl
+Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed
 Requires at least: 2.7
-Tested up to: 3.3.1
-Stable tag: 1.4
+Tested up to: 3.5
+Stable tag: 1.6.2
 
-Autoptimize is a Wordpress plugin that speeds up your website, and helps you save bandwidth. 
+Autoptimize is a WordPress plugin that speeds up your website, and helps you save bandwidth. 
 
 == Description ==
 
 Autoptimize makes optimizing your site really easy. It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
 
 I also recommend using WP Super Cache in conjuction with Autoptimize to speed up your blog.
-
-You can [report bugs](https://bugs.launchpad.net/autoptimize), [ask questions](https://answers.launchpad.net/autoptimize) and [help with translations](https://translations.launchpad.net/autoptimize) in our [Launchpad page](https://launchpad.net/autoptimize).
 
 == Installation ==
 
@@ -30,13 +27,32 @@ It concatenates all scripts and styles, minifies and compresses them, adds expir
 
 = Where can I report an error? =
 
-You can fill in a bug in our [bug tracker](https://bugs.launchpad.net/autoptimize), or contact the author through Twitter (@turl) or email (turl at tuxfamily dot org).
+You can report problems on the [wordpress.org support forum](http://wordpress.org/support/plugin/autoptimize), or [contact the author using this contact form](http://blog.futtta.be/contact/).
 
-= Can I help translating the plugin? =
-
-Sure, you can help with translations in the [Launchpad translation page](https://translations.launchpad.net/autoptimize)
 
 == Changelog ==
+
+= 1.6.2 =
+* Yet another emergency bugfix I'm afraid: apache_request_headers (again in config/delayed.php) is only available on ... Apache (duh), breaking non-Apache systems such as ngnix, Lighttpd and MS IIS badly. Reported by multiple users, thanks all!
+
+= 1.6.1 =
+* fixed stupid typo in config/delayed.php which broke things badly (april fools-wise); strpos instead of str_pos as reported by Takahiro.
+
+= 1.6.0 =
+* You can now specify scripts that should not be Autoptimized in the admin page. Just add the names (or part of the path) of the scripts in a comma-seperated list and that JavaScript-file will remain untouched by Autoptimize.
+* Added support for ETag and LastModified (essentially for a better pagespeed score, as the files are explicitely cacheable for 1 year)
+* Autoptimizing for logged in users is enabled again
+* Autoptimize now creates an index.html in wp-content/cache/autoptimize to prevent snooping (as [proposed by Chris](http://blog.futtta.be/2013/01/07/adopting-an-oss-orphan-autoptimize/#li-comment-36292))
+* bugfix: removed all deprecated functions ([reported by Hypolythe](http://wordpress.org/support/topic/many-deprecated-errors) and diff by Heiko Adams, thanks guys!)
+* bugfix for HTTPS-problem as [reported by dbs121](http://wordpress.org/support/topic/woocommerce-autoptimizer-https-issue)
+* bugfix for breakage with unusual WordPress directory layout as reported by [Josef from blog-it-solutions.de](http://www.blog-it-solutions.de/).
+
+= 1.5.1 =
+* bugfix: add CSS before opening title-tag instead of after closing title, to avoid CSS being loaded in wrong order, as reported by [fotofashion](http://fotoandfashion.de/) and [blogitsolutions](www.blog-it-solutions.de) (thanks guys)
+
+= 1.5 =
+* first bugfix release by [futtta](http://blog.futtta.be/2013/01/07/adopting-an-oss-orphan-autoptimize/), thanks for a great plugin Turl!
+* misc bug fixes, a.o. support for Twenty Twelve theme, admin bar problem in WP3.5, data-uri breaking CSS file naming
 
 = 1.4 =
 * Add support for inline style tags with CSS media

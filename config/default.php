@@ -33,16 +33,32 @@ if(ini_get('output_handler') == 'ob_gzhandler' || ini_get('zlib.output_compressi
 //Get data
 $contents = file_get_contents(__FILE__.'.'.$encoding);
 
-if(isset($encoding) && $encoding != 'none') 
-{
-	// Send compressed contents
-	header('Content-Encoding: '.$encoding);
+// first check if we have to send 304
+$eTag=md5($contents);
+$modTime=filemtime(__FILE__.'.none');
+
+$eTagMatch = (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strpos($_SERVER['HTTP_IF_NONE_MATCH'],$eTag));
+$modTimeMatch = (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) === $modTime);
+
+if (($modTimeMatch)||($eTagMatch)) {
+	header('HTTP/1.1 304 Not Modified');
+	header('Connection: close');
+} else {
+	// send all sorts of headers
+	$expireTime=60*60*24*356; // 1y max according to RFC
+
+	if(isset($encoding) && $encoding != 'none') 
+	{
+		header('Content-Encoding: '.$encoding);
+	}
+	header('Vary: Accept-Encoding');
+	header('Content-Length: '.strlen($contents));
+	header('Content-type: %%CONTENT%%; charset=utf-8');
+	header('Cache-Control: max-age='.$expireTime.', public, must-revalidate');
+	header('Expires: '.gmdate('D, d M Y H:i:s', time() + $expireTime).' GMT'); //10 years
+	header('ETag: ' . $eTag);
+	header('Last-Modified: '.gmdate('D, d M Y H:i:s', $modTime).' GMT');
+	
+	// send output
+	echo $contents;
 }
-header('Vary: Accept-Encoding');
-header('Content-Length: '.strlen($contents));
-
-header('Content-type: %%CONTENT%%; charset=utf-8');
-header('Cache-Control: max-age=315360000, public, must-revalidate');
-header('Expires: '.gmdate('D, d M Y H:i:s', time() + 315360000).' GMT'); //10 years
-
-echo $contents;

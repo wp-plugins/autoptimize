@@ -8,21 +8,23 @@ class autoptimizeConfig
 	//Singleton: private construct
 	private function __construct()
 	{
-		if(is_admin())
+		if( is_admin() )
 		{
 			//Add the admin page and settings
 			add_action('admin_menu',array($this,'addmenu'));
 			add_action('admin_init',array($this,'registersettings'));
+
 			//Set meta info
 			if(function_exists('plugin_row_meta'))
 			{
 				//2.8+
 				add_filter('plugin_row_meta',array($this,'setmeta'),10,2);
-			}elseif(function_exists('post_class')){
+			} elseif(function_exists('post_class')) {
 				//2.7
 				$plugin = plugin_basename(WP_PLUGIN_DIR.'/autoptimize/autoptimize.php');
 				add_filter('plugin_action_links_'.$plugin,array($this,'setmeta'));
 			}
+
 			//Clean cache?
 			if(get_option('autoptimize_cache_clean'))
 			{
@@ -49,22 +51,7 @@ class autoptimizeConfig
 <div class="wrap">
 <h2><?php _e('Autoptimize Settings','autoptimize'); ?></h2>
 
-<div style="position:absolute;right:50px;background:#FFFFE0;border:1px solid #E6DB55;padding:5px;text-align:center;">
-Like Autoptimize?
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_donations">
-<input type="hidden" name="business" value="webmaster@turl.com.ar">
-<input type="hidden" name="lc" value="AR">
-<input type="hidden" name="item_name" value="Autoptimize">
-<input type="hidden" name="item_number" value="autoptimize">
-<input type="hidden" name="currency_code" value="USD">
-<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_SM.gif:NonHostedGuest">
-<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypal.com/es_XC/i/scr/pixel.gif" width="1" height="1">
-</form>
-Buy me a coffee :-)
-</div>
-
+<div style="float:left;width:70%;">
 <form method="post" action="options.php">
 <?php settings_fields('autoptimize'); ?>
 
@@ -86,6 +73,11 @@ Buy me a coffee :-)
 <tr valign="top">
 <th scope="row"><?php _e('Optimize JavaScript Code?','autoptimize'); ?></th>
 <td><input type="checkbox" name="autoptimize_js" <?php echo get_option('autoptimize_js')?'checked="checked" ':''; ?>/></td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Exclude scripts from autoptimize:','autoptimize'); ?></th>
+<td><label for="autoptimize_js_exclude"><input type="text" style="width:100%;" name="autoptimize_js_exclude" value="<?php echo get_option('autoptimize_js_exclude',"s_sid,smowtion_size,sc_project,WAU_,wau_add,comment-form-quicktags,edToolbar,ch_client"); ?>"/><br />
+<?php _e('A comma-seperated list of scripts you want to exclude from being Autoptimized, for example \'whatever.js, another.js\' (without the quotes) to exclude those scripts from being aggregated and minimized by Autoptimize.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top">
 <th scope="row"><?php _e('Look for scripts only in &lt;head&gt;?','autoptimize'); ?></th>
@@ -136,7 +128,7 @@ Buy me a coffee :-)
 </tr>
 <tr valign="top">
 <th scope="row"><?php _e('JavaScript Base URL','autoptimize'); ?></th>
-<td><label for="autoptimize_cdn_js_url"><input type="text" name="autoptimize_cdn_js_url" value="<?php $it = get_option('autoptimize_cdn_js_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<td><label for="autoptimize_cdn_js_url"><input type="text" name="autoptimize_cdn_js_url" value="<?php $it = get_option('autoptimize_cdn_js_url');echo htmlentities($it?$it:site_url()); ?>" />
 <?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top">
@@ -146,7 +138,7 @@ Buy me a coffee :-)
 </tr>
 <tr valign="top">
 <th scope="row"><?php _e('CSS Base URL','autoptimize'); ?></th>
-<td><label for="autoptimize_cdn_css_url"><input type="text" name="autoptimize_cdn_css_url" value="<?php $it = get_option('autoptimize_cdn_css_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<td><label for="autoptimize_cdn_css_url"><input type="text" name="autoptimize_cdn_css_url" value="<?php $it = get_option('autoptimize_cdn_css_url');echo htmlentities($it?$it:site_url()); ?>" />
 <?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top">
@@ -156,7 +148,7 @@ Buy me a coffee :-)
 </tr>
 <tr valign="top">
 <th scope="row"><?php _e('Image Base URL','autoptimize'); ?></th>
-<td><label for="autoptimize_cdn_img_url"><input type="text" name="autoptimize_cdn_img_url" value="<?php $it = get_option('autoptimize_cdn_img_url');echo htmlentities($it?$it:get_bloginfo('siteurl')); ?>" />
+<td><label for="autoptimize_cdn_img_url"><input type="text" name="autoptimize_cdn_img_url" value="<?php $it = get_option('autoptimize_cdn_img_url');echo htmlentities($it?$it:site_url()); ?>" />
 <?php _e('This is the new base URL that will be used when rewriting. It should point to the blog root directory.','autoptimize'); ?></label></td>
 </tr>
 </table>
@@ -191,19 +183,75 @@ Buy me a coffee :-)
 
 </form>
 </div>
+<div style="float:right;width:30%" id="autoptimize_admin_feed">
+        <div style="margin-left:10px;margin-top:-5px;">
+                <h3>
+                        <?php _e("futtta about","autoptimize") ?>
+                        <select id="feed_dropdown" >
+                                <option value="1"><?php _e("Autoptimize","autoptimize") ?></option>
+                                <option value="2"><?php _e("WordPress","autoptimize") ?></option>
+                                <option value="3"><?php _e("Web Technology","autoptimize") ?></option>
+                        </select>
+                </h3>
+                <div id="futtta_feed"></div>
+        </div>
+</div>
+
+<script type="text/javascript">
+	var feed = new Array;
+	feed[1]="http://feeds.feedburner.com/futtta_autoptimize";
+	feed[2]="http://feeds.feedburner.com/futtta_wordpress";
+	feed[3]="http://feeds.feedburner.com/futtta_webtech";
+	cookiename="autoptimize_feed";
+
+        jQuery(document).ready(function() {
+		jQuery("#feed_dropdown").change(function() { show_feed(jQuery("#feed_dropdown").val()) });
+
+		feedid=jQuery.cookie(cookiename);
+		if(typeof(feedid) !== "string") feedid=1;
+
+		show_feed(feedid);
+		})
+
+	function show_feed(id) {
+  		jQuery('#futtta_feed').rssfeed(feed[id], {
+			<?php if ( is_ssl() ) echo "ssl: true,"; ?>
+    			limit: 4,
+			date: true,
+			header: false
+  		});
+		jQuery("#feed_dropdown").val(id);
+		jQuery.cookie(cookiename,id,{ expires: 365 });
+	}
+</script>
+
+</div>
 <?php
 	}
 	
 	public function addmenu()
 	{
-		add_options_page(__('Autoptimize Options','autoptimize'),'Autoptimize',8,'autoptimize',array($this,'show'));
+		$hook=add_options_page(__('Autoptimize Options','autoptimize'),'Autoptimize','manage_options','autoptimize',array($this,'show'));
+        	add_action( 'admin_print_scripts-'.$hook,array($this,'autoptimize_admin_scripts'));
+        	add_action( 'admin_print_styles-'.$hook,array($this,'autoptimize_admin_styles'));
 	}
+
+	public function autoptimize_admin_scripts() {
+		wp_enqueue_script('jqzrssfeed', plugins_url('/external/jquery.zrssfeed.min.js', __FILE__), array('jquery'),null,true);
+		wp_enqueue_script('jqcookie', plugins_url('/external/jquery.cookie.min.js', __FILE__), array('jquery'),null,true);
+	}
+
+	public function autoptimize_admin_styles() {
+        	wp_enqueue_style('zrssfeed', plugins_url('/external/jquery.zrssfeed.css', __FILE__));
+	}
+
 	
 	public function registersettings()
 	{
 		register_setting('autoptimize','autoptimize_html');
 		register_setting('autoptimize','autoptimize_html_keepcomments');
 		register_setting('autoptimize','autoptimize_js');
+		register_setting('autoptimize','autoptimize_js_exclude');
 		register_setting('autoptimize','autoptimize_js_trycatch');
 		register_setting('autoptimize','autoptimize_js_justhead');
 		register_setting('autoptimize','autoptimize_js_yui');
@@ -256,6 +304,7 @@ Buy me a coffee :-)
 			$config = array('autoptimize_html' => 0,
 				'autoptimize_html_keepcomments' => 0,
 				'autoptimize_js' => 0,
+				'autoptimize_js_exclude' => "s_sid, smowtion_size, sc_project, WAU_, wau_add, comment-form-quicktags, edToolbar, ch_client",
 				'autoptimize_js_trycatch' => 0,
 				'autoptimize_js_justhead' => 0,
 				'autoptimize_js_yui' => 0,
@@ -264,11 +313,11 @@ Buy me a coffee :-)
 				'autoptimize_css_datauris' => 0,
 				'autoptimize_css_yui' => 0,
 				'autoptimize_cdn_js' => 0,
-				'autoptimize_cdn_js_url' => get_bloginfo('siteurl'),
+				'autoptimize_cdn_js_url' => site_url(),
 				'autoptimize_cdn_css' => 0,
-				'autoptimize_cdn_css_url' => get_bloginfo('siteurl'),
+				'autoptimize_cdn_css_url' => site_url(),
 				'autoptimize_cdn_img' => 0,
-				'autoptimize_cdn_img_url' => get_bloginfo('siteurl'),
+				'autoptimize_cdn_img_url' => site_url(),
 				'autoptimize_cache_nogzip' => 0,
 				);
 			
