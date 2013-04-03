@@ -44,7 +44,8 @@ class autoptimizeStyles extends autoptimizeBase
 					$media = array();
 					foreach($medias as $elem)
 					{
-						$media[] = current(explode(' ',trim($elem),2));
+						// $media[] = current(explode(' ',trim($elem),2));
+						$media[] = $elem;
 					}
 				}else{
 					//No media specified - applies to all
@@ -151,16 +152,7 @@ class autoptimizeStyles extends autoptimizeBase
 					$path = $this->getpath($url);
 					if(file_exists($path) && is_readable($path))
 					{
-						$code = $this->fixurls($path,file_get_contents($path));
-						/*$media = preg_replace('#^.*(?:\)|"|\')(.*)(?:\s|;).*$#','$1',$import);
-						$media = array_map('trim',explode(' ',$media));
-						if(empty($media))
-						{
-							$thiscss = [...] (Line under)
-						}else{
-							//media in @import - how should I handle these?
-							//TODO: Infinite recursion!
-						}*/
+						$code = addcslashes($this->fixurls($path,file_get_contents($path)),"\\");
 						$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
 					}else{
 						//getpath is not working?
@@ -332,9 +324,9 @@ class autoptimizeStyles extends autoptimizeBase
 	private function fixurls($file,$code)
 	{
 		// $file = str_replace(ABSPATH,'/',$file); //Sth like /wp-content/file.css
-		$file = str_replace(WP_CONTENT_DIR,'/',$file);
+		$file = str_replace(WP_ROOT_DIR,'/',$file);
 		$dir = dirname($file); //Like /wp-content
-		
+
 		if(preg_match_all('#url\((.*)\)#Usi',$code,$matches))
 		{
 			$replace = array();
@@ -349,7 +341,7 @@ class autoptimizeStyles extends autoptimizeBase
 				}else{
 					//relative URL. Let's fix it!
 					// $newurl = get_settings('home').str_replace('//','/',$dir.'/'.$url); //http://yourblog.com/wp-content/../image.png
-					$newurl = WP_CONTENT_URL.str_replace('//','/',$dir.'/'.$url);
+					$newurl = WP_ROOT_URL.str_replace('//','/',$dir.'/'.$url);
 					$hash = md5($url);
 					$code = str_replace($matches[0][$k],$hash,$code);
 					$replace[$hash] = 'url('.$newurl.')';

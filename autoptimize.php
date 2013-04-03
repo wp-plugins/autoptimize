@@ -19,7 +19,7 @@ define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_URL',content_url().'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_DELAY',true);
 define('WP_ROOT_URL',str_replace('/wp-content','',content_url()));
-define('WP_ROOT_PATH',str_replace('/wp-content','',WP_CONTENT_DIR));
+define('WP_ROOT_DIR',str_replace('/wp-content','',WP_CONTENT_DIR));
 
 // Initialize the cache at least once
 $conf = autoptimizeConfig::instance();

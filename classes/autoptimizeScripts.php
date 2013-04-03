@@ -38,6 +38,9 @@ class autoptimizeScripts extends autoptimizeBase
 		//Do we use yui?
 		$this->yui = $options['yui'];
 		
+		//Save IE hacks
+		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
+
 		//Get script files
 		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches))
 		{
@@ -201,6 +204,9 @@ class autoptimizeScripts extends autoptimizeBase
 		$bodyreplacement .= '<script type="text/javascript" src="'.$this->url.'"></script>';
 		$bodyreplacement .= implode('',$this->move['last']).'</body>';
 		$this->content = str_replace('</body>',$bodyreplacement,$this->content);
+
+		//Restore IE hacks
+		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);
 		
 		//Return the modified HTML
 		return $this->content;
