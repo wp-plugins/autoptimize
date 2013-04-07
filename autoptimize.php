@@ -28,7 +28,7 @@ $conf = autoptimizeConfig::instance();
 to avoid old versions of aggregated files lingering around */
 // update_option('autoptimize_version','none');
 
-$autoptimize_version="none";
+$autoptimize_version="1.6.3-pre-1";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
