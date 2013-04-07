@@ -24,6 +24,19 @@ define('WP_ROOT_DIR',str_replace('/wp-content','',WP_CONTENT_DIR));
 // Initialize the cache at least once
 $conf = autoptimizeConfig::instance();
 
+/* Check if we're updating, in which case we need to flush the cache
+to avoid old versions of aggregated files lingering around */
+// update_option('autoptimize_version','none');
+
+$autoptimize_version="none";
+$autoptimize_db_version=get_option('autoptimize_version','none');
+
+if ($autoptimize_db_version !== $autoptimize_version) {
+	autoptimizeCache::clearall();
+	update_option('autoptimize_version',$autoptimize_version);
+	$autoptimize_db_version=$autoptimize_version;
+}
+
 // Do we gzip when caching?
 define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'));
 

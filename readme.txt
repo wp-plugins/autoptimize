@@ -1,17 +1,17 @@
 === Autoptimize ===
 Contributors: futtta, turl
-Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed
+Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed, booster, multisite
 Requires at least: 2.7
 Tested up to: 3.6
 Stable tag: 1.6.2
 
-Autoptimize is a WordPress plugin that speeds up your website, and helps you save bandwidth. 
+Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS and CSS.
 
 == Description ==
 
 Autoptimize makes optimizing your site really easy. It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
 
-I also recommend using WP Super Cache in conjuction with Autoptimize to speed up your blog.
+I also recommend using [WP Super Cache](http://wordpress.org/extend/plugins/wp-super-cache/) in together with Autoptimize to allow blog pages themselves (the HTML) to be cached as well.
 
 == Installation ==
 
@@ -29,15 +29,17 @@ It concatenates all scripts and styles, minifies and compresses them, adds expir
 
 You can report problems on the [wordpress.org support forum](http://wordpress.org/support/plugin/autoptimize), or [contact the author using this contact form](http://blog.futtta.be/contact/).
 
-
 == Changelog ==
 
 = 1.6.3 (work in progress) =
-* todo: implement version check and force clean autoptimize cache on upgrade
 * fix for IE-hacks with javascript inside, causing javascript breakage (as seen in Sampression theme) as reported by Takahiro
 * fix for escaping problem of imported css causing css breakage (as seen in Sampression theme) as reported by Takahiro
+* fix to parse imports with syntax @import 'custom.css' not being parsed (as seen in Arras theme) as reported by Takahiro
 * fix for complex media types in media-attribute [as reported by jvwisssen](http://wordpress.org/support/topic/autoptimize-and-media-queries]
-* tested with WordPress 3.6 which is (almost in beta)[http://make.wordpress.org/core/2013/03/27/were-really-close/]
+* fix for disappearing background-images that were already datauri's [as reported by will.blaschko](http://wordpress.org/support/topic/data-uris)
+* fix to not strip out comments from HTML that are needed by WP Super Cache or W3 Total Cache
+* added check to clean cache on upgrade
+* tested with WordPress 3.6 beta 1
 
 = 1.6.2 =
 * Yet another emergency bugfix I'm afraid: apache_request_headers (again in config/delayed.php) is only available on ... Apache (duh), breaking non-Apache systems such as ngnix, Lighttpd and MS IIS badly. Reported by multiple users, thanks all!

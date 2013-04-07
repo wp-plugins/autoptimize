@@ -190,7 +190,7 @@ class autoptimizeStyles extends autoptimizeBase
 			
 			$imgreplace = array();
 			//Do the imaging!
-			if($this->datauris == true && function_exists('base64_encode') && preg_match_all('#(background[^;}]*url\((.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches))
+			if($this->datauris == true && function_exists('base64_encode') && preg_match_all('#(background[^;}]*url\((?!data)(.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches))
 			{
 				foreach($matches[2] as $count => $quotedurl)
 				{
@@ -327,7 +327,10 @@ class autoptimizeStyles extends autoptimizeBase
 		$file = str_replace(WP_ROOT_DIR,'/',$file);
 		$dir = dirname($file); //Like /wp-content
 
-		if(preg_match_all('#url\((.*)\)#Usi',$code,$matches))
+		// quick fix for import-troubles in e.g. arras theme
+		$code=preg_replace('#@import ("|\')(.+?)\.css("|\')#','@import url("${2}.css")',$code);
+
+		if(preg_match_all('#url?\((?!data)(.*)\)#Usi',$code,$matches))
 		{
 			$replace = array();
 			foreach($matches[1] as $k => $url)
