@@ -3,7 +3,7 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/category/autoptimize/
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.6.2
+Version: 1.6.3
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
@@ -28,7 +28,7 @@ $conf = autoptimizeConfig::instance();
 to avoid old versions of aggregated files lingering around */
 // update_option('autoptimize_version','none');
 
-$autoptimize_version="1.6.3-pre-1";
+$autoptimize_version="1.6.3";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
