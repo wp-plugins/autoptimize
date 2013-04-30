@@ -1,17 +1,18 @@
 === Autoptimize ===
 Contributors: futtta, turl
-Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed
+Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed, booster, multisite
 Requires at least: 2.7
-Tested up to: 3.5
-Stable tag: 1.6.2
+Tested up to: 3.6
+Stable tag: 1.6.3
 
-Autoptimize is a WordPress plugin that speeds up your website, and helps you save bandwidth. 
+Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS and CSS.
 
 == Description ==
 
 Autoptimize makes optimizing your site really easy. It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
 
-I also recommend using WP Super Cache in conjuction with Autoptimize to speed up your blog.
+If you consider performance important, we recommend the use of a caching-plugin such as e.g. [WP Super Cache](http://wordpress.org/extend/plugins/wp-super-cache/) or 
+[HyperCache](http://wordpress.org/extend/plugins/hyper-cache/) as well.
 
 == Installation ==
 
@@ -25,12 +26,48 @@ I also recommend using WP Super Cache in conjuction with Autoptimize to speed up
 
 It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
 
+= Will this work with for my blog? =
+
+Yes, most of the time, but there will always be exceptions. Although Autoptimize goes through great lengths to work with as many themes and plugins possible, there undoubtably are circumstances in which Autoptimize will not work to the full extent (full HTML, JS and CSS optimization). See "Troubleshooting" below for info on how to proceed if you encounter issues.
+
+= Compatibility with WP SlimSat =
+
+There have been reports of sightings of javascript errors when using Autoptimize together with WP SlimStat. Both [Camu (WP SlimStat developer)](http://profiles.wordpress.org/coolmann/) and I have installed both plugins on test-environments and [found no proof of such incompatibility](http://wordpress.org/support/topic/dropdown-menus-dont-work-when-slimstat-is-enabled?replies=14#post-4086894). Our common conclusion is that there are rare cases in which yet another theme or plugin's JavaScript are triggering these errors. If you do encounter JavaScript-errors when you have both WP SlimStat and Autoptimize installed, add "SlimStatParams, wp-slimstat.js" in the "Exclude scripts from autoptimize:" option on the admin-page and all should be well.
+
+= Configuring & Troubleshooting Autoptimize =
+
+After having installed and activated the plugin, you'll have access to an admin page where you can to enable HTML, CSS and JavaScript optimization. According to your liking, you can start of just enabling all of them, or if you're more cautious one at a time.
+
+If your blog doens't function normally after having turned on Autoptimize, here are some pointers to identify & solve such issues:
+* In case your blog looks weird, i.e. when the layout gets messed up, there is problem with CSS optimization. In this case you can turn on the option "Look for styles on just head?" and see if that solves the problem.
+* In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
+* If you can't get either CSS or JS optimization working, you can off course always continue using the other two optimization-techniques.
+* If you tried the troubleshooting tips above and you still can't get CSS and JS working at all, you can ask for support on the [WordPress Autoptimize support forum](http://wordpress.org/support/plugin/autoptimize). See below for a description of what information you should provide in your "trouble ticket"
+
 = Where can I report an error? =
 
-You can report problems on the [wordpress.org support forum](http://wordpress.org/support/plugin/autoptimize), or [contact the author using this contact form](http://blog.futtta.be/contact/).
+You can report problems on the [wordpress.org support forum](http://wordpress.org/support/plugin/autoptimize), or [contact the maintainer using this contact form](http://blog.futtta.be/contact/).
 
+= What information should I include when requesting support =
+
+* A description of the problem, including screenshots and information from your browser's Error/ debug console
+* URL of your blog (you can turn Autoptimize off, but should be willing to turn it briefly on to have the error visible)
+* your Autoptimize settings (including a description of changes you made to the configuration to try to troubleshoot yourself)
+* the Theme used (including the Theme's download link)
+* optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.6.3 =
+* fix for IE-hacks with javascript inside, causing javascript breakage (as seen in Sampression theme) as reported by [Takahiro of hiskip.com](http://www.hiskip.com/wp/)
+* fix for escaping problem of imported css causing css breakage (as seen in Sampression theme) as reported by Takahiro as well
+* fix to parse imports with syntax @import 'custom.css' not being parsed (as seen in Arras theme), again as reported by Takahiro
+* fix for complex media types in media-attribute [as reported by jvwisssen](http://wordpress.org/support/topic/autoptimize-and-media-queries)
+* fix for disappearing background-images that were already datauri's [as reported by will.blaschko](http://wordpress.org/support/topic/data-uris)
+* fix not to strip out comments in HTML needed by WP Super Cache or W3 Total Cache (e.g. mfunc)
+* added check to clean cache on upgrade
+* updated FAQ in readme with information on troubleshooting and support
+* tested with WordPress 3.6 beta
 
 = 1.6.2 =
 * Yet another emergency bugfix I'm afraid: apache_request_headers (again in config/delayed.php) is only available on ... Apache (duh), breaking non-Apache systems such as ngnix, Lighttpd and MS IIS badly. Reported by multiple users, thanks all!

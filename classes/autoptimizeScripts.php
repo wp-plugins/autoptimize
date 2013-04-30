@@ -3,7 +3,7 @@
 class autoptimizeScripts extends autoptimizeBase
 {
 	private $scripts = array();
-	private $dontmove = array('document.write','html5.js','show_ads.js','google_ad','_gaq.push','/ads/');
+	private $dontmove = array('document.write','html5.js','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','histats.com/js','ads.smowtion.com/ad.js','statcounter.com/counter/counter.js','widgets.amung.us','ws.amazon.com/widgets','media.fastclick.net','/ads/','comment-form-quicktags/quicktags.php','edToolbar','intensedebate.com','scripts.chitika.net/','_gaq.push','jotform.com/');
 	private $domove = array('gaJsHost','load_cmc','jd.gallery.transitions.js','swfobject.embedSWF(','tiny_mce.js','tinyMCEPreInit.go');
 	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js','networkedblogs.com/getnetworkwidget','infolinks.com/js/','jd.gallery.js.php','jd.gallery.transitions.js','swfobject.embedSWF(','linkwithin.com/widget.js','tiny_mce.js','tinyMCEPreInit.go');
 	private $trycatch = false;
@@ -38,6 +38,9 @@ class autoptimizeScripts extends autoptimizeBase
 		//Do we use yui?
 		$this->yui = $options['yui'];
 		
+		//Save IE hacks
+		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
+
 		//Get script files
 		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches))
 		{
@@ -201,6 +204,9 @@ class autoptimizeScripts extends autoptimizeBase
 		$bodyreplacement .= '<script type="text/javascript" src="'.$this->url.'"></script>';
 		$bodyreplacement .= implode('',$this->move['last']).'</body>';
 		$this->content = str_replace('</body>',$bodyreplacement,$this->content);
+
+		//Restore IE hacks
+		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);
 		
 		//Return the modified HTML
 		return $this->content;
