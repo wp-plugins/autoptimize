@@ -3,7 +3,7 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/category/autoptimize/
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.6.2
+Version: 1.6.4
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
@@ -19,10 +19,22 @@ define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_URL',content_url().'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_DELAY',true);
 define('WP_ROOT_URL',str_replace('/wp-content','',content_url()));
-define('WP_ROOT_PATH',str_replace('/wp-content','',WP_CONTENT_DIR));
+define('WP_ROOT_DIR',str_replace('/wp-content','',WP_CONTENT_DIR));
 
 // Initialize the cache at least once
 $conf = autoptimizeConfig::instance();
+
+/* Check if we're updating, in which case we need to flush the cache
+to avoid old versions of aggregated files lingering around */
+
+$autoptimize_version="1.6.4";
+$autoptimize_db_version=get_option('autoptimize_version','none');
+
+if ($autoptimize_db_version !== $autoptimize_version) {
+	autoptimizeCache::clearall();
+	update_option('autoptimize_version',$autoptimize_version);
+	$autoptimize_db_version=$autoptimize_version;
+}
 
 // Do we gzip when caching?
 define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'));
@@ -34,7 +46,7 @@ load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localiz
 // Set up the buffering
 function autoptimize_start_buffering()
 {
-	// if (!is_user_logged_in()) {
+	if (!is_feed()) {
 
 	// Config element
 	$conf = autoptimizeConfig::instance();
@@ -77,7 +89,7 @@ function autoptimize_start_buffering()
 	// Now, start the real thing!
 	ob_start('autoptimize_end_buffering');
 
-	// }
+	}
 }
 
 //Action on end - 

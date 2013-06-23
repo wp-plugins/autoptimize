@@ -35,7 +35,7 @@ abstract class autoptimizeBase
                 	/** External script/css (adsense, etc) */
             		return false;
             	}
-        	$path = str_replace('//','/',WP_ROOT_PATH.$path);
+        	$path = str_replace('//','/',WP_ROOT_DIR.$path);
         	return $path;
 	}
 
