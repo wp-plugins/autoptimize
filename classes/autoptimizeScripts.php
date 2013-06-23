@@ -27,7 +27,7 @@ class autoptimizeScripts extends autoptimizeBase
 
 		$excludeJS = $options['exclude'];
 		if ($excludeJS!=="") {
-			$exclJSArr = array_map('trim',explode(",",$excludeJS));
+			$exclJSArr = array_filter(array_map('trim',explode(",",$excludeJS)));
 			$this->dontmove = array_merge($exclJSArr,$this->dontmove);
 		}
 		

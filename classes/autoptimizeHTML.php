@@ -32,7 +32,7 @@ class autoptimizeHTML extends autoptimizeBase
 			$this->content = Minify_HTML::minify($this->content,$options);
 			
 
-			if ($restore_mfuncs) {
+			if (isset($restore_mfuncs)) {
 				$this->content = preg_replace('#%%MFUNC%%(.*)%%MFUNC%%#sie','stripslashes(base64_decode("$1"))',$this->content);
 				}
 			

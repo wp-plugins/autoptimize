@@ -3,7 +3,7 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed, booster, multisite
 Requires at least: 2.7
 Tested up to: 3.6
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS and CSS.
 
@@ -29,6 +29,10 @@ It concatenates all scripts and styles, minifies and compresses them, adds expir
 = Will this work with for my blog? =
 
 Yes, most of the time, but there will always be exceptions. Although Autoptimize goes through great lengths to work with as many themes and plugins possible, there undoubtably are circumstances in which Autoptimize will not work to the full extent (full HTML, JS and CSS optimization). See "Troubleshooting" below for info on how to proceed if you encounter issues.
+
+= Does Autoptimize work with BuddyPress? =
+
+Based on feedback received from BuddyPress users, CSS and JS-Autoptimization do not seem to work correctly, leaving you with only HTML optimizations. I will look into this in the future and am happy to take hints or code-improvements the help with BuddyPress compatibility in the mean time.
 
 = Compatibility with WP SlimSat =
 
@@ -57,6 +61,11 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.6.4 =
+* fix for PHP notice about mfunc_functions
+* fix for strpos warnings due to empty values from the "Exclude scripts from autoptimize" configuration as [reported by CandleFOREX](http://wordpress.org/support/topic/empty-needle-warning)
+* fix for broken feeds as [reported by Dinata and talgalili](http://wordpress.org/support/topic/feed-issue-5)
 
 = 1.6.3 =
 * fix for IE-hacks with javascript inside, causing javascript breakage (as seen in Sampression theme) as reported by [Takahiro of hiskip.com](http://www.hiskip.com/wp/)
