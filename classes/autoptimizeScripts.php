@@ -7,6 +7,7 @@ class autoptimizeScripts extends autoptimizeBase
 	private $domove = array('gaJsHost','load_cmc','jd.gallery.transitions.js','swfobject.embedSWF(','tiny_mce.js','tinyMCEPreInit.go');
 	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js','networkedblogs.com/getnetworkwidget','infolinks.com/js/','jd.gallery.js.php','jd.gallery.transitions.js','swfobject.embedSWF(','linkwithin.com/widget.js','tiny_mce.js','tinyMCEPreInit.go');
 	private $trycatch = false;
+	private $forcehead = false;
 	private $yui = false;
 	private $jscode = '';
 	private $url = '';
@@ -34,7 +35,11 @@ class autoptimizeScripts extends autoptimizeBase
 		//Should we add try-catch?
 		if($options['trycatch'] == true)
 			$this->trycatch = true;
-		
+
+		// force js in head?	
+		if($options['forcehead'] == true)
+			$this->forcehead = true;
+
 		//Do we use yui?
 		$this->yui = $options['yui'];
 		
@@ -200,10 +205,16 @@ class autoptimizeScripts extends autoptimizeBase
 		}
 		
 		//Add the scripts
+		if($this->forcehead == true) {
+			$replaceTag="</head>";
+		} else {
+			$replaceTag="</body>";
+		}
+
 		$bodyreplacement = implode('',$this->move['first']);
 		$bodyreplacement .= '<script type="text/javascript" src="'.$this->url.'"></script>';
-		$bodyreplacement .= implode('',$this->move['last']).'</body>';
-		$this->content = str_replace('</body>',$bodyreplacement,$this->content);
+		$bodyreplacement .= implode('',$this->move['last']).$replaceTag;
+		$this->content = str_replace($replaceTag,$bodyreplacement,$this->content);
 
 		//Restore IE hacks
 		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);

@@ -3,7 +3,7 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed, booster, multisite
 Requires at least: 2.7
 Tested up to: 3.6
-Stable tag: 1.6.4
+Stable tag: 1.6.5
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS and CSS.
 
@@ -38,13 +38,16 @@ Based on feedback received from BuddyPress users, CSS and JS-Autoptimization do 
 
 There have been reports of sightings of javascript errors when using Autoptimize together with WP SlimStat. Both [Camu (WP SlimStat developer)](http://profiles.wordpress.org/coolmann/) and I have installed both plugins on test-environments and [found no proof of such incompatibility](http://wordpress.org/support/topic/dropdown-menus-dont-work-when-slimstat-is-enabled?replies=14#post-4086894). Our common conclusion is that there are rare cases in which yet another theme or plugin's JavaScript are triggering these errors. If you do encounter JavaScript-errors when you have both WP SlimStat and Autoptimize installed, add "SlimStatParams, wp-slimstat.js" in the "Exclude scripts from autoptimize:" option on the admin-page and all should be well.
 
+= Why are some options marked as Deprecated? =
+YUI compression and the CDN options are marked as deprecated to indicate that this functionality will be removed for the next major version (probably 1.7.0). YUI compression was pretty exotic and required one to install JAVA and the YUI compression software. CDN options are deprecated as well; CDN isn't core functionality and can better be accomplished using e.g. [WP Super Cache](http://wordpress.org/extend/plugins/wp-super-cache/) (which is a must-have companion of Autoptimize anyhow).
+
 = Configuring & Troubleshooting Autoptimize =
 
 After having installed and activated the plugin, you'll have access to an admin page where you can to enable HTML, CSS and JavaScript optimization. According to your liking, you can start of just enabling all of them, or if you're more cautious one at a time.
 
 If your blog doens't function normally after having turned on Autoptimize, here are some pointers to identify & solve such issues:
 * In case your blog looks weird, i.e. when the layout gets messed up, there is problem with CSS optimization. In this case you can turn on the option "Look for styles on just head?" and see if that solves the problem.
-* In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
+* In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and/or "Force JavaScript in <head>?" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
 * If you can't get either CSS or JS optimization working, you can off course always continue using the other two optimization-techniques.
 * If you tried the troubleshooting tips above and you still can't get CSS and JS working at all, you can ask for support on the [WordPress Autoptimize support forum](http://wordpress.org/support/plugin/autoptimize). See below for a description of what information you should provide in your "trouble ticket"
 
@@ -61,6 +64,10 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.6.5 =
+* new javascript-debug option to force the aggregated javascript file in the head-section of the HTML instead of at the bottom
+* YUI compression & CDN are now deprecated functionality that will be removed in 1.7.0
 
 = 1.6.4 =
 * fix for PHP notice about mfunc_functions
