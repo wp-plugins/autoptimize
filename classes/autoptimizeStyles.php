@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class autoptimizeStyles extends autoptimizeBase
 {
 	private $css = array();
@@ -26,7 +27,8 @@ class autoptimizeStyles extends autoptimizeBase
 		
 		//Do we use yui?
 		$this->yui = $options['yui'];
-		
+		// noptimize me
+		$this->content = $this->hide_noptimize($this->content);
 		//Save IE hacks
 		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
 		
@@ -302,7 +304,8 @@ class autoptimizeStyles extends autoptimizeBase
 		//Restore IE hacks
 		// fgo: added stripslashes as e modifier escapes stuff
 		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);
-
+		// restore noptimize
+		$this->content = $this->restore_noptimize($this->content);
 		//Restore the full content
 		if(!empty($this->restofcontent))
 		{

@@ -1,15 +1,16 @@
 <?php
 /*
 Plugin Name: Autoptimize
-Plugin URI: http://blog.futtta.be/category/autoptimize/
+Plugin URI: http://blog.futtta.be/autoptimize
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.6.5
+Version: 1.6.6
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
 http://www.gnu.org/licenses/gpl.txt
 */
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 // Load config and cache class
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
@@ -27,10 +28,13 @@ $conf = autoptimizeConfig::instance();
 /* Check if we're updating, in which case we need to flush the cache
 to avoid old versions of aggregated files lingering around */
 
-$autoptimize_version="1.6.5";
+$autoptimize_version="1.6.6";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
+	if ($autoptimize_db_version==="none") {
+        	add_action('admin_notices', 'config_autoptimize_notice');
+	}
 	autoptimizeCache::clearall();
 	update_option('autoptimize_version',$autoptimize_version);
 	$autoptimize_db_version=$autoptimize_version;
@@ -43,6 +47,11 @@ define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'))
 $plugin_dir = basename(dirname(__FILE__));
 load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localization',$plugin_dir.'/localization');
 
+function config_autoptimize_notice() {
+	echo '<div class="updated"><p>';
+	_e('Thank you for installing and activating Autoptimize. Please configure it under "Settings" -> "Autoptimize" to start improving your site\'s performance.', 'autoptimize' );
+	echo '</p></div>';
+}
 // Set up the buffering
 function autoptimize_start_buffering()
 {
@@ -88,7 +97,6 @@ function autoptimize_start_buffering()
 	
 	// Now, start the real thing!
 	ob_start('autoptimize_end_buffering');
-
 	}
 }
 

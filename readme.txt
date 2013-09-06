@@ -65,6 +65,12 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 
 == Changelog ==
 
+= 1.6.6 =
+* New: disable autoptimizatoin by putting part of your HTML, JS or CSS in between noptimize-tags, e.g.;
+`<!--noptimize--><script>alert('this will not get autoptimized');</script><--/noptimize-->`
+* Added extra check to prevent plugin-files being called outside of WordPress as suggested in [this good article on security](http://mikejolley.com/2013/08/keeping-your-shit-secure-whilst-developing-for-wordpress/).
+* Added small notice to be displayed after installation/ activation to ask user to configure the plugin as well.
+
 = 1.6.5 =
 * new javascript-debug option to force the aggregated javascript file in the head-section of the HTML instead of at the bottom
 * YUI compression & CDN are now deprecated functionality that will be removed in 1.7.0

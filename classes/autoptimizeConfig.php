@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class autoptimizeConfig
 {
@@ -278,7 +279,6 @@ class autoptimizeConfig
 	public function setmeta($links,$file=null)
 	{
 		//Inspired on http://wpengineer.com/meta-links-for-wordpress-plugins/
-		
 		//Do it only once - saves time
 		static $plugin;
 		if(empty($plugin))

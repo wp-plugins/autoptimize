@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 class autoptimizeHTML extends autoptimizeBase
 {
 	private $keepcomments = false;
@@ -19,23 +21,15 @@ class autoptimizeHTML extends autoptimizeBase
 	{
 		if(class_exists('Minify_HTML'))
 		{
+			// noptimize me
+			$this->content = $this->hide_noptimize($this->content);
+
 			// Minify html
-			// but don't remove comment-blocks needed by WP Super Cache (& W3 Total Cache)
-			if ( ($this->keepcomments===false) && (preg_match( '/<!--mclude|<!--mfunc|<!--dynamic-cached-content-->/', $this->content ))) { 
-				$this->content = preg_replace('#(<!--mclude .*<!--/mclude-->)#ise','\'%%MFUNC%%\'.base64_encode("$0").\'%%MFUNC%%\'', $this->content);
-				$this->content = preg_replace('#(<!--mfunc.*<!--/mfunc-->)#ise','\'%%MFUNC%%\'.base64_encode("$1").\'%%MFUNC%%\'', $this->content);
-				$this->content = preg_replace('#(<!--dynamic-cached-content-->.*<!--/dynamic-cached-content-->)#ise','\'%%MFUNC%%\'.base64_encode("$0").\'%%MFUNC%%\'', $this->content);
-				$restore_mfuncs=true;
-			}
-			
 			$options = array('keepComments' => $this->keepcomments);
 			$this->content = Minify_HTML::minify($this->content,$options);
-			
 
-			if (isset($restore_mfuncs)) {
-				$this->content = preg_replace('#%%MFUNC%%(.*)%%MFUNC%%#sie','stripslashes(base64_decode("$1"))',$this->content);
-				}
-			
+			// restore noptimize
+			$this->content = $this->restore_noptimize($this->content);
 			return true;
 		}
 		
