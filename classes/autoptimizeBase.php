@@ -48,7 +48,7 @@ abstract class autoptimizeBase
 	protected function hide_noptimize($noptimize_in) {
 		if ( preg_match( '/<!--\s?noptimize\s?-->/', $noptimize_in ) ) { 
 			$noptimize_out = preg_replace_callback(
-				'#<!--\s?noptimize\s?-->.*<!--\s?/\s?noptimize\s?-->#is',
+				'#<!--\s?noptimize\s?-->.*?<!--\s?/\s?noptimize\s?-->#is',
 				create_function(
 					'$matches',
 					'return "%%NOPTIMIZE%%".base64_encode($matches[0])."%%NOPTIMIZE%%";'
@@ -65,7 +65,7 @@ abstract class autoptimizeBase
 	protected function restore_noptimize($noptimize_in) {
 		if ( preg_match( '/%%NOPTIMIZE%%/', $noptimize_in ) ) { 
 			$noptimize_out = preg_replace_callback(
-				'#%%NOPTIMIZE%%(.*)%%NOPTIMIZE%%#is',
+				'#%%NOPTIMIZE%%(.*?)%%NOPTIMIZE%%#is',
 				create_function(
 					'$matches',
 					'return stripslashes(base64_decode($matches[1]));'
