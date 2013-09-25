@@ -1,0 +1,209 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Emilio Lpez
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Autoptimize\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/autoptimize\n"
+"POT-Creation-Date: 2009-10-19 21:41+0000\n"
+"PO-Revision-Date: 2013-09-15 10:38+0330\n"
+"Last-Translator: Hamed.T <lh4medl@gmail.com>\n"
+"Language-Team: http://basics.ir <ham3d.t@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"Language: Persian\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: classes/autoptimizeConfig.php:50
+msgid "Autoptimize Settings"
+msgstr "تنظیمات Autoptimize"
+
+#: classes/autoptimizeConfig.php:71
+msgid "HTML Options"
+msgstr "تنضیمات HTML"
+
+#: classes/autoptimizeConfig.php:74
+msgid "Optimize HTML Code?"
+msgstr "کد HTML بهینه سازی شوند؟"
+
+#: classes/autoptimizeConfig.php:78
+msgid "Keep HTML comments?"
+msgstr "کامنت های HTML را نگه داریم؟"
+
+#: classes/autoptimizeConfig.php:80
+msgid ""
+"Disabled by default. Enable this if you want HTML comments to remain in the "
+"page."
+msgstr ""
+"به صورت پیش فرض غیرفعال است. اگر می خواهید کامنت های HTML در صفحه باقی بماند "
+"این گزینه را فعال کنید."
+
+#: classes/autoptimizeConfig.php:84
+msgid "JavaScript Options"
+msgstr "تنظیمات javascript"
+
+#: classes/autoptimizeConfig.php:87
+msgid "Optimize JavaScript Code?"
+msgstr "کدهای javascript بهینه سازی شوند؟"
+
+#: classes/autoptimizeConfig.php:91
+msgid "Look for scripts only in &lt;head&gt;?"
+msgstr "فقط اسکریپت های موجود در &lt;head&gt; را بهینه سازی کنیم؟"
+
+#: classes/autoptimizeConfig.php:93 classes/autoptimizeConfig.php:116
+msgid ""
+"Disabled by default. If the cache gets big, you might want to enable this."
+msgstr ""
+"به صورت پیش فرض غیرفعال است. اگر حجم کش اسکریپت ها زیاد شد، شاید مایل باشید "
+"از این گزینه استفاده کنید."
+
+#: classes/autoptimizeConfig.php:96
+msgid "Add try-catch wrapping?"
+msgstr "سعی در درک کردن بسته بندی؟"
+
+#: classes/autoptimizeConfig.php:98
+msgid ""
+"Disabled by default. If your scripts break because of an script error, you "
+"might want to try this."
+msgstr ""
+"به صورت پیش فرض غیر فعال است. اگر اسکریپت های شما به دلیل خطای یک اسکریپت "
+"درست نمایش داده نشوند، شاید مایل باشید از این گزینه استفاده کنید."
+
+#: classes/autoptimizeConfig.php:101 classes/autoptimizeConfig.php:124
+msgid "Use YUI compression?"
+msgstr "از فشرده سازی YUI استفاده شود؟"
+
+#: classes/autoptimizeConfig.php:103 classes/autoptimizeConfig.php:126
+msgid ""
+"Disabled by default. Read [autoptimize]/yui/README.txt for more information."
+msgstr ""
+"به صورت پیش فرض غیر فعال است. اطلاعات بیشتر [autoptimize]/yui/README.txt"
+
+#: classes/autoptimizeConfig.php:107
+msgid "CSS Options"
+msgstr "تنظیمات CSS"
+
+#: classes/autoptimizeConfig.php:110
+msgid "Optimize CSS Code?"
+msgstr "کدهای CSS بهینه سازی شوند؟"
+
+#: classes/autoptimizeConfig.php:114
+msgid "Look for styles on just &lt;head&gt;?"
+msgstr "فقط استایل های موجود در تگ &lt;head&gt; بهینه سازی شوند؟"
+
+#: classes/autoptimizeConfig.php:119
+msgid "Generate data: URIs for images?"
+msgstr "تولید data URIs برای تصاویر؟"
+
+#: classes/autoptimizeConfig.php:121
+msgid "Disabled by default. Enable this to include images on the CSS itself."
+msgstr ""
+"به صورت پیش فرض غیرفعال است. برای پیوست تصاویر به CSS از این گزینه استفاده "
+"کنید."
+
+#: classes/autoptimizeConfig.php:130
+msgid "CDN Options"
+msgstr "تنظیمات CDN"
+
+#: classes/autoptimizeConfig.php:133
+msgid "Rewrite JavaScript URLs?"
+msgstr "بازنویسی آدرس javascript?"
+
+#: classes/autoptimizeConfig.php:135 classes/autoptimizeConfig.php:145
+#: classes/autoptimizeConfig.php:155
+msgid ""
+"Disabled by default. Do not enable this unless you know what you are doing."
+msgstr ""
+"به صورت پیش فرض غیر فعال است. این گزینه را فعال نکنید مگر اینکه از کار خود "
+"آگاهی داشته باشید."
+
+#: classes/autoptimizeConfig.php:138
+msgid "JavaScript Base URL"
+msgstr "آدرس پایه javascipt"
+
+#: classes/autoptimizeConfig.php:140 classes/autoptimizeConfig.php:150
+#: classes/autoptimizeConfig.php:160
+msgid ""
+"This is the new base URL that will be used when rewriting. It should point "
+"to the blog root directory."
+msgstr ""
+"این آدرس پایه جدید است که زمان بازنویسی استفاده خواهد شد. این باید در ریشه "
+"دایرکتوری بلاگ قرار بگیرد."
+
+#: classes/autoptimizeConfig.php:143
+msgid "Rewrite CSS URLs?"
+msgstr "بازنویسی آدرس CSS?"
+
+#: classes/autoptimizeConfig.php:148
+msgid "CSS Base URL"
+msgstr "آدرس پایه CSS"
+
+#: classes/autoptimizeConfig.php:153
+msgid "Rewrite Image URLs?"
+msgstr "بازنویسی آدرس تصاویر؟"
+
+#: classes/autoptimizeConfig.php:158
+msgid "Image Base URL"
+msgstr "آدرس پایه تصاویر"
+
+#: classes/autoptimizeConfig.php:164
+msgid "Cache Info"
+msgstr "اطلاعات کش"
+
+#: classes/autoptimizeConfig.php:167
+msgid "Cache folder"
+msgstr "فولدر کش"
+
+#: classes/autoptimizeConfig.php:171
+msgid "Can we write?"
+msgstr "قادر به نوشتن (write) هستیم؟"
+
+#: classes/autoptimizeConfig.php:172
+msgid "Yes"
+msgstr "بله"
+
+#: classes/autoptimizeConfig.php:172
+msgid "No"
+msgstr "خیر"
+
+#: classes/autoptimizeConfig.php:175
+msgid "Cached styles and scripts"
+msgstr "برای استایل ها و اسکریپت ها از کش استفاده شود"
+
+#: classes/autoptimizeConfig.php:179
+msgid "Do not compress cache files"
+msgstr "فایل های کش را فشرده سازی نکن"
+
+#: classes/autoptimizeConfig.php:181
+msgid ""
+"Disabled by default. Enable this if you want to compress the served files "
+"using your webserver."
+msgstr ""
+"به صورت پیش فرض غیر فعال است. اگر مایل هستید فایل های ارائه شده توسط وب سرور "
+"شما فشرده سازی شوند از این گزینه استفاده کنید."
+
+#: classes/autoptimizeConfig.php:188
+msgid "Save Changes"
+msgstr "ذخیره تنظیمات"
+
+#: classes/autoptimizeConfig.php:189
+msgid "Save Changes and Empty Cache"
+msgstr "ذخیره تنظیمات و تخلیه کش"
+
+#: classes/autoptimizeConfig.php:199
+msgid "Autoptimize Options"
+msgstr "تنظیمات Autoptimize"
+
+#: classes/autoptimizeConfig.php:236 classes/autoptimizeConfig.php:243
+msgid "Settings"
+msgstr "تنظیمات"
+
+#. Description of an extension
+msgid ""
+"Optimizes your website, concatenating the CSS and JavaScript code, and "
+"compressing it."
+msgstr "بهینه سازی وبسایت، الحاق کدهای Javascript و CSS و فشرده سازی."
