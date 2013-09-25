@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class autoptimizeConfig
 {
@@ -85,6 +86,11 @@ class autoptimizeConfig
 <?php _e('Disabled by default. If the cache gets big, you might want to enable this.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top">
+<th scope="row"><?php _e('Force JavaScript in &lt;head&gt;?','autoptimize'); ?></th>
+<td><label for="autoptimize_js_forcehead"><input type="checkbox" name="autoptimize_js_forcehead" <?php echo get_option('autoptimize_js_forcehead')?'checked="checked" ':''; ?>/>
+<?php _e('Disabled by default. For performance reasons JavaScript is best put at the end of the HTML, but in some circumstances this breaks things. You can in that case check this option to add JavaScript to the &lt;head&gt; section.','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top">
 <th scope="row"><?php _e('Add try-catch wrapping?','autoptimize'); ?></th>
 <td><label for="autoptimize_js_trycatch"><input type="checkbox" name="autoptimize_js_trycatch" <?php echo get_option('autoptimize_js_trycatch')?'checked="checked" ':''; ?>/>
 <?php _e('Disabled by default. If your scripts break because of an script error, you might want to try this.','autoptimize'); ?></label></td>
@@ -92,7 +98,7 @@ class autoptimizeConfig
 <tr valign="top">
 <th scope="row"><?php _e('Use YUI compression?','autoptimize'); ?></th>
 <td><label for="autoptimize_js_yui"><input type="checkbox" name="autoptimize_js_yui" <?php echo get_option('autoptimize_js_yui')?'checked="checked" ':''; ?>/>
-<?php _e('Disabled by default. Read [autoptimize]/yui/README.txt for more information.','autoptimize'); ?></label></td>
+<?php _e('<b>Deprecated!</b> Disabled by default. Read [autoptimize]/yui/README.txt for more information.','autoptimize'); ?></label></td>
 </tr>
 </table>
 
@@ -115,11 +121,11 @@ class autoptimizeConfig
 <tr valign="top">
 <th scope="row"><?php _e('Use YUI compression?','autoptimize'); ?></th>
 <td><label for="autoptimize_css_yui"><input type="checkbox" name="autoptimize_css_yui" <?php echo get_option('autoptimize_css_yui')?'checked="checked" ':''; ?>/>
-<?php _e('Disabled by default. Read [autoptimize]/yui/README.txt for more information.','autoptimize'); ?></label></td>
+<?php _e('<b>Deprecated!</b> Disabled by default. Read [autoptimize]/yui/README.txt for more information.','autoptimize'); ?></label></td>
 </tr>
 </table>
 
-<h3><?php _e('CDN Options','autoptimize'); ?></h3>
+<h3><?php _e('CDN Options','autoptimize'); ?> (Deprecated!)</h3>
 <table class="form-table"> 
 <tr valign="top">
 <th scope="row"><?php _e('Rewrite JavaScript URLs?','autoptimize'); ?></th>
@@ -254,6 +260,7 @@ class autoptimizeConfig
 		register_setting('autoptimize','autoptimize_js_exclude');
 		register_setting('autoptimize','autoptimize_js_trycatch');
 		register_setting('autoptimize','autoptimize_js_justhead');
+		register_setting('autoptimize','autoptimize_js_forcehead');
 		register_setting('autoptimize','autoptimize_js_yui');
 		register_setting('autoptimize','autoptimize_css');
 		register_setting('autoptimize','autoptimize_css_justhead');
@@ -272,7 +279,6 @@ class autoptimizeConfig
 	public function setmeta($links,$file=null)
 	{
 		//Inspired on http://wpengineer.com/meta-links-for-wordpress-plugins/
-		
 		//Do it only once - saves time
 		static $plugin;
 		if(empty($plugin))
@@ -307,6 +313,7 @@ class autoptimizeConfig
 				'autoptimize_js_exclude' => "s_sid, smowtion_size, sc_project, WAU_, wau_add, comment-form-quicktags, edToolbar, ch_client",
 				'autoptimize_js_trycatch' => 0,
 				'autoptimize_js_justhead' => 0,
+				'autoptimize_js_forcehead' => 0,
 				'autoptimize_js_yui' => 0,
 				'autoptimize_css' => 0,
 				'autoptimize_css_justhead' => 0,
