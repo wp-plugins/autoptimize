@@ -1,13 +1,14 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 abstract class autoptimizeBase
 {
 	protected $content = '';
 	
 	public function __construct($content)
 	{
-		$this->content = $content;
-		//Best place to catch errors
+			$this->content = $content;
+			//Best place to catch errors
 	}
 	
 	//Reads the page and collects tags
@@ -76,5 +77,16 @@ abstract class autoptimizeBase
 			$noptimize_out = $noptimize_in;
 		}
 		return $noptimize_out;
+	}
+	
+	protected function url_replace_cdn($url) {
+		$site_url = site_url();
+		if (!empty($this->cdn_url)) {
+			// this check is done on admin-screen
+			// if (preg_match("/^(https?)?:\/\/([\da-z\.-]+)\.([\da-z\.]{2,6})([\/\w \.-]*)*\/?$/",$this->cdn_url)) {
+				$url=str_replace($site_url,rtrim($this->cdn_url,'/'),$url);
+			// }
+		}
+		return $url;
 	}
 }

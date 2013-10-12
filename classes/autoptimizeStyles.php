@@ -1,5 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 class autoptimizeStyles extends autoptimizeBase
 {
 	private $css = array();
@@ -8,7 +9,6 @@ class autoptimizeStyles extends autoptimizeBase
 	private $restofcontent = '';
 	private $mhtml = '';
 	private $datauris = false;
-	private $yui = false;
 	private $hashmap = array();
 	
 	//Reads the page and collects style tags
@@ -22,13 +22,24 @@ class autoptimizeStyles extends autoptimizeBase
 			$this->restofcontent = $content[1];
 		}
 		
+		// what CSS shouldn't be autoptimized
+		$excludeCSS = $options['css_exclude'];
+		if ($excludeCSS!=="") {
+			$this->dontmove = array_filter(array_map('trim',explode(",",$excludeCSS)));
+		}
+
+		// should we defer css?
+		$this->defer = $options['defer'];
+		
+		// get cdn url
+		$this->cdn_url = $options['cdn_url'];
+		
 		//Store data: URIs setting for later use
 		$this->datauris = $options['datauris'];
 		
-		//Do we use yui?
-		$this->yui = $options['yui'];
 		// noptimize me
 		$this->content = $this->hide_noptimize($this->content);
+
 		//Save IE hacks
 		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
 		
@@ -37,8 +48,9 @@ class autoptimizeStyles extends autoptimizeBase
 		{
 			foreach($matches[0] as $tag)
 			{
-				if (strpos($tag,"admin-bar.min.css")===false) {
-				//Get the media
+				if ($this->ismovable($tag)) {
+				
+				// Get the media
 				if(strpos($tag,'media=')!==false)
 				{
 					preg_match('#media=(?:"|\')([^>]*)(?:"|\')#Ui',$tag,$medias);
@@ -103,6 +115,7 @@ class autoptimizeStyles extends autoptimizeBase
 				if($css !== false && file_exists($css) && is_readable($css))
 				{
 					$css = $this->fixurls($css,file_get_contents($css));
+					$css = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$css);
 				}else{
 					//Couldn't read CSS. Maybe getpath isn't working?
 					$css = '';
@@ -155,6 +168,7 @@ class autoptimizeStyles extends autoptimizeBase
 					if(file_exists($path) && is_readable($path))
 					{
 						$code = addcslashes($this->fixurls($path,file_get_contents($path)),"\\");
+						$code = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$code);
 						$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
 					}else{
 						//getpath is not working?
@@ -245,11 +259,12 @@ class autoptimizeStyles extends autoptimizeBase
 			}
 			
 			//Minify
-			if($this->yui == false && class_exists('Minify_CSS_Compressor'))
-			{
+			if (class_exists('Minify_CSS_Compressor')) {
+				// legacy
 				$code = trim(Minify_CSS_Compressor::process($code));
-			}elseif($this->yui == true && autoptimizeYUI::available()){
-				$code = autoptimizeYUI::compress('css',$code);
+			} else if(class_exists('CSSmin')) {
+				$cssmin = new CSSmin();
+				$code = trim($cssmin->run($code));
 			}
 			
 			$this->hashmap[md5($code)] = $hash;
@@ -313,11 +328,26 @@ class autoptimizeStyles extends autoptimizeBase
 			$this->restofcontent = '';
 		}
 		
+		if($this->defer == true) {
+			$deferredCssBlock = "<script>function lCss(url,media) {var d=document;var l=d.createElement('link');l.rel='stylesheet';l.type='text/css';l.href=url;l.media=media; d.getElementsByTagName('head')[0].appendChild(l);}function deferredCSS() {";
+		}
+		
 		//Add the new stylesheets
 		foreach($this->url as $media => $url)
 		{
-			// fgo: these were added before </head> but that overrides iehack-stylesheets, so adding before <title>
-			$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
+			$url = $this->url_replace_cdn($url);
+			
+			//Add the stylesheet either deferred (import at bottom) or normal links in head
+			if($this->defer == true) {
+				$deferredCssBlock .= "lCss('".$url."','".$media."');";
+			} else {
+				$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
+			}
+		}
+		
+		if($this->defer == true) {
+			$deferredCssBlock .= "}if(window.addEventListener){window.addEventListener('DOMContentLoaded',deferredCSS,false);}else{window.onload = deferredCSS;}</script>";
+			$this->content = str_replace('</body>',$deferredCssBlock.'</body>',$this->content);
 		}
 
 		//Return the modified stylesheet
@@ -360,4 +390,20 @@ class autoptimizeStyles extends autoptimizeBase
 		
 		return $code;
 	}
+	
+	private function ismovable($tag)
+	{
+		foreach($this->dontmove as $match)
+		{
+			if(strpos($tag,$match)!==false)
+			{
+				//Matched something
+				return false;
+			}
+		}
+		
+		//If we're here it's safe to move
+		return true;
+	}
+
 }

@@ -1,18 +1,18 @@
 === Autoptimize ===
 Contributors: futtta, turl
-Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, performance, pagespeed, booster, multisite
+Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite
 Requires at least: 2.7
 Tested up to: 3.6.1
 Stable tag: 1.6.6
 
-Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS and CSS.
+Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
 
 == Description ==
 
-Autoptimize makes optimizing your site really easy. It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight.
+Autoptimize makes optimizing your site really easy. It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight. There are advanced options available to enable you to tailor Autoptimize to each and every site's specific need.
 
 If you consider performance important, we recommend the use of a caching-plugin such as e.g. [WP Super Cache](http://wordpress.org/extend/plugins/wp-super-cache/) or 
-[HyperCache](http://wordpress.org/extend/plugins/hyper-cache/).
+[HyperCache](http://wordpress.org/extend/plugins/hyper-cache/) to complement Autoptimize.
 
 == Installation ==
 
@@ -30,6 +30,23 @@ It concatenates all scripts and styles, minifies and compresses them, adds expir
 
 Yes, most of the time, but there will always be exceptions. Although Autoptimize goes through great lengths to work with as many themes and plugins possible, there undoubtably are circumstances in which Autoptimize will not work to the full extent (full HTML, JS and CSS optimization). See "Troubleshooting" below for info on how to proceed if you encounter issues.
 
+= What is the use of deferring CSS? =
+
+CSS in general should go in the head of the document. Recently a.o. Google started promoting deferring non-essential CSS, while inlining those styles needed to build the page above the fold. This is especially important to render pages as quickly as possible on mobile devices. To implement this, you'll need to:
+
+* identify the essential CSS to style your average page (be strict, keep this as light a possible)
+* minimize that using one of the many online minimizing tools
+* wrap the minimized CSS between style-tags
+* wrap style-block between noptimize-tags (see above)
+* put the resulting CSS in the head of your page (should be in the header.php file of your theme)
+* check the option to defer CSS
+
+= How does CDN work? =
+
+Starting from version 1.7.0, CDN is activated upon entering the CDN blog root directory (e.g. http://cdn.example.net/wordpress/). If that URL is present, it will used for all Autoptimize-generated files (i.e. aggregated CSS and JS).
+
+If you want your uploaded images to be on the CDN as well, you can change the upload_url_path in your WordPress configuration (/wp-admin/options.php) to the target CDN upload directory (e.g. http://cdn.example.net/wordpress/wp-content/uploads/). Do take into consideration this only works for images uploaded from that point onwards, not for images that already were uploaded. Thanks to [BeautyPirate for the tip](http://wordpress.org/support/topic/please-don%c2%b4t-remove-cdn?replies=15#post-4720048)!
+
 = Does Autoptimize work with BuddyPress? =
 
 Based on feedback received from BuddyPress users, CSS and JS-Autoptimization do not seem to work correctly, leaving you with only HTML optimizations. I will look into this in the future and am happy to take hints or code-improvements the help with BuddyPress compatibility in the mean time.
@@ -38,20 +55,24 @@ Based on feedback received from BuddyPress users, CSS and JS-Autoptimization do 
 
 There have been reports of sightings of javascript errors when using Autoptimize together with WP SlimStat. Both [Camu (WP SlimStat developer)](http://profiles.wordpress.org/coolmann/) and I have installed both plugins on test-environments and [found no proof of such incompatibility](http://wordpress.org/support/topic/dropdown-menus-dont-work-when-slimstat-is-enabled?replies=14#post-4086894). Our common conclusion is that there are rare cases in which yet another theme or plugin's JavaScript are triggering these errors. If you do encounter JavaScript-errors when you have both WP SlimStat and Autoptimize installed, add "SlimStatParams, wp-slimstat.js" in the "Exclude scripts from autoptimize:" option on the admin-page and all should be well.
 
-= Why are some options marked as Deprecated? =
-YUI compression and the CDN options are marked as deprecated to indicate that this functionality will be removed for the next major version (probably 1.7.0). YUI compression was pretty exotic and required one to install JAVA and the YUI compression software. CDN options are deprecated as well; CDN isn't core functionality and can better be accomplished using e.g. [WP Super Cache](http://wordpress.org/extend/plugins/wp-super-cache/) (which is a must-have companion of Autoptimize anyhow).
-
 = Configuring & Troubleshooting Autoptimize =
 
-After having installed and activated the plugin, you'll have access to an admin page where you can to enable HTML, CSS and JavaScript optimization. According to your liking, you can start of just enabling all of them, or if you're more cautious one at a time.
+After having installed and activated the plugin, you'll have access to an admin page where you can to enable HTML, CSS and JavaScript optimization. According to your liking, you can start of just enabling all of them, or if you're more cautious one at a time. 
 
-If your blog doens't function normally after having turned on Autoptimize, here are some pointers to identify & solve such issues:
-* In case your blog looks weird, i.e. when the layout gets messed up, there is problem with CSS optimization. In this case you can turn on the option "Look for styles on just head?" and see if that solves the problem. You can also force CSS not to be aggregated by wrapping it in noptimize-tags in your theme or widget.
+If your blog doesn't function normally after having turned on Autoptimize, here are some pointers to identify & solve such issues using "advanced settings":
+
+* In case your blog looks weird, i.e. when the layout gets messed up, there is problem with CSS optimization. In this case you can turn on the option "Look for styles on just head?" and see if that solves the problem. You can also force CSS not to be aggregated by wrapping it in noptimize-tags in your theme or widget or by adding filename (for external stylesheets) or string (for inline styles) to the exclude-list.
 * In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and/or "Force JavaScript in <head>?" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript or excluding it from within your template files or widgets by wrapping the code between noptimize-tags. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
+* If your theme uses jQuery, you can try either forcing all in head or excluding jquery(-min).js (and jQuery-plugins if needed).
 * If you can't get either CSS or JS optimization working, you can off course always continue using the other two optimization-techniques.
 * If you tried the troubleshooting tips above and you still can't get CSS and JS working at all, you can ask for support on the [WordPress Autoptimize support forum](http://wordpress.org/support/plugin/autoptimize). See below for a description of what information you should provide in your "trouble ticket"
 
-= How can I exclude some CSS/JS/HTML from being autoptimized? =
+= How does "Exclude from autoptimize" work? =
+
+You can exclude both JS and CSS from being processed by Autoptimize by using the appropriate settings in the admin-screen. If you want to exclude an external file from being Autoptimized, add the filename (e.g. jquery.js). If you want to exclude inline CSS or JS, add a (unique) string that is in that block of code.
+
+= What is noptimize? =
+
 Starting with version 1.6.6 Autoptimize excludes everything inside noptimize tags, e.g.:
 `<!--noptimize--><script>alert('this will not get autoptimized');</script><!--/noptimize-->`
 
@@ -70,6 +91,18 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.7.0 =
+* New: exclude CSS
+* New: defer CSS
+* Updated minimizing components (JSMin & YUI PHP CSSMin)
+* Updated admin-page, hiding advanced configuration options
+* Updated CDN-support for added simplicity (code & UI-wise)
+* Updated translations provided by ...
+* Removed support for YUI
+* Flush HTML caching plugin's cache when flushing Autoptimize's one
+* fix for BOM marker in CSS-files [as seen in Frontier theme](http://wordpress.org/support/topic/sidebar-problem-42)
+* misc. smaller improvements
 
 = 1.6.6 =
 * New: disable autoptimizatoin by putting part of your HTML, JS or CSS in between noptimize-tags, e.g.;
