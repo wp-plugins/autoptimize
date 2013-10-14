@@ -31,7 +31,7 @@ abstract class autoptimizeBase
 			$url = $siteurl.$url;
 		}
         	$path = str_replace(WP_ROOT_URL,'',$url);
-	        if(preg_match('#^(https?|ftp)://#i',$path))
+	        if(preg_match('#^((https?|ftp):)?//#i',$path))
         	{
                 	/** External script/css (adsense, etc) */
             		return false;
@@ -82,7 +82,7 @@ abstract class autoptimizeBase
 	protected function url_replace_cdn($url) {
 		$site_url = site_url();
 		if (!empty($this->cdn_url)) {
-			// this check is done on admin-screen
+			// this check is too expensive, is done on admin-screen
 			// if (preg_match("/^(https?)?:\/\/([\da-z\.-]+)\.([\da-z\.]{2,6})([\/\w \.-]*)*\/?$/",$this->cdn_url)) {
 				$url=str_replace($site_url,rtrim($this->cdn_url,'/'),$url);
 			// }

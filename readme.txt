@@ -101,7 +101,8 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Updated translations provided by ...
 * Removed support for YUI
 * Flush HTML caching plugin's cache when flushing Autoptimize's one
-* fix for BOM marker in CSS-files [as seen in Frontier theme](http://wordpress.org/support/topic/sidebar-problem-42)
+* fix for BOM marker in CSS-files [as seen in Frontier theme](http://wordpress.org/support/topic/sidebar-problem-42), kudo's to [Download Converter](http://convertertoolz.com/) for reporting!
+* fix for [protocol-less 3rd party scripts disappearing](http://wordpress.org/support/topic/javascript-optimize-breaks-twentythirteen-mobile-menu), thanks for reporting p33t3r!
 * misc. smaller improvements
 
 = 1.6.6 =
