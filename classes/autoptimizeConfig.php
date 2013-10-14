@@ -167,9 +167,9 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <td><?php echo autoptimizeCache::stats(); ?></td>
 </tr>
 <tr valign="top" class="hidden ao_adv">
-<th scope="row"><?php _e('Do not compress cache files','autoptimize'); ?></th>
+<th scope="row"><?php _e('Save aggregated script/css as static files?','autoptimize'); ?></th>
 <td><label for="autoptimize_cache_nogzip"><input type="checkbox" name="autoptimize_cache_nogzip" <?php echo get_option('autoptimize_cache_nogzip')?'checked="checked" ':''; ?>/>
-<?php _e('Enable this if you want to compress the served files using your webserver.','autoptimize'); ?></label></td>
+<?php _e('Enable this if your webserver can handle the compression and expiry.','autoptimize'); ?></label></td>
 </tr>
 </table>
 <input type="hidden" id="autoptimize_show_adv" name="autoptimize_show_adv" value="<?php echo get_option('autoptimize_show_adv','0'); ?>">
