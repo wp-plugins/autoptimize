@@ -2,7 +2,7 @@
 Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite
 Requires at least: 2.7
-Tested up to: 3.6.1
+Tested up to: 3.7.0
 Stable tag: 1.6.6
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
@@ -101,14 +101,14 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * New: defer CSS
 * Updated minimizing components (JSMin & YUI PHP CSSMin)
 * Updated admin-page, hiding advanced configuration options
-* Updated CDN-support for added simplicity (code & UI-wise)
+* Updated CDN-support for added simplicity (code & UI-wise), including changing background image url in CSS
 * Updated translations provided by ...
 * Removed support for YUI
 * Flush HTML caching plugin's cache when flushing Autoptimize's one
 * fix for BOM marker in CSS-files [as seen in Frontier theme](http://wordpress.org/support/topic/sidebar-problem-42), kudo's to [Download Converter](http://convertertoolz.com/) for reporting!
 * fix for [protocol-less 3rd party scripts disappearing](http://wordpress.org/support/topic/javascript-optimize-breaks-twentythirteen-mobile-menu), thanks for reporting p33t3r!
 * fix for stylesheets without type="text/css" not being autoptimized as reported by [renzo](http://cocobeanproductions.com/)
-* misc. smaller improvements
+* tested with WordPress 3.7 beta2 (admin-bar.min.js added to automatically excluded scripts)
 
 = 1.6.6 =
 * New: disable autoptimizatoin by putting part of your HTML, JS or CSS in between noptimize-tags, e.g.;

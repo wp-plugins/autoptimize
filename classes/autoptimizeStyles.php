@@ -204,15 +204,19 @@ class autoptimizeStyles extends autoptimizeBase
 			}
 			unset($ccheck);
 			
-			$imgreplace = array();
 			//Do the imaging!
-			if($this->datauris == true && function_exists('base64_encode') && preg_match_all('#(background[^;}]*url\((?!data)(.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches))
+			$imgreplace = array();
+			preg_match_all('#(background[^;}]*url\((?!data)(.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches);
+			
+			if(($this->datauris == true) && (function_exists('base64_encode')) && (is_array($matches)))
 			{
 				foreach($matches[2] as $count => $quotedurl)
 				{
 					$url = trim($quotedurl," \t\n\r\0\x0B\"'");
+
 					// fgo: if querystring, remove it from url
 					if (strpos($url,'?') !== false) { $url = reset(explode('?',$url)); }
+					
 					$path = $this->getpath($url);
 
 					// fgo: jpe?j should be jpe?g I guess + 5KB seems like a lot, lower to 2.5KB
@@ -247,16 +251,26 @@ class autoptimizeStyles extends autoptimizeBase
 						$base64data = base64_encode(file_get_contents($path));
 						
 						//Add it to the list for replacement
-						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$dataurihead.$base64data,$matches[1][$count]).";\n*".str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
+						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$dataurihead.$base64data,$matches[1][$count]).';\n*'.str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
 						
 						//Store image on the mhtml document
 						$this->mhtml .= "--_\r\nContent-Location:{$mhtmlcount}\r\nContent-Transfer-Encoding:base64\r\n\r\n{$base64data}\r\n";
 						$mhtmlcount++;
 					}
 				}
-				//Replace the images
-				$code = str_replace(array_keys($imgreplace),array_values($imgreplace),$code);
+			} else if ((is_array($matches)) && (!empty($this->cdn_url))) {
+				// change background image urls to cdn-url
+				foreach($matches[2] as $count => $quotedurl)
+				{
+					$url = trim($quotedurl," \t\n\r\0\x0B\"'");
+					$cdn_url=$this->url_replace_cdn($url);
+					$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$cdn_url,$matches[1][$count]);
+				}
 			}
+			
+			if(!empty($imgreplace)) {
+				$code = str_replace(array_keys($imgreplace),array_values($imgreplace),$code);
+				}
 			
 			//Minify
 			if (class_exists('Minify_CSS_Compressor')) {
