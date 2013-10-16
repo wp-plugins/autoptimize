@@ -107,6 +107,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Flush HTML caching plugin's cache when flushing Autoptimize's one
 * fix for BOM marker in CSS-files [as seen in Frontier theme](http://wordpress.org/support/topic/sidebar-problem-42), kudo's to [Download Converter](http://convertertoolz.com/) for reporting!
 * fix for [protocol-less 3rd party scripts disappearing](http://wordpress.org/support/topic/javascript-optimize-breaks-twentythirteen-mobile-menu), thanks for reporting p33t3r!
+* fix for stylesheets without type="text/css" not being autoptimized as reported by [renzo](http://cocobeanproductions.com/)
 * misc. smaller improvements
 
 = 1.6.6 =
