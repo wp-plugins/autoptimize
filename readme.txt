@@ -16,9 +16,11 @@ If you consider performance important, we recommend the use of a caching-plugin 
 
 == Installation ==
 
-1. Upload the `autoptimize` folder to  to the `/wp-content/plugins/` directory
+Just install form your WordPress "Plugins|Add New" screen and all will be well. Manual installation is very straightforward as well:
+
+1. Upload the zip-file and unzip it in the /wp-content/plugins/ directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Go to `Settings -> Autoptimize` and enable the options you want. Generally this means "Optimize HTML/CSS/JavaScript", but if you experience problems you might want to disable some.
+1. Go to `Settings -> Autoptimize` and enable the options you want. Generally this means "Optimize HTML/ CSS/ JavaScript".
 
 == Frequently Asked Questions ==
 
@@ -43,7 +45,7 @@ CSS in general should go in the head of the document. Recently a.o. Google start
 
 = How does CDN work? =
 
-Starting from version 1.7.0, CDN is activated upon entering the CDN blog root directory (e.g. http://cdn.example.net/wordpress/). If that URL is present, it will used for all Autoptimize-generated files (i.e. aggregated CSS and JS).
+Starting from version 1.7.0, CDN is activated upon entering the CDN blog root directory (e.g. http://cdn.example.net/wordpress/). If that URL is present, it will used for all Autoptimize-generated files (i.e. aggregated CSS and JS), includinng background-images in the CSS (when not using data-uri's).
 
 If you want your uploaded images to be on the CDN as well, you can change the upload_url_path in your WordPress configuration (/wp-admin/options.php) to the target CDN upload directory (e.g. http://cdn.example.net/wordpress/wp-content/uploads/). Do take into consideration this only works for images uploaded from that point onwards, not for images that already were uploaded. Thanks to [BeautyPirate for the tip](http://wordpress.org/support/topic/please-don%c2%b4t-remove-cdn?replies=15#post-4720048)!
 
@@ -102,7 +104,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Updated minimizing components (JSMin & YUI PHP CSSMin)
 * Updated admin-page, hiding advanced configuration options
 * Updated CDN-support for added simplicity (code & UI-wise), including changing background image url in CSS
-* Updated translations provided by ...
+* Updated/ new translations provided for [French: wordpress-hebergement.fr](http://www.wordpress-hebergement.fr/), [Persian: Hamed Irani](http://basics.ir/), [Swedish: Jonathan Sulo](http://sulo.se/), [German: blog-it-solutions.de](http://www.blog-it-solutions.de/) and Dutch
 * Removed support for YUI
 * Flush HTML caching plugin's cache when flushing Autoptimize's one
 * fix for BOM marker in CSS-files [as seen in Frontier theme](http://wordpress.org/support/topic/sidebar-problem-42), kudo's to [Download Converter](http://convertertoolz.com/) for reporting!
