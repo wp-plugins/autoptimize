@@ -182,6 +182,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 </form>
 </div>
 <div style="float:right;width:30%" id="autoptimize_admin_feed">
+<div style="width:100%;margin:20px;"><strong><a href="http://blog.futtta.be/2013/10/21/do-not-donate-to-me/" target="_blank"><?php _e("Do not donate for this plugin!"); ?></a></strong></div>
         <div style="margin-left:10px;margin-top:-5px;">
                 <h3>
                         <?php _e("futtta about","autoptimize") ?>
@@ -234,8 +235,8 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 		jQuery.cookie(cookiename,id,{ expires: 365 });
 	}
 </script>
-
 </div>
+
 <?php
 	}
 	
