@@ -182,7 +182,6 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 </form>
 </div>
 <div style="float:right;width:30%" id="autoptimize_admin_feed">
-<div style="width:100%;margin:20px;"><strong><a href="http://blog.futtta.be/2013/10/21/do-not-donate-to-me/" target="_blank"><?php _e("Do not donate for this plugin!"); ?></a></strong></div>
         <div style="margin-left:10px;margin-top:-5px;">
                 <h3>
                         <?php _e("futtta about","autoptimize") ?>
@@ -194,6 +193,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
                 </h3>
                 <div id="futtta_feed"></div>
         </div>
+	<div style="float:right;margin:50px 15px;"><strong><a href="http://blog.futtta.be/2013/10/21/do-not-donate-to-me/" target="_blank"><img width="100px" height="85px" src="http://blog.futtta.be/wp-content/uploads/2013/10/do_not_donate_smallest.png" title="<?php _e("Do not donate for this plugin!"); ?>"></div>
 </div>
 
 <script type="text/javascript">
