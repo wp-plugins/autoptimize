@@ -56,7 +56,7 @@ If your webserver is properly configured to handle compression (gzip or deflate)
 
 = Does Autoptimize work with BuddyPress? =
 
-Based on feedback received from BuddyPress users, CSS and JS-Autoptimization do not seem to work correctly, leaving you with only HTML optimizations. I will look into this in the future and am happy to take hints or code-improvements the help with BuddyPress compatibility in the mean time.
+Based on earlier feedback received from BuddyPress users, CSS and JS-Autoptimization do not seem to work correctly, leaving you with only HTML optimizations. This might be due to problems in Autoptimize which have already been fixed, so feel free to give it a shot anyhow.
 
 = Compatibility with WP SlimSat =
 

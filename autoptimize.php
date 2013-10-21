@@ -34,14 +34,19 @@ $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
 	if ($autoptimize_db_version==="none") {
-        add_action('admin_notices', 'config_autoptimize_notice');
+        	add_action('admin_notices', 'autoptimize_install_config_notice');
 	} else if (strpos($autoptimize_db_version,"1.6.")!==false) {
 		// if user was on version 1.6.x, force advanced options to be shown by default
 		update_option('autoptimize_show_adv','1');
+
+		// and remove old options
 		$delete_options=array("autoptimize_cdn_css","autoptimize_cdn_css_url","autoptimize_cdn_js","autoptimize_cdn_js_url","autoptimize_cdn_img","autoptimize_cdn_img_url","autoptimize_css_yui","autoptimize_js_yui");
 		foreach ($delete_options as $del_opt) {
 			delete_option( $del_opt );
 		}
+
+		// and notify user to check result
+		add_action('admin_notices', 'autoptimize_update_config_notice');
 	}
 	
 	autoptimizeCache::clearall();
@@ -56,11 +61,18 @@ define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'))
 $plugin_dir = basename(dirname(__FILE__));
 load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localization',$plugin_dir.'/localization');
 
-function config_autoptimize_notice() {
+function autoptimize_install_config_notice() {
 	echo '<div class="updated"><p>';
 	_e('Thank you for installing and activating Autoptimize. Please configure it under "Settings" -> "Autoptimize" to start improving your site\'s performance.', 'autoptimize' );
 	echo '</p></div>';
 }
+
+function autoptimize_update_config_notice() {
+        echo '<div class="updated"><p>';
+	_e('Autoptimize has just been updated. Please <strong>test your site now</strong> and adapt Autoptimize config if needed.', 'autoptimize' );
+	echo '</p></div>';
+	}
+
 // Set up the buffering
 function autoptimize_start_buffering()
 {
