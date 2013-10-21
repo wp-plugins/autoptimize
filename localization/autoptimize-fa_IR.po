@@ -4,18 +4,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Autoptimize 1.7.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/autoptimize\n"
-"POT-Creation-Date: 2013-10-12 10:32:38+00:00\n"
+"POT-Creation-Date: 2013-10-21 07:38:13+00:00\n"
+"PO-Revision-Date: 2013-10-21 21:19+0330\n"
+"Last-Translator: Hamed.T <ham3d.t@gmail.com>\n"
+"Language-Team: http://basics.ir/ <ham3d.t@gmail.com>\n"
+"Language: Persian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2013-10-14 20:42+0330\n"
-"Last-Translator: Hamed.T <ham3d.t@gmail.com>\n"
-"Language-Team: http://basics.ir/ <ham3d.t@gmail.com>\n"
 "X-Generator: Poedit 1.5.7\n"
-"Language: Persian\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: autoptimize.php:61
+#: autoptimize.php:66
 msgid ""
 "Thank you for installing and activating Autoptimize. Please configure it "
 "under \"Settings\" -> \"Autoptimize\" to start improving your site's "
@@ -24,6 +24,14 @@ msgstr ""
 "از اینکه Autoptimize را نصب و فعال کردید متشکریم. لطفاً تنظیمات خود را در "
 "مسیر \"تنظیمات > Autoptimize\" انجام دهید تا کارایی و سرعت سایت شما افزایش "
 "یابد."
+
+#: autoptimize.php:72
+msgid ""
+"Autoptimize has just been updated. Please <strong>test your site now</"
+"strong> and adapt Autoptimize config if needed."
+msgstr ""
+"Autoptimize به روز رسانی شد. لطفاً <strong/>اکنون سایت خود را امتحان "
+"کنید<strong> و اگر لازم بود تنظیمات Autoptimize را تغییر دهید."
 
 #: classes/autoptimizeConfig.php:56
 msgid "Autoptimize Settings"
@@ -207,15 +215,14 @@ msgid "Cached styles and scripts"
 msgstr "استایل ها و اسکریپت های کش شده"
 
 #: classes/autoptimizeConfig.php:170
-msgid "Do not compress cache files"
-msgstr "فایل های کش را فشرده سازی نکن"
+msgid "Save aggregated script/css as static files?"
+msgstr "جمع و ذخیره اسکریپت/CSS در یک فایل ثابت(static)؟"
 
 #: classes/autoptimizeConfig.php:172
-msgid ""
-"Enable this if you want to compress the served files using your webserver."
+msgid "Enable this if your webserver can handle the compression and expiry."
 msgstr ""
-"اگر مایل هستید فایل های ارائه شده توسط وب سرور شما فشرده سازی شوند از این "
-"گزینه استفاده کنید."
+"اگر وب سرور شما می تواند فشرده سازی و کش فایل ها را انجام دهد این گزینه را "
+"فعال کنید."
 
 #: classes/autoptimizeConfig.php:178
 msgid "Save Changes"
@@ -225,29 +232,33 @@ msgstr "ذخیره تغییرات"
 msgid "Save Changes and Empty Cache"
 msgstr "ذخیره تغییرات و تخلیه کش"
 
-#: classes/autoptimizeConfig.php:187
+#: classes/autoptimizeConfig.php:185
+msgid "Do not donate for this plugin!"
+msgstr "به این افزونه کمک مالی نکنید!"
+
+#: classes/autoptimizeConfig.php:188
 msgid "futtta about"
 msgstr "درباره ی futtta"
 
 #. #-#-#-#-#  plugin.pot (Autoptimize 1.7.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: classes/autoptimizeConfig.php:189
+#: classes/autoptimizeConfig.php:190
 msgid "Autoptimize"
 msgstr "Autoptimize"
 
-#: classes/autoptimizeConfig.php:190
+#: classes/autoptimizeConfig.php:191
 msgid "WordPress"
 msgstr "وردپرس"
 
-#: classes/autoptimizeConfig.php:191
+#: classes/autoptimizeConfig.php:192
 msgid "Web Technology"
 msgstr "تکنولوژی وب"
 
-#: classes/autoptimizeConfig.php:244
+#: classes/autoptimizeConfig.php:245
 msgid "Autoptimize Options"
 msgstr "تنظیمات Autoptimize"
 
-#: classes/autoptimizeConfig.php:290 classes/autoptimizeConfig.php:297
+#: classes/autoptimizeConfig.php:291 classes/autoptimizeConfig.php:298
 msgid "Settings"
 msgstr "تنظیمات"
 
@@ -270,3 +281,12 @@ msgstr "Frank Goossens (futtta)"
 #. Author URI of the plugin/theme
 msgid "http://blog.futtta.be/"
 msgstr "http://blog.futtta.be/"
+
+#~ msgid "Do not compress cache files"
+#~ msgstr "فایل های کش را فشرده سازی نکن"
+
+#~ msgid ""
+#~ "Enable this if you want to compress the served files using your webserver."
+#~ msgstr ""
+#~ "اگر مایل هستید فایل های ارائه شده توسط وب سرور شما فشرده سازی شوند از این "
+#~ "گزینه استفاده کنید."
