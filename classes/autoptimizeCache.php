@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class autoptimizeCache
 {
@@ -83,14 +84,22 @@ class autoptimizeCache
 			}
 		}
 		
-		//Do we need to clean WP Super Cache's cache files?
-		if(function_exists('wp_cache_clear_cache'))
-		{
-			//Newer WP-Super-Cache
-			//See http://ocaoimh.ie/wp-super-cache-developers/
-			wp_cache_clear_cache();
-		}elseif(file_exists(WP_CONTENT_DIR.'/wp-cache-config.php') && function_exists('prune_super_cache')){
-			//Old WP-Super-Cache
+		// Do we need to clean any caching plugins cache-files?
+		if(function_exists('wp_cache_clear_cache'))	{
+			wp_cache_clear_cache(); // wp super cache
+		} else if ( function_exists('w3tc_pgcache_flush') ) {
+			w3tc_pgcache_flush(); //w3 total cache
+		} else if ( function_exists('hyper_cache_invalidate') ) {
+			hyper_cache_invalidate(); // hypercache
+		} else if ( function_exists('wp_fast_cache_bulk_delete_all') ) {
+			wp_fast_cache_bulk_delete_all(); // wp fast cache
+		} else if (class_exists("WpFastestCache")) {
+                	$wpfc = new WpFastestCache(); // wp fastest cache
+                	$wpfc -> deleteCache();
+		} else if ( class_exists("c_ws_plugin__qcache_purging_routines") ) {
+			c_ws_plugin__qcache_purging_routines::purge_cache_dir(); // quick cache
+		} else if(file_exists(WP_CONTENT_DIR.'/wp-cache-config.php') && function_exists('prune_super_cache')){
+			// fallback for WP-Super-Cache
 			global $cache_path;
 			prune_super_cache($cache_path.'supercache/',true);
 			prune_super_cache($cache_path,true);
