@@ -3,7 +3,7 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/autoptimize
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.7.0
+Version: 1.7.1
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
@@ -16,11 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
 
-// Plugin constants
+// Plugin dir constants (plugin url's defined later to accomodate domain mapped sites)
 define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
-define('AUTOPTIMIZE_CACHE_URL',content_url().'/cache/autoptimize/');
 define('AUTOPTIMIZE_CACHE_DELAY',true);
-define('WP_ROOT_URL',str_replace('/wp-content','',content_url()));
 define('WP_ROOT_DIR',str_replace('/wp-content','',WP_CONTENT_DIR));
 
 // Initialize the cache at least once
@@ -29,7 +27,7 @@ $conf = autoptimizeConfig::instance();
 /* Check if we're updating, in which case we need to flush the cache
 to avoid old versions of aggregated files lingering around */
 
-$autoptimize_version="1.7.0";
+$autoptimize_version="1.7.1";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
@@ -127,6 +125,16 @@ function autoptimize_start_buffering()
 //Action on end - 
 function autoptimize_end_buffering($content)
 {
+	// load URL constants as late as possible to allow domain mapper to kick in
+	if (function_exists(domain_mapping_siteurl)) {
+		define('AUTOPTIMIZE_WP_SITE_URL',domain_mapping_siteurl());
+		define('AUTOPTIMIZE_WP_CONTENT_URL',str_replace(get_original_url(AUTOPTIMIZE_WP_SITE_URL),AUTOPTIMIZE_WP_SITE_URL,content_url()));
+	} else {
+		define('AUTOPTIMIZE_WP_SITE_URL',site_url());
+		define('AUTOPTIMIZE_WP_CONTENT_URL',content_url());
+	}
+	define('AUTOPTIMIZE_CACHE_URL',AUTOPTIMIZE_WP_CONTENT_URL.'/cache/autoptimize/');
+	define('AUTOPTIMIZE_WP_ROOT_URL',str_replace('/wp-content','',AUTOPTIMIZE_WP_CONTENT_URL));
 	// Config element
 	$conf = autoptimizeConfig::instance();
 	

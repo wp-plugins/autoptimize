@@ -12,7 +12,7 @@ Autoptimize speeds up your website and helps you save bandwidth by aggregating a
 
 Autoptimize makes optimizing your site really easy. It concatenates all scripts and styles, minifies and compresses them, adds expires headers, caches them, and moves styles to the page head, and scripts to the footer. It also minifies the HTML code itself, making your page really lightweight. There are advanced options available to enable you to tailor Autoptimize to each and every site's specific need.
 
-If you consider performance important, we recommend the use of a caching-plugin such as e.g. [WP Super Cache](http://wordpress.org/extend/plugins/wp-super-cache/) or 
+If you consider performance important, you really should use a caching-plugin such as e.g. [WP Super Cache](http://wordpress.org/extend/plugins/wp-super-cache/) or 
 [HyperCache](http://wordpress.org/extend/plugins/hyper-cache/) to complement Autoptimize.
 
 == Installation ==
@@ -98,6 +98,13 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.7.1 =
+* New: support for mapped domains as suggested by [Michael for tiremoni.com](http://tiremoni.com/)
+* Added an .htaccess to wp-content/cache/autoptimize to overwrite other caching directives (fixing a problem with WP Super Cache's .htaccess really, [as reported](http://wordpress.org/support/topic/expiresmax-age-compatibility-with-supercache) by [Hugh of www.unitedworldschools.org](http://www.unitedworldschools.org/))
+* bugfix: Autoptimize broke data:uri's in CSS in some cases as reported by [Joseph from blog-it-solutions.de](http://www.blog-it-solutions.de/)
+* bugfix: avoid PHP notice if CSS exclusion list is empty
+* moved "do not donate"-image into plugin
 
 = 1.7.0 =
 * New: exclude CSS

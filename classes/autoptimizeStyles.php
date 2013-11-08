@@ -275,10 +275,15 @@ class autoptimizeStyles extends autoptimizeBase
 			//Minify
 			if (class_exists('Minify_CSS_Compressor')) {
 				// legacy
-				$code = trim(Minify_CSS_Compressor::process($code));
+				$tmp_code = trim(Minify_CSS_Compressor::process($code));
 			} else if(class_exists('CSSmin')) {
 				$cssmin = new CSSmin();
-				$code = trim($cssmin->run($code));
+				$tmp_code = trim($cssmin->run($code));
+			}
+			
+			if (!empty($tmp_code)) {
+				$code=$tmp_code;
+				unset($tmp_code);
 			}
 			
 			$this->hashmap[md5($code)] = $hash;
@@ -384,14 +389,13 @@ class autoptimizeStyles extends autoptimizeBase
 			{
 				//Remove quotes
 				$url = trim($url," \t\n\r\0\x0B\"'");
-				if(substr($url,0,1)=='/' || preg_match('#^(https?|ftp)://#i',$url))
+				if(substr($url,0,1)=='/' || preg_match('#^(https?://|ftp://|data:)#i',$url))
 				{
 					//URL is absolute
 					continue;
 				}else{
-					//relative URL. Let's fix it!
-					// $newurl = get_settings('home').str_replace('//','/',$dir.'/'.$url); //http://yourblog.com/wp-content/../image.png
-					$newurl = WP_ROOT_URL.str_replace('//','/',$dir.'/'.$url);
+					// relative URL
+					$newurl = AUTOPTIMIZE_WP_ROOT_URL.str_replace('//','/',$dir.'/'.$url);
 					$hash = md5($url);
 					$code = str_replace($matches[0][$k],$hash,$code);
 					$replace[$hash] = 'url('.$newurl.')';
@@ -407,12 +411,14 @@ class autoptimizeStyles extends autoptimizeBase
 	
 	private function ismovable($tag)
 	{
-		foreach($this->dontmove as $match)
-		{
-			if(strpos($tag,$match)!==false)
+		if (is_array($this->dontmove)) {
+			foreach($this->dontmove as $match)
 			{
-				//Matched something
-				return false;
+				if(strpos($tag,$match)!==false)
+				{
+					//Matched something
+					return false;
+				}
 			}
 		}
 		

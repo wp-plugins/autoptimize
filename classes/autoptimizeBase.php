@@ -26,11 +26,11 @@ abstract class autoptimizeBase
 	//Converts an URL to a full path
 	protected function getpath($url)
 	{
-		$siteurl = site_url();
-		if ((strpos($url,'//')===false) && (strpos($url,parse_url($siteurl,PHP_URL_HOST))===false)) {
-			$url = $siteurl.$url;
+		
+		if ((strpos($url,'//')===false) && (strpos($url,parse_url(AUTOPTIMIZE_WP_SITE_URL,PHP_URL_HOST))===false)) {
+			$url = AUTOPTIMIZE_WP_SITE_URL.$url;
 		}
-        	$path = str_replace(WP_ROOT_URL,'',$url);
+        	$path = str_replace(AUTOPTIMIZE_WP_ROOT_URL,'',$url);
 	        if(preg_match('#^((https?|ftp):)?//#i',$path))
         	{
                 	/** External script/css (adsense, etc) */
@@ -80,11 +80,11 @@ abstract class autoptimizeBase
 	}
 	
 	protected function url_replace_cdn($url) {
-		$site_url = site_url();
+		
 		if (!empty($this->cdn_url)) {
 			// this check is too expensive, is done on admin-screen
 			// if (preg_match("/^(https?)?:\/\/([\da-z\.-]+)\.([\da-z\.]{2,6})([\/\w \.-]*)*\/?$/",$this->cdn_url)) {
-				$url=str_replace($site_url,rtrim($this->cdn_url,'/'),$url);
+				$url=str_replace(AUTOPTIMIZE_WP_SITE_URL,rtrim($this->cdn_url,'/'),$url);
 			// }
 		}
 		return $url;
