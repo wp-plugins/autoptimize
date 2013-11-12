@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 class autoptimizeStyles extends autoptimizeBase
 {
 	private $css = array();
@@ -7,7 +9,6 @@ class autoptimizeStyles extends autoptimizeBase
 	private $restofcontent = '';
 	private $mhtml = '';
 	private $datauris = false;
-	private $yui = false;
 	private $hashmap = array();
 	
 	//Reads the page and collects style tags
@@ -21,22 +22,35 @@ class autoptimizeStyles extends autoptimizeBase
 			$this->restofcontent = $content[1];
 		}
 		
+		// what CSS shouldn't be autoptimized
+		$excludeCSS = $options['css_exclude'];
+		if ($excludeCSS!=="") {
+			$this->dontmove = array_filter(array_map('trim',explode(",",$excludeCSS)));
+		}
+
+		// should we defer css?
+		$this->defer = $options['defer'];
+		
+		// get cdn url
+		$this->cdn_url = $options['cdn_url'];
+		
 		//Store data: URIs setting for later use
 		$this->datauris = $options['datauris'];
 		
-		//Do we use yui?
-		$this->yui = $options['yui'];
-		
+		// noptimize me
+		$this->content = $this->hide_noptimize($this->content);
+
 		//Save IE hacks
 		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
 		
 		//Get <style> and <link>
-		if(preg_match_all('#(<style[^>]*>.*</style>)|(<link[^>]*text/css[^>]*>)#Usmi',$this->content,$matches))
+		if(preg_match_all('#(<style[^>]*>.*</style>)|(<link[^>]*stylesheet[^>]*>)#Usmi',$this->content,$matches))
 		{
 			foreach($matches[0] as $tag)
 			{
-				if (strpos($tag,"admin-bar.min.css")===false) {
-				//Get the media
+				if ($this->ismovable($tag)) {
+				
+				// Get the media
 				if(strpos($tag,'media=')!==false)
 				{
 					preg_match('#media=(?:"|\')([^>]*)(?:"|\')#Ui',$tag,$medias);
@@ -44,7 +58,8 @@ class autoptimizeStyles extends autoptimizeBase
 					$media = array();
 					foreach($medias as $elem)
 					{
-						$media[] = current(explode(' ',trim($elem),2));
+						// $media[] = current(explode(' ',trim($elem),2));
+						$media[] = $elem;
 					}
 				}else{
 					//No media specified - applies to all
@@ -100,6 +115,7 @@ class autoptimizeStyles extends autoptimizeBase
 				if($css !== false && file_exists($css) && is_readable($css))
 				{
 					$css = $this->fixurls($css,file_get_contents($css));
+					$css = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$css);
 				}else{
 					//Couldn't read CSS. Maybe getpath isn't working?
 					$css = '';
@@ -151,16 +167,8 @@ class autoptimizeStyles extends autoptimizeBase
 					$path = $this->getpath($url);
 					if(file_exists($path) && is_readable($path))
 					{
-						$code = $this->fixurls($path,file_get_contents($path));
-						/*$media = preg_replace('#^.*(?:\)|"|\')(.*)(?:\s|;).*$#','$1',$import);
-						$media = array_map('trim',explode(' ',$media));
-						if(empty($media))
-						{
-							$thiscss = [...] (Line under)
-						}else{
-							//media in @import - how should I handle these?
-							//TODO: Infinite recursion!
-						}*/
+						$code = addcslashes($this->fixurls($path,file_get_contents($path)),"\\");
+						$code = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$code);
 						$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
 					}else{
 						//getpath is not working?
@@ -196,15 +204,19 @@ class autoptimizeStyles extends autoptimizeBase
 			}
 			unset($ccheck);
 			
-			$imgreplace = array();
 			//Do the imaging!
-			if($this->datauris == true && function_exists('base64_encode') && preg_match_all('#(background[^;}]*url\((.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches))
+			$imgreplace = array();
+			preg_match_all('#(background[^;}]*url\((?!data)(.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches);
+			
+			if(($this->datauris == true) && (function_exists('base64_encode')) && (is_array($matches)))
 			{
 				foreach($matches[2] as $count => $quotedurl)
 				{
 					$url = trim($quotedurl," \t\n\r\0\x0B\"'");
+
 					// fgo: if querystring, remove it from url
 					if (strpos($url,'?') !== false) { $url = reset(explode('?',$url)); }
+					
 					$path = $this->getpath($url);
 
 					// fgo: jpe?j should be jpe?g I guess + 5KB seems like a lot, lower to 2.5KB
@@ -239,23 +251,39 @@ class autoptimizeStyles extends autoptimizeBase
 						$base64data = base64_encode(file_get_contents($path));
 						
 						//Add it to the list for replacement
-						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$dataurihead.$base64data,$matches[1][$count]).";\n*".str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
+						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$dataurihead.$base64data,$matches[1][$count]).';\n*'.str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
 						
 						//Store image on the mhtml document
 						$this->mhtml .= "--_\r\nContent-Location:{$mhtmlcount}\r\nContent-Transfer-Encoding:base64\r\n\r\n{$base64data}\r\n";
 						$mhtmlcount++;
 					}
 				}
-				//Replace the images
-				$code = str_replace(array_keys($imgreplace),array_values($imgreplace),$code);
+			} else if ((is_array($matches)) && (!empty($this->cdn_url))) {
+				// change background image urls to cdn-url
+				foreach($matches[2] as $count => $quotedurl)
+				{
+					$url = trim($quotedurl," \t\n\r\0\x0B\"'");
+					$cdn_url=$this->url_replace_cdn($url);
+					$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$cdn_url,$matches[1][$count]);
+				}
 			}
 			
+			if(!empty($imgreplace)) {
+				$code = str_replace(array_keys($imgreplace),array_values($imgreplace),$code);
+				}
+			
 			//Minify
-			if($this->yui == false && class_exists('Minify_CSS_Compressor'))
-			{
-				$code = trim(Minify_CSS_Compressor::process($code));
-			}elseif($this->yui == true && autoptimizeYUI::available()){
-				$code = autoptimizeYUI::compress('css',$code);
+			if (class_exists('Minify_CSS_Compressor')) {
+				// legacy
+				$tmp_code = trim(Minify_CSS_Compressor::process($code));
+			} else if(class_exists('CSSmin')) {
+				$cssmin = new CSSmin();
+				$tmp_code = trim($cssmin->run($code));
+			}
+			
+			if (!empty($tmp_code)) {
+				$code=$tmp_code;
+				unset($tmp_code);
 			}
 			
 			$this->hashmap[md5($code)] = $hash;
@@ -310,7 +338,8 @@ class autoptimizeStyles extends autoptimizeBase
 		//Restore IE hacks
 		// fgo: added stripslashes as e modifier escapes stuff
 		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);
-
+		// restore noptimize
+		$this->content = $this->restore_noptimize($this->content);
 		//Restore the full content
 		if(!empty($this->restofcontent))
 		{
@@ -318,11 +347,26 @@ class autoptimizeStyles extends autoptimizeBase
 			$this->restofcontent = '';
 		}
 		
+		if($this->defer == true) {
+			$deferredCssBlock = "<script>function lCss(url,media) {var d=document;var l=d.createElement('link');l.rel='stylesheet';l.type='text/css';l.href=url;l.media=media; d.getElementsByTagName('head')[0].appendChild(l);}function deferredCSS() {";
+		}
+		
 		//Add the new stylesheets
 		foreach($this->url as $media => $url)
 		{
-			// fgo: these were added before </head> but that overrides iehack-stylesheets, so adding before <title>
-			$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
+			$url = $this->url_replace_cdn($url);
+			
+			//Add the stylesheet either deferred (import at bottom) or normal links in head
+			if($this->defer == true) {
+				$deferredCssBlock .= "lCss('".$url."','".$media."');";
+			} else {
+				$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
+			}
+		}
+		
+		if($this->defer == true) {
+			$deferredCssBlock .= "}if(window.addEventListener){window.addEventListener('DOMContentLoaded',deferredCSS,false);}else{window.onload = deferredCSS;}</script>";
+			$this->content = str_replace('</body>',$deferredCssBlock.'</body>',$this->content);
 		}
 
 		//Return the modified stylesheet
@@ -332,24 +376,26 @@ class autoptimizeStyles extends autoptimizeBase
 	private function fixurls($file,$code)
 	{
 		// $file = str_replace(ABSPATH,'/',$file); //Sth like /wp-content/file.css
-		$file = str_replace(WP_CONTENT_DIR,'/',$file);
+		$file = str_replace(WP_ROOT_DIR,'/',$file);
 		$dir = dirname($file); //Like /wp-content
-		
-		if(preg_match_all('#url\((.*)\)#Usi',$code,$matches))
+
+		// quick fix for import-troubles in e.g. arras theme
+		$code=preg_replace('#@import ("|\')(.+?)\.css("|\')#','@import url("${2}.css")',$code);
+
+		if(preg_match_all('#url?\((?!data)(.*)\)#Usi',$code,$matches))
 		{
 			$replace = array();
 			foreach($matches[1] as $k => $url)
 			{
 				//Remove quotes
 				$url = trim($url," \t\n\r\0\x0B\"'");
-				if(substr($url,0,1)=='/' || preg_match('#^(https?|ftp)://#i',$url))
+				if(substr($url,0,1)=='/' || preg_match('#^(https?://|ftp://|data:)#i',$url))
 				{
 					//URL is absolute
 					continue;
 				}else{
-					//relative URL. Let's fix it!
-					// $newurl = get_settings('home').str_replace('//','/',$dir.'/'.$url); //http://yourblog.com/wp-content/../image.png
-					$newurl = WP_CONTENT_URL.str_replace('//','/',$dir.'/'.$url);
+					// relative URL
+					$newurl = AUTOPTIMIZE_WP_ROOT_URL.str_replace('//','/',$dir.'/'.$url);
 					$hash = md5($url);
 					$code = str_replace($matches[0][$k],$hash,$code);
 					$replace[$hash] = 'url('.$newurl.')';
@@ -362,4 +408,22 @@ class autoptimizeStyles extends autoptimizeBase
 		
 		return $code;
 	}
+	
+	private function ismovable($tag)
+	{
+		if (is_array($this->dontmove)) {
+			foreach($this->dontmove as $match)
+			{
+				if(strpos($tag,$match)!==false)
+				{
+					//Matched something
+					return false;
+				}
+			}
+		}
+		
+		//If we're here it's safe to move
+		return true;
+	}
+
 }
