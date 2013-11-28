@@ -169,7 +169,7 @@ class autoptimizeStyles extends autoptimizeBase
 					if (file_exists($path) && is_readable($path)) {
 						$code = addcslashes($this->fixurls($path,file_get_contents($path)),"\\");
 						$code = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$code);
-						if(!empty($code) {
+						if(!empty($code)) {
 							$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
 							$import_ok=true;
 						}
