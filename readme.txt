@@ -3,7 +3,7 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
-Tested up to: 3.7
+Tested up to: 3.8
 Stable tag: 1.7.1
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
@@ -98,6 +98,11 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.7.2 =
+* improvement: extra checks in CSS @import-handling + move import rules to top of CSS if not imported successfully, based a.o. on bug reports [by ozum](http://wordpress.org/support/topic/zero-lenght-file-with-css-optimization) and by [Peter Stolwijk](http://wordpress.org/support/topic/cant-activate-plugin-22?replies=13#post-4891377)
+* improvement: check if JS and CSS minifier classes exist and only load if they don't to avoid possible conflicts with other themes or plugins that already loaded minifiers
+* tested and approved for WordPress 3.8 (beta1)
 
 = 1.7.1 =
 * New: support for mapped domains as suggested by [Michael for tiremoni.com](http://tiremoni.com/)

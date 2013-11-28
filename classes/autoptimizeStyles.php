@@ -165,15 +165,20 @@ class autoptimizeStyles extends autoptimizeBase
 				{
 					$url = trim(preg_replace('#^.*((?:https?|ftp)://.*\.css).*$#','$1',$import)," \t\n\r\0\x0B\"'");
 					$path = $this->getpath($url);
-					if(file_exists($path) && is_readable($path))
-					{
+					$import_ok=false;
+					if (file_exists($path) && is_readable($path)) {
 						$code = addcslashes($this->fixurls($path,file_get_contents($path)),"\\");
 						$code = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$code);
-						$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
-					}else{
-						//getpath is not working?
-						//Encode so preg_match doesn't see it
-						$thiscss = str_replace($import,'/*IMPORT*/'.base64_encode($import).'/*IMPORT*/',$thiscss);
+						if(!empty($code) {
+							$thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
+							$import_ok=true;
+						}
+					}
+
+					if (!$import_ok) {
+						// external imports and general fall-back
+						$external_imports .= $import;
+						$thiscss = str_replace($import,'',$thiscss);
 						$fiximports = true;
 					}
 				}
@@ -181,10 +186,10 @@ class autoptimizeStyles extends autoptimizeBase
 				$thiscss = preg_replace('#/\*FILESTART2\*/#','/*FILESTART*/',$thiscss);
 			}
 			
-			//Recover imports
+			// add external imports to top of aggregated CSS
 			if($fiximports)
 			{
-				$thiscss = preg_replace('#/\*IMPORT\*/(.*)/\*IMPORT\*/#Use','base64_decode("$1")',$thiscss);
+				$thiscss=$external_imports.$thiscss;
 			}
 		}
 		unset($thiscss);

@@ -3,7 +3,7 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/autoptimize
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.7.1
+Version: 1.7.2
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
@@ -27,7 +27,7 @@ $conf = autoptimizeConfig::instance();
 /* Check if we're updating, in which case we need to flush the cache
 to avoid old versions of aggregated files lingering around */
 
-$autoptimize_version="1.7.1";
+$autoptimize_version="1.7.2";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
@@ -97,10 +97,12 @@ function autoptimize_start_buffering()
 	if($conf->get('autoptimize_js'))
 	{
 		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeScripts.php');
-		if (defined('AUTOPTIMIZE_LEGACY_MINIFIERS')) {
-			@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/jsmin-1.1.1.php');
-		} else {
-			@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/minify-2.1.7-jsmin.php');
+		if (!class_exists('JSMin')) {
+			if (defined('AUTOPTIMIZE_LEGACY_MINIFIERS')) {
+				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/jsmin-1.1.1.php');
+			} else {
+				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/minify-2.1.7-jsmin.php');
+			}
 		}
 		define('CONCATENATE_SCRIPTS',false);
 		define('COMPRESS_SCRIPTS',false);
@@ -110,9 +112,13 @@ function autoptimize_start_buffering()
 	{
 		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeStyles.php');
 		if (defined('AUTOPTIMIZE_LEGACY_MINIFIERS')) {
-			@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/minify-css-compressor.php');
+			if (!class_exists('Minify_CSS_Compressor')) {
+				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/minify-css-compressor.php');
+			}
 		} else {
-			@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/yui-php-cssmin-2.4.8-1.php');
+			if (!class_exists('CSSmin')) {
+				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/yui-php-cssmin-2.4.8-1.php');
+			}
 		}
 		define('COMPRESS_CSS',false);
 	}
