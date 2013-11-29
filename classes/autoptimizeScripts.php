@@ -1,13 +1,14 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class autoptimizeScripts extends autoptimizeBase
 {
 	private $scripts = array();
-	private $dontmove = array('document.write','html5.js','show_ads.js','google_ad','_gaq.push','/ads/');
+	private $dontmove = array('document.write','html5.js','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','histats.com/js','ads.smowtion.com/ad.js','statcounter.com/counter/counter.js','widgets.amung.us','ws.amazon.com/widgets','media.fastclick.net','/ads/','comment-form-quicktags/quicktags.php','edToolbar','intensedebate.com','scripts.chitika.net/','_gaq.push','jotform.com/','admin-bar.min.js');
 	private $domove = array('gaJsHost','load_cmc','jd.gallery.transitions.js','swfobject.embedSWF(','tiny_mce.js','tinyMCEPreInit.go');
 	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js','networkedblogs.com/getnetworkwidget','infolinks.com/js/','jd.gallery.js.php','jd.gallery.transitions.js','swfobject.embedSWF(','linkwithin.com/widget.js','tiny_mce.js','tinyMCEPreInit.go');
 	private $trycatch = false;
-	private $yui = false;
+	private $forcehead = false;
 	private $jscode = '';
 	private $url = '';
 	private $move = array('first' => array(), 'last' => array());
@@ -25,19 +26,29 @@ class autoptimizeScripts extends autoptimizeBase
 			$this->restofcontent = $content[1];
 		}
 
-		$excludeJS = $options['exclude'];
+		$excludeJS = $options['js_exclude'];
 		if ($excludeJS!=="") {
-			$exclJSArr = array_map('trim',explode(",",$excludeJS));
+			$exclJSArr = array_filter(array_map('trim',explode(",",$excludeJS)));
 			$this->dontmove = array_merge($exclJSArr,$this->dontmove);
 		}
 		
 		//Should we add try-catch?
 		if($options['trycatch'] == true)
 			$this->trycatch = true;
-		
-		//Do we use yui?
-		$this->yui = $options['yui'];
-		
+
+		// force js in head?	
+		if($options['forcehead'] == true)
+			$this->forcehead = true;
+
+		// get cdn url
+		$this->cdn_url = $options['cdn_url'];
+			
+		// noptimize me
+		$this->content = $this->hide_noptimize($this->content);
+
+		//Save IE hacks
+		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
+
 		//Get script files
 		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches))
 		{
@@ -48,7 +59,7 @@ class autoptimizeScripts extends autoptimizeBase
 					//External script
 					$url = current(explode('?',$source[2],2));
 					$path = $this->getpath($url);
-					if($path !==false && preg_match('#\.js$#',$path))
+					if($path !== false && preg_match('#\.js$#',$path))
 					{
 						//Inline
 						if($this->ismergeable($tag))
@@ -141,6 +152,7 @@ class autoptimizeScripts extends autoptimizeBase
 				if($script !== false && file_exists($script) && is_readable($script))
 				{
 					$script = file_get_contents($script);
+					$script = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$script);
 					//Add try-catch?
 					if($this->trycatch)
 						$script = 'try{'.$script.'}catch(e){}';
@@ -162,12 +174,9 @@ class autoptimizeScripts extends autoptimizeBase
 		unset($ccheck);
 		
 		//$this->jscode has all the uncompressed code now. 
-		if($this->yui == false && class_exists('JSMin'))
+		if(class_exists('JSMin'))
 		{
 			$this->jscode = trim(JSMin::minify($this->jscode));
-			return true;
-		}elseif($this->yui == true && autoptimizeYUI::available()){
-			$this->jscode = autoptimizeYUI::compress('js',$this->jscode);
 			return true;
 		}else{
 			return false;
@@ -184,25 +193,40 @@ class autoptimizeScripts extends autoptimizeBase
 			$cache->cache($this->jscode,'text/javascript');
 		}
 		$this->url = AUTOPTIMIZE_CACHE_URL.$cache->getname();
+		$this->url = $this->url_replace_cdn($this->url);
 	}
 	
-	//Returns the content
+	// Returns the content
 	public function getcontent()
 	{
-		//Restore the full content
+		// Restore the full content
 		if(!empty($this->restofcontent))
 		{
 			$this->content .= $this->restofcontent;
 			$this->restofcontent = '';
 		}
 		
-		//Add the scripts
+		// Add the scripts taking forcehead/ deferred (default) into account
+		if($this->forcehead == true) {
+			$replaceTag="</head>";
+			$defer="";
+		} else {
+			$replaceTag="</body>";
+			$defer="defer ";
+		}
+
 		$bodyreplacement = implode('',$this->move['first']);
-		$bodyreplacement .= '<script type="text/javascript" src="'.$this->url.'"></script>';
-		$bodyreplacement .= implode('',$this->move['last']).'</body>';
-		$this->content = str_replace('</body>',$bodyreplacement,$this->content);
+		$bodyreplacement .= '<script type="text/javascript" '.$defer.'src="'.$this->url.'"></script>';
+		$bodyreplacement .= implode('',$this->move['last']).$replaceTag;
+		$this->content = str_replace($replaceTag,$bodyreplacement,$this->content);
+
+		// Restore IE hacks
+		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);
 		
-		//Return the modified HTML
+		// Restore noptimize
+		$this->content = $this->restore_noptimize($this->content);
+
+		// Return the modified HTML
 		return $this->content;
 	}
 	
