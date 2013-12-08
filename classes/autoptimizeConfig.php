@@ -129,7 +129,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <tr valign="top" class="hidden ao_adv">
 <th scope="row"><?php _e('Defer CSS loading?','autoptimize'); ?></th>
 <td><label for="autoptimize_css_defer"><input type="checkbox" name="autoptimize_css_defer" <?php echo get_option('autoptimize_css_defer')?'checked="checked" ':''; ?>/>
-<?php _e('Normally CSS is loaded in the &lt;head&gt;-section of the HTML, but for mobile performance reasons having it deferred can be better.','autoptimize'); ?></label></td>
+<?php _e('Normally CSS is loaded in the &lt;head&gt;-section of the HTML, but for mobile performance reasons having it deferred can be better. ','autoptimize'); _e('<strong>Warning</strong>: this can slow down your site, <a href="http://wordpress.org/plugins/autoptimize/faq/" target="_blank">check the FAQ</a> before activating this option!','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv">
 <th scope="row"><?php _e('Look for styles only in &lt;head&gt;?','autoptimize'); ?></th>

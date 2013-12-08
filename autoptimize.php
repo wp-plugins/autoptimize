@@ -3,7 +3,7 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/autoptimize
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.7.2
+Version: 1.7.3
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
@@ -58,6 +58,26 @@ define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) $conf->get('autoptimize_cache_nogzip'))
 // Load translations
 $plugin_dir = basename(dirname(__FILE__));
 load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localization',$plugin_dir.'/localization');
+
+function autoptimize_uninstall(){
+	autoptimizeCache::clearall();
+	
+	$delete_options=array("autoptimize_cache_clean", "autoptimize_cache_nogzip", "autoptimize_css", "autoptimize_css_datauris", "autoptimize_css_justhead", "autoptimize_css_defer", "autoptimize_css_exclude", "autoptimize_html", "autoptimize_html_keepcomments", "autoptimize_js", "autoptimize_js_exclude", "autoptimize_js_forcehead", "autoptimize_js_justhead", "autoptimize_js_trycatch", "autoptimize_version", "autoptimize_show_adv", "autoptimize_cdn_url");
+	
+	if ( !is_multisite() ) {
+		foreach ($delete_options as $del_opt) {	delete_option( $del_opt ); }
+	} else {
+		global $wpdb;
+		$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+		$original_blog_id = get_current_blog_id();
+		foreach ( $blog_ids as $blog_id ) 
+		{
+			switch_to_blog( $blog_id );
+			foreach ($delete_options as $del_opt) {	delete_option( $del_opt ); }
+		}
+		switch_to_blog( $original_blog_id );
+	}
+}
 
 function autoptimize_install_config_notice() {
 	echo '<div class="updated"><p>';
@@ -131,6 +151,8 @@ function autoptimize_start_buffering()
 //Action on end - 
 function autoptimize_end_buffering($content)
 {
+	if ( stripos($content,"<html") === false || stripos($content,"<xsl:stylesheet") !== false ) { return $content;}
+
 	// load URL constants as late as possible to allow domain mapper to kick in
 	if (function_exists(domain_mapping_siteurl)) {
 		define('AUTOPTIMIZE_WP_SITE_URL',domain_mapping_siteurl());
@@ -199,6 +221,8 @@ if(autoptimizeCache::cacheavail())
 		add_action('template_redirect','autoptimize_start_buffering',2);
 	}
 }
+
+register_uninstall_hook(__FILE__, "autoptimize_uninstall");
 
 // Do not pollute other plugins
 unset($conf);

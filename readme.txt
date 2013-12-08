@@ -62,6 +62,10 @@ Based on earlier feedback received from BuddyPress users, CSS and JS-Autoptimiza
 
 There have been reports of sightings of javascript errors when using Autoptimize together with WP SlimStat. Both [Camu (WP SlimStat developer)](http://profiles.wordpress.org/coolmann/) and I have installed both plugins on test-environments and [found no proof of such incompatibility](http://wordpress.org/support/topic/dropdown-menus-dont-work-when-slimstat-is-enabled?replies=14#post-4086894). Our common conclusion is that there are rare cases in which yet another theme or plugin's JavaScript are triggering these errors. If you do encounter JavaScript-errors when you have both WP SlimStat and Autoptimize installed, add "SlimStatParams, wp-slimstat.js" in the "Exclude scripts from autoptimize:" option on the admin-page and all should be well.
 
+= Problems with CSS of Kickstart theme when on WP Engine =
+
+Although multiple users are succesfully running Autoptimize on WP Engine, there is [one confirmed issue when using the Kickstart-theme with Autoptimize on WP Engine](http://wordpress.org/support/topic/zero-lenght-file-with-css-optimization). The problem is that Autoptimize can't source in the import, leading to an empty CSS-file (which does not happen wen not on WP Engine). As a workaround you can link to the CSS-file from within your header.php, as suggested by [Ozum of fortibase.com](http://www.fortibase.com/)
+
 = Configuring & Troubleshooting Autoptimize =
 
 After having installed and activated the plugin, you'll have access to an admin page where you can to enable HTML, CSS and JavaScript optimization. According to your liking, you can start of just enabling all of them, or if you're more cautious one at a time. 
@@ -98,6 +102,12 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.7.3 =
+* improvement: remove cache + options on uninstall as [requested by Gingerbreadmen](http://wordpress.org/support/topic/wp_options-entries)
+* improvement: set .htaccess to allow PHP execution when saving optimized files as PHP, as suggested by (David Mottershead of bermuda4u.com}[http://www.bermuda4u.com/]
+* bugfix: avoid Yoast SEO sitemaps going blank (due optimization of Yoast's dynamically built XML/XSL) as reported by [Vance Hallman](http://www.icefishing.co) and Armand Hadife
+* smaller changes to readme.txt
 
 = 1.7.2 =
 * improvement: extra checks in CSS @import-handling + move import rules to top of CSS if not imported successfully, based a.o. on bug reports [by ozum](http://wordpress.org/support/topic/zero-lenght-file-with-css-optimization) and by [Peter Stolwijk](http://wordpress.org/support/topic/cant-activate-plugin-22?replies=13#post-4891377)

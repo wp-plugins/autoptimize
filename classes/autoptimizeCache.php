@@ -83,6 +83,8 @@ class autoptimizeCache
 				@unlink(AUTOPTIMIZE_CACHE_DIR.$file);
 			}
 		}
+
+		@unlink(AUTOPTIMIZE_CACHE_DIR."/.htaccess");
 		
 		// Do we need to clean any caching plugins cache-files?
 		if(function_exists('wp_cache_clear_cache'))	{
@@ -173,8 +175,25 @@ class autoptimizeCache
 		/** write .htaccess here to overrule wp_super_cache */
 		$htAccess=AUTOPTIMIZE_CACHE_DIR.'/.htaccess';
 		if(!is_file($htAccess)) {
-			@file_put_contents($htAccess,
-			'<IfModule mod_headers.c>
+			if (is_multisite()) {@file_put_contents($htAccess,'<IfModule mod_headers.c>
+        Header set Vary "Accept-Encoding"
+        Header set Cache-Control "max-age=10672000, must-revalidate"
+</IfModule>
+<IfModule mod_expires.c>
+        ExpiresActive On
+        ExpiresByType text/css A30672000
+        ExpiresByType text/javascript A30672000
+        ExpiresByType application/javascript A30672000
+</IfModule>
+<Files *.php>
+        Allow from all
+</Files>');
+			} else if (AUTOPTIMIZE_CACHE_NOGZIP == false) {
+				@file_put_contents($htAccess,'<Files *.php>
+	Allow from all
+</Files>');
+			} else {
+			@file_put_contents($htAccess,'<IfModule mod_headers.c>
 	Header set Vary "Accept-Encoding"
 	Header set Cache-Control "max-age=10672000, must-revalidate"
 </IfModule>
@@ -183,9 +202,12 @@ class autoptimizeCache
 	ExpiresByType text/css A30672000
 	ExpiresByType text/javascript A30672000
 	ExpiresByType application/javascript A30672000
-</IfModule>');
+</IfModule>
+<Files *.php>
+        Deny from all
+</Files>');
+			}
 		}
-
 		//All OK
 		return true;
 	}
