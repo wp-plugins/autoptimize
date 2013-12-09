@@ -4,7 +4,7 @@ Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, mi
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
 Tested up to: 3.8
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
 
@@ -105,8 +105,8 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 
 = 1.7.3 =
 * improvement: remove cache + options on uninstall as [requested by Gingerbreadmen](http://wordpress.org/support/topic/wp_options-entries)
-* improvement: set .htaccess to allow PHP execution when saving optimized files as PHP, as suggested by (David Mottershead of bermuda4u.com}[http://www.bermuda4u.com/]
-* bugfix: avoid Yoast SEO sitemaps going blank (due optimization of Yoast's dynamically built XML/XSL) as reported by [Vance Hallman](http://www.icefishing.co) and Armand Hadife
+* improvement: set .htaccess to allow PHP execution in wp-content/cache/autoptimize when saving optimized files as PHP, as suggested by (David Mottershead of bermuda4u.com}[http://www.bermuda4u.com/] but forbid PHP execution when saving aggregated script/css as static files (except for multisite).
+* bugfix: avoid Yoast SEO sitemaps going blank (due optimization of Yoast's dynamically built XML/XSL) as reported by [Vance Hallman](http://www.icefishing.co) and [Armand Hadife](http://solar-flag-pole-lights.com/). More info on this issue [can be found on my blog](http://blog.futtta.be/2013/12/09/blank-yoast-seo-sitemaps-no-more/).
 * smaller changes to readme.txt
 
 = 1.7.2 =

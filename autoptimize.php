@@ -27,7 +27,7 @@ $conf = autoptimizeConfig::instance();
 /* Check if we're updating, in which case we need to flush the cache
 to avoid old versions of aggregated files lingering around */
 
-$autoptimize_version="1.7.2";
+$autoptimize_version="1.7.3";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
