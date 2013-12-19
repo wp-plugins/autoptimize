@@ -27,10 +27,14 @@ class autoptimizeScripts extends autoptimizeBase
 		}
 
 		$excludeJS = $options['js_exclude'];
+		$excludeJS = apply_filters( 'autoptimize_filter_js_exclude', $excludeJS );
+		
 		if ($excludeJS!=="") {
 			$exclJSArr = array_filter(array_map('trim',explode(",",$excludeJS)));
 			$this->dontmove = array_merge($exclJSArr,$this->dontmove);
 		}
+		
+		$this->domovelast = apply_filters( 'autoptimize_filter_js_movelast', $this->domovelast );
 		
 		//Should we add try-catch?
 		if($options['trycatch'] == true)
@@ -50,73 +54,61 @@ class autoptimizeScripts extends autoptimizeBase
 		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
 
 		//Get script files
-		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches))
-		{
-			foreach($matches[0] as $tag)
-			{
-				if(preg_match('#src=("|\')(.*)("|\')#Usmi',$tag,$source))
-				{
+		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches)) {
+			foreach($matches[0] as $tag) {
+				if(preg_match('#src=("|\')(.*)("|\')#Usmi',$tag,$source)) {
 					//External script
 					$url = current(explode('?',$source[2],2));
 					$path = $this->getpath($url);
-					if($path !== false && preg_match('#\.js$#',$path))
-					{
+					if($path !== false && preg_match('#\.js$#',$path)) {
 						//Inline
-						if($this->ismergeable($tag))
-						{
+						if($this->ismergeable($tag)) {
 							//We can merge it
 							$this->scripts[] = $path;
-						}else{
+						} else {
 							//No merge, but maybe we can move it
-							if($this->ismovable($tag))
-							{
+							if($this->ismovable($tag)) {
 								//Yeah, move it
-								if($this->movetolast($tag))
-								{
+								if($this->movetolast($tag)) {
 									$this->move['last'][] = $tag;
-								}else{
+								} else {
 									$this->move['first'][] = $tag;
 								}
-							}else{
+							} else {
 								//We shouldn't touch this
 								$tag = '';
 							}
 						}
-					}else{
+					} else {
 						//External script (example: google analytics)
 						//OR Script is dynamic (.php etc)
-						if($this->ismovable($tag))
-						{
-							if($this->movetolast($tag))
-							{
+						if($this->ismovable($tag)) {
+							if($this->movetolast($tag))	{
 								$this->move['last'][] = $tag;
-							}else{
+							} else {
 								$this->move['first'][] = $tag;
 							}
-						}else{
+						} else {
 							//We shouldn't touch this
 							$tag = '';
 						}
 					}
-				}else{
+				} else {
 					//Inline script
-					if($this->ismergeable($tag))
-					{
+					if($this->ismergeable($tag)) {
 						preg_match('#<script.*>(.*)</script>#Usmi',$tag,$code);
 						$code = preg_replace('#.*<!\[CDATA\[(?:\s*\*/)?(.*)(?://|/\*)\s*?\]\]>.*#sm','$1',$code[1]);
 						$code = preg_replace('/(?:^\\s*<!--\\s*|\\s*(?:\\/\\/)?\\s*-->\\s*$)/','',$code);
 						$this->scripts[] = 'INLINE;'.$code;
-					}else{
+					} else {
 						//Can we move this?
-						if($this->ismovable($tag))
-						{
-							if($this->movetolast($tag))
-							{
+						if($this->ismovable($tag)) {
+							if($this->movetolast($tag))	{
 								$this->move['last'][] = $tag;
-							}else{
+							} else {
 								$this->move['first'][] = $tag;
 							}
-						}else{
+						} else {
 							//We shouldn't touch this
 							$tag = '';
 						}
@@ -130,32 +122,30 @@ class autoptimizeScripts extends autoptimizeBase
 			return true;
 		}
 	
-		//No script files :(
+		// No script files, great ;-)
 		return false;
 	}
 	
 	//Joins and optimizes JS
-	public function minify()
-	{
-		foreach($this->scripts as $script)
-		{
-			if(preg_match('#^INLINE;#',$script))
-			{
+	public function minify() {
+		foreach($this->scripts as $script) {
+			if(preg_match('#^INLINE;#',$script)) {
 				//Inline script
 				$script = preg_replace('#^INLINE;#','',$script);
 				//Add try-catch?
-				if($this->trycatch)
+				if($this->trycatch) {
 					$script = 'try{'.$script.'}catch(e){}';
+				}
 				$this->jscode .= "\n".$script;
-			}else{
+			} else {
 				//External script
-				if($script !== false && file_exists($script) && is_readable($script))
-				{
+				if($script !== false && file_exists($script) && is_readable($script)) {
 					$script = file_get_contents($script);
 					$script = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$script);
 					//Add try-catch?
-					if($this->trycatch)
+					if($this->trycatch) {
 						$script = 'try{'.$script.'}catch(e){}';
+					}
 					$this->jscode .= "\n".$script;
 				}/*else{
 					//Couldn't read JS. Maybe getpath isn't working?
@@ -166,19 +156,21 @@ class autoptimizeScripts extends autoptimizeBase
 		//Check for already-minified code
 		$this->md5hash = md5($this->jscode);
 		$ccheck = new autoptimizeCache($this->md5hash,'js');
-		if($ccheck->check())
-		{
+		if($ccheck->check()) {
 			$this->jscode = $ccheck->retrieve();
 			return true;
 		}
 		unset($ccheck);
 		
 		//$this->jscode has all the uncompressed code now. 
-		if(class_exists('JSMin'))
-		{
-			$this->jscode = trim(JSMin::minify($this->jscode));
+		if(class_exists('JSMin')) {
+			$tmp_jscode = trim(JSMin::minify($this->jscode));
+			if (!empty($tmp_jscode)) {
+				$this->jscode = $tmp_jscode;
+				unset($tmp_jscode);
+				}
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
@@ -187,8 +179,7 @@ class autoptimizeScripts extends autoptimizeBase
 	public function cache()
 	{
 		$cache = new autoptimizeCache($this->md5hash,'js');
-		if(!$cache->check())
-		{
+		if(!$cache->check()) {
 			//Cache our code
 			$cache->cache($this->jscode,'text/javascript');
 		}
@@ -197,11 +188,9 @@ class autoptimizeScripts extends autoptimizeBase
 	}
 	
 	// Returns the content
-	public function getcontent()
-	{
+	public function getcontent() {
 		// Restore the full content
-		if(!empty($this->restofcontent))
-		{
+		if(!empty($this->restofcontent)) {
 			$this->content .= $this->restofcontent;
 			$this->restofcontent = '';
 		}
@@ -214,6 +203,8 @@ class autoptimizeScripts extends autoptimizeBase
 			$replaceTag="</body>";
 			$defer="defer ";
 		}
+		
+		$defer = apply_filters( 'autoptimize_filter_js_defer', $defer );
 
 		$bodyreplacement = implode('',$this->move['first']);
 		$bodyreplacement .= '<script type="text/javascript" '.$defer.'src="'.$this->url.'"></script>';
@@ -231,21 +222,20 @@ class autoptimizeScripts extends autoptimizeBase
 	}
 	
 	//Checks agains the whitelist
-	private function ismergeable($tag)
-	{
-		foreach($this->domove as $match)
-		{
-			if(strpos($tag,$match)!==false)
-			{
+	private function ismergeable($tag) {
+		foreach($this->domove as $match) {
+			if(strpos($tag,$match)!==false)	{
 				//Matched something
 				return false;
 			}
 		}
 		
-		foreach($this->dontmove as $match)
-		{
-			if(strpos($tag,$match)!==false)
-			{
+		if ($this->movetolast($tag)) {
+			return false;
+			}
+		
+		foreach($this->dontmove as $match) {
+			if(strpos($tag,$match)!==false)	{
 				//Matched something
 				return false;
 			}
@@ -256,22 +246,20 @@ class autoptimizeScripts extends autoptimizeBase
 	}
 	
 	//Checks agains the blacklist
-	private function ismovable($tag)
-	{
-		
-		foreach($this->domove as $match)
-		{
-			if(strpos($tag,$match)!==false)
-			{
+	private function ismovable($tag) {
+		foreach($this->domove as $match) {
+			if(strpos($tag,$match)!==false)	{
 				//Matched something
 				return true;
 			}
 		}
 		
-		foreach($this->dontmove as $match)
-		{
-			if(strpos($tag,$match)!==false)
-			{
+		if ($this->movetolast($tag)) {
+			return true;
+		}
+		
+		foreach($this->dontmove as $match) {
+			if(strpos($tag,$match)!==false) {
 				//Matched something
 				return false;
 			}
@@ -281,12 +269,9 @@ class autoptimizeScripts extends autoptimizeBase
 		return true;
 	}
 	
-	private function movetolast($tag)
-	{
-		foreach($this->domovelast as $match)
-		{
-			if(strpos($tag,$match)!==false)
-			{
+	private function movetolast($tag) {
+		foreach($this->domovelast as $match) {
+			if(strpos($tag,$match)!==false)	{
 				//Matched, return true
 				return true;
 			}

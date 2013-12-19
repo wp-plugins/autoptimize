@@ -127,18 +127,23 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <?php _e('Enable this to include small background-images in the CSS itself instead of as seperate downloads.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv">
-<th scope="row"><?php _e('Defer CSS loading?','autoptimize'); ?></th>
-<td><label for="autoptimize_css_defer"><input type="checkbox" name="autoptimize_css_defer" <?php echo get_option('autoptimize_css_defer')?'checked="checked" ':''; ?>/>
-<?php _e('Normally CSS is loaded in the &lt;head&gt;-section of the HTML, but for mobile performance reasons having it deferred can be better. ','autoptimize'); _e('<strong>Warning</strong>: this can slow down your site, <a href="http://wordpress.org/plugins/autoptimize/faq/" target="_blank">check the FAQ</a> before activating this option!','autoptimize'); ?></label></td>
-</tr>
-<tr valign="top" class="hidden ao_adv">
 <th scope="row"><?php _e('Look for styles only in &lt;head&gt;?','autoptimize'); ?></th>
 <td><label for="autoptimize_css_justhead"><input type="checkbox" name="autoptimize_css_justhead" <?php echo get_option('autoptimize_css_justhead')?'checked="checked" ':''; ?>/>
 <?php _e('Don\'t autoptimize CSS outside the head-section. If the cache gets big, you might want to enable this.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv">
+<th scope="row"><?php _e('Defer CSS loading?','autoptimize'); ?></th>
+<td><label for="autoptimize_css_defer"><input type="checkbox" name="autoptimize_css_defer" id="autoptimize_css_defer" <?php echo get_option('autoptimize_css_defer')?'checked="checked" ':''; ?>/>
+<?php _e('Load optimized CSS only after page load (disables CSS inlining). <strong>Warning</strong>: <a href="http://wordpress.org/plugins/autoptimize/faq/" target="_blank">check the FAQ</a> before activating this option!','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top" class="hidden ao_adv">
+<th scope="row"><?php _e('Inline all CSS?','autoptimize'); ?></th>
+<td><label for="autoptimize_css_inline"><input type="checkbox" id="autoptimize_css_inline" name="autoptimize_css_inline" <?php echo get_option('autoptimize_css_inline')?'checked="checked" ':''; ?>/>
+<?php _e('Inlining all CSS can improve performance for sites with a low pageviews/ visitor-rate, but may slow down performance otherwise. CSS inlining disables CSS deferring.','autoptimize'); ?></label></td>
+</tr>
+<tr valign="top" class="hidden ao_adv">
 <th scope="row"><?php _e('Exclude CSS from autoptimize:','autoptimize'); ?></th>
-<td><label for="autoptimize_css_exclude"><input type="text" style="width:100%;" name="autoptimize_css_exclude" value="<?php echo get_option('autoptimize_css_exclude','admin-bar.min.css'); ?>"/><br />
+<td><label for="autoptimize_css_exclude"><input type="text" style="width:100%;" name="autoptimize_css_exclude" value="<?php echo get_option('autoptimize_css_exclude','admin-bar.min.css, dashicons.min.css'); ?>"/><br />
 <?php _e('A comma-seperated list of CSS you want to exclude from being Autoptimized.','autoptimize'); ?></label></td>
 </tr>
 </table>
@@ -169,7 +174,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <tr valign="top" class="hidden ao_adv">
 <th scope="row"><?php _e('Save aggregated script/css as static files?','autoptimize'); ?></th>
 <td><label for="autoptimize_cache_nogzip"><input type="checkbox" name="autoptimize_cache_nogzip" <?php echo get_option('autoptimize_cache_nogzip')?'checked="checked" ':''; ?>/>
-<?php _e('Enable this if your webserver can handle the compression and expiry.','autoptimize'); ?></label></td>
+<?php _e('By default files saved are static css/js, disable this if your webserver doesn\'t properly handle the compression and expiry.','autoptimize'); ?></label></td>
 </tr>
 </table>
 <input type="hidden" id="autoptimize_show_adv" name="autoptimize_show_adv" value="<?php echo get_option('autoptimize_show_adv','0'); ?>">
@@ -216,6 +221,18 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 			jQuery( "#ao_show_adv" ).show();
 			jQuery( ".ao_adv" ).hide("slow");
 			jQuery( "input#autoptimize_show_adv" ).val("0");
+		});
+		
+		jQuery( "#autoptimize_css_inline" ).change(function() {
+			if (this.checked) {
+				jQuery("#autoptimize_css_defer").prop("checked",false);
+			}
+		});
+		
+		jQuery( "#autoptimize_css_defer" ).change(function() {
+			if (this.checked) {
+				jQuery("#autoptimize_css_inline").prop("checked",false);
+			}
 		});
 		
 		jQuery("#feed_dropdown").change(function() { show_feed(jQuery("#feed_dropdown").val()) });
@@ -271,6 +288,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 		register_setting('autoptimize','autoptimize_css_justhead');
 		register_setting('autoptimize','autoptimize_css_datauris');
 		register_setting('autoptimize','autoptimize_css_defer');
+		register_setting('autoptimize','autoptimize_css_inline');
 		register_setting('autoptimize','autoptimize_cdn_url');
 		register_setting('autoptimize','autoptimize_cache_clean');
 		register_setting('autoptimize','autoptimize_cache_nogzip');
@@ -316,12 +334,13 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 				'autoptimize_js_justhead' => 0,
 				'autoptimize_js_forcehead' => 0,
 				'autoptimize_css' => 0,
-				'autoptimize_css_exclude' => "admin-bar.min.css",
+				'autoptimize_css_exclude' => "admin-bar.min.css, dashicons.min.css",
 				'autoptimize_css_justhead' => 0,
 				'autoptimize_css_defer' => 0,
+				'autoptimize_css_inline' => 0,
 				'autoptimize_css_datauris' => 0,
 				'autoptimize_cdn_url' => "",
-				'autoptimize_cache_nogzip' => 0,
+				'autoptimize_cache_nogzip' => 1,
 				'autoptimize_show_adv' => 0
 				);
 			

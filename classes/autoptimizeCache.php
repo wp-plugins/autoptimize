@@ -175,7 +175,8 @@ class autoptimizeCache
 		/** write .htaccess here to overrule wp_super_cache */
 		$htAccess=AUTOPTIMIZE_CACHE_DIR.'/.htaccess';
 		if(!is_file($htAccess)) {
-			if (is_multisite()) {@file_put_contents($htAccess,'<IfModule mod_headers.c>
+			if (is_multisite() || AUTOPTIMIZE_CACHE_NOGZIP == false) {
+				@file_put_contents($htAccess,'<IfModule mod_headers.c>
         Header set Vary "Accept-Encoding"
         Header set Cache-Control "max-age=10672000, must-revalidate"
 </IfModule>
@@ -185,12 +186,13 @@ class autoptimizeCache
         ExpiresByType text/javascript A30672000
         ExpiresByType application/javascript A30672000
 </IfModule>
+<IfModule mod_deflate.c>
+	<FilesMatch "\.(js|css)$">
+        SetOutputFilter DEFLATE
+    </FilesMatch>
+</IfModule>
 <Files *.php>
         Allow from all
-</Files>');
-			} else if (AUTOPTIMIZE_CACHE_NOGZIP == false) {
-				@file_put_contents($htAccess,'<Files *.php>
-	Allow from all
 </Files>');
 			} else {
 			@file_put_contents($htAccess,'<IfModule mod_headers.c>
@@ -202,6 +204,11 @@ class autoptimizeCache
 	ExpiresByType text/css A30672000
 	ExpiresByType text/javascript A30672000
 	ExpiresByType application/javascript A30672000
+</IfModule>
+<IfModule mod_deflate.c>
+	<FilesMatch "\.(js|css)$">
+        SetOutputFilter DEFLATE
+    </FilesMatch>
 </IfModule>
 <Files *.php>
         Deny from all

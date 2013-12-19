@@ -3,7 +3,7 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/autoptimize
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.7.3
+Version: 1.8.0
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
 Released under the GNU General Public License (GPL)
@@ -24,27 +24,58 @@ define('WP_ROOT_DIR',str_replace('/wp-content','',WP_CONTENT_DIR));
 // Initialize the cache at least once
 $conf = autoptimizeConfig::instance();
 
-/* Check if we're updating, in which case we need to flush the cache
+/* Check if we're updating, in which case we might need to do stuff and flush the cache
 to avoid old versions of aggregated files lingering around */
 
-$autoptimize_version="1.7.3";
+$autoptimize_version="1.8.0";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
 	if ($autoptimize_db_version==="none") {
         	add_action('admin_notices', 'autoptimize_install_config_notice');
-	} else if (strpos($autoptimize_db_version,"1.6.")!==false) {
-		// if user was on version 1.6.x, force advanced options to be shown by default
-		update_option('autoptimize_show_adv','1');
+	} else {
+		$autoptimize_major_version=substr($autoptimize_db_version,0,3);
+		switch($autoptimize_major_version) {
+			case "1.6":
+				// from back in the days when I did not yet consider multisite
+				// if user was on version 1.6.x, force advanced options to be shown by default
+				update_option('autoptimize_show_adv','1');
 
-		// and remove old options
-		$delete_options=array("autoptimize_cdn_css","autoptimize_cdn_css_url","autoptimize_cdn_js","autoptimize_cdn_js_url","autoptimize_cdn_img","autoptimize_cdn_img_url","autoptimize_css_yui","autoptimize_js_yui");
-		foreach ($delete_options as $del_opt) {
-			delete_option( $del_opt );
+				// and remove old options
+				$to_delete_options=array("autoptimize_cdn_css","autoptimize_cdn_css_url","autoptimize_cdn_js","autoptimize_cdn_js_url","autoptimize_cdn_img","autoptimize_cdn_img_url","autoptimize_css_yui","autoptimize_js_yui");
+				foreach ($to_delete_options as $del_opt) {
+					delete_option( $del_opt );
+				}
+
+				// and notify user to check result
+				add_action('admin_notices', 'autoptimize_update_config_notice');
+			case "1.7":
+				// force 3.8 dashicons in CSS exclude options when upgrading from 1.7 to 1.8
+				if ( !is_multisite() ) {
+					$css_exclude = get_option('autoptimize_css_exclude');
+					if (empty($css_exclude)) {
+						$css_exclude = "admin-bar.min.css, dashicons.min.css";
+					} else if (strpos($css_exclude,"dashicons.min.css")===false) {
+						$css_exclude .= ", dashicons.min.css";
+					}
+					update_option('autoptimize_css_exclude',$css_exclude);
+				} else {
+					global $wpdb;
+					$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+					$original_blog_id = get_current_blog_id();
+					foreach ( $blog_ids as $blog_id ) {
+						switch_to_blog( $blog_id );
+						$css_exclude = get_option('autoptimize_css_exclude');
+						if (empty($css_exclude)) {
+							$css_exclude = "admin-bar.min.css, dashicons.min.css";
+						} else if (strpos($css_exclude,"dashicons.min.css")===false) {
+							$css_exclude .= ", dashicons.min.css";
+						}
+						update_option('autoptimize_css_exclude',$css_exclude);
+					}
+					switch_to_blog( $original_blog_id );
+				}
 		}
-
-		// and notify user to check result
-		add_action('admin_notices', 'autoptimize_update_config_notice');
 	}
 	
 	autoptimizeCache::clearall();
@@ -62,7 +93,7 @@ load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localiz
 function autoptimize_uninstall(){
 	autoptimizeCache::clearall();
 	
-	$delete_options=array("autoptimize_cache_clean", "autoptimize_cache_nogzip", "autoptimize_css", "autoptimize_css_datauris", "autoptimize_css_justhead", "autoptimize_css_defer", "autoptimize_css_exclude", "autoptimize_html", "autoptimize_html_keepcomments", "autoptimize_js", "autoptimize_js_exclude", "autoptimize_js_forcehead", "autoptimize_js_justhead", "autoptimize_js_trycatch", "autoptimize_version", "autoptimize_show_adv", "autoptimize_cdn_url");
+	$delete_options=array("autoptimize_cache_clean", "autoptimize_cache_nogzip", "autoptimize_css", "autoptimize_css_datauris", "autoptimize_css_justhead", "autoptimize_css_defer", "autoptimize_css_inline", "autoptimize_css_exclude", "autoptimize_html", "autoptimize_html_keepcomments", "autoptimize_js", "autoptimize_js_exclude", "autoptimize_js_forcehead", "autoptimize_js_justhead", "autoptimize_js_trycatch", "autoptimize_version", "autoptimize_show_adv", "autoptimize_cdn_url");
 	
 	if ( !is_multisite() ) {
 		foreach ($delete_options as $del_opt) {	delete_option( $del_opt ); }
@@ -86,15 +117,17 @@ function autoptimize_install_config_notice() {
 }
 
 function autoptimize_update_config_notice() {
-        echo '<div class="updated"><p>';
+    echo '<div class="updated"><p>';
 	_e('Autoptimize has just been updated. Please <strong>test your site now</strong> and adapt Autoptimize config if needed.', 'autoptimize' );
 	echo '</p></div>';
 	}
 
 // Set up the buffering
-function autoptimize_start_buffering()
-{
-	if (!is_feed()) {
+function autoptimize_start_buffering() {
+	// filter you can use to block autoptimization on your own terms
+	$ao_noptimize = (bool) apply_filters( 'autoptimize_filter_noptimize', $ao_noptimize );
+
+	if (!is_feed() && !$ao_noptimize ) {
 
 	// Config element
 	$conf = autoptimizeConfig::instance();
@@ -103,8 +136,7 @@ function autoptimize_start_buffering()
 	include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeBase.php');
 	
 	// Load extra classes and set some vars
-	if($conf->get('autoptimize_html'))
-	{
+	if($conf->get('autoptimize_html')) {
 		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeHTML.php');
 		// BUG: new minify-html does not support keeping HTML comments, skipping for now
 		// if (defined('AUTOPTIMIZE_LEGACY_MINIFIERS')) {
@@ -114,8 +146,7 @@ function autoptimize_start_buffering()
 		// }
 	}
 	
-	if($conf->get('autoptimize_js'))
-	{
+	if($conf->get('autoptimize_js')) {
 		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeScripts.php');
 		if (!class_exists('JSMin')) {
 			if (defined('AUTOPTIMIZE_LEGACY_MINIFIERS')) {
@@ -128,8 +159,7 @@ function autoptimize_start_buffering()
 		define('COMPRESS_SCRIPTS',false);
 	}
 	
-	if($conf->get('autoptimize_css'))
-	{
+	if($conf->get('autoptimize_css')) {
 		include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeStyles.php');
 		if (defined('AUTOPTIMIZE_LEGACY_MINIFIERS')) {
 			if (!class_exists('Minify_CSS_Compressor')) {
@@ -137,7 +167,7 @@ function autoptimize_start_buffering()
 			}
 		} else {
 			if (!class_exists('CSSmin')) {
-				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/yui-php-cssmin-2.4.8-1.php');
+				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/yui-php-cssmin-2.4.8-2.php');
 			}
 		}
 		define('COMPRESS_CSS',false);
@@ -149,13 +179,12 @@ function autoptimize_start_buffering()
 }
 
 //Action on end - 
-function autoptimize_end_buffering($content)
-{
+function autoptimize_end_buffering($content) {
 	if ( stripos($content,"<html") === false || stripos($content,"<xsl:stylesheet") !== false ) { return $content;}
 
 	// load URL constants as late as possible to allow domain mapper to kick in
 	if (function_exists(domain_mapping_siteurl)) {
-		define('AUTOPTIMIZE_WP_SITE_URL',domain_mapping_siteurl());
+		define('AUTOPTIMIZE_WP_SITE_URL',domain_mapping_siteurl(get_current_blog_id()));
 		define('AUTOPTIMIZE_WP_CONTENT_URL',str_replace(get_original_url(AUTOPTIMIZE_WP_SITE_URL),AUTOPTIMIZE_WP_SITE_URL,content_url()));
 	} else {
 		define('AUTOPTIMIZE_WP_SITE_URL',site_url());
@@ -163,6 +192,7 @@ function autoptimize_end_buffering($content)
 	}
 	define('AUTOPTIMIZE_CACHE_URL',AUTOPTIMIZE_WP_CONTENT_URL.'/cache/autoptimize/');
 	define('AUTOPTIMIZE_WP_ROOT_URL',str_replace('/wp-content','',AUTOPTIMIZE_WP_CONTENT_URL));
+
 	// Config element
 	$conf = autoptimizeConfig::instance();
 	
@@ -188,6 +218,7 @@ function autoptimize_end_buffering($content)
 			'justhead' => $conf->get('autoptimize_css_justhead'),
 			'datauris' => $conf->get('autoptimize_css_datauris'),
 			'defer' => $conf->get('autoptimize_css_defer'),
+			'inline' => $conf->get('autoptimize_css_inline'),
 			'css_exclude' => $conf->get('autoptimize_css_exclude'),
 			'cdn_url' => $conf->get('autoptimize_cdn_url')
 		),
@@ -198,8 +229,7 @@ function autoptimize_end_buffering($content)
 		
 	
 	// Run the classes
-	foreach($classes as $name)
-	{
+	foreach($classes as $name) {
 		$instance = new $name($content);
 		if($instance->read($classoptions[$name]))
 		{
@@ -212,11 +242,9 @@ function autoptimize_end_buffering($content)
 	return $content;
 }
 
-if(autoptimizeCache::cacheavail())
-{
+if(autoptimizeCache::cacheavail()) {
 	$conf = autoptimizeConfig::instance();
-	if( $conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css') || $conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css'))
-	{
+	if( $conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css') || $conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css')) 	{
 		// Hook to wordpress
 		add_action('template_redirect','autoptimize_start_buffering',2);
 	}

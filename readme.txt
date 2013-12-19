@@ -103,6 +103,17 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 
 == Changelog ==
 
+= 1.8.0 =
+* New: Option to inline all CSS [as suggested by Hamed](http://wordpress.org/support/topic/make-style-sheet-inline)
+* New: set of filters to provide a simple API to change Autoptimize behavior (e.g. replace "defer" with "async", disabling Autoptimization on certain pages, specificy non-aggregatable script to be moved after aggregated one (cfr. http://wordpress.org/support/topic/feature-request-some-extra-options?replies=14), size of image to be data-urized). More info in the included autoptimize_helper.php_example.
+* Improvement: exclude (css in) noscript-tags as [proposed by belg4mit](http://wordpress.org/support/topic/feature-suggestion-noscript-for-css)
+* Improvement: switch default delivery of optimized CSS/JS-files from PHP to static files
+* Updated [upstream CSS minifier](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/commit/fb33d2ffd0963692747101330b175a80173ce21b)
+* Improvement (force gzip of static files) and Bugfix (force expiry for dynamic files, thanks to [Willem Razenberg](http://www.column-razenberg.nl/) in .htaccess
+* Improvement: fail gracefully when things go wrong (e.g. CSS import resulting in empty aggregated CSS-files [reported by Danka](http://wordpress.org/support/topic/very-good-332))
+* Bugfix: stop import-statements in CSS comments to be taken into acccount [hat tip to Joseph from blog-it-solutions.de](http://www.blog-it-solutions.de/)
+* TODO Updated translations
+
 = 1.7.3 =
 * improvement: remove cache + options on uninstall as [requested by Gingerbreadmen](http://wordpress.org/support/topic/wp_options-entries)
 * improvement: set .htaccess to allow PHP execution in wp-content/cache/autoptimize when saving optimized files as PHP, as suggested by (David Mottershead of bermuda4u.com}[http://www.bermuda4u.com/] but forbid PHP execution when saving aggregated script/css as static files (except for multisite).

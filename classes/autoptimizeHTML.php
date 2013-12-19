@@ -26,7 +26,11 @@ class autoptimizeHTML extends autoptimizeBase
 
 			// Minify html
 			$options = array('keepComments' => $this->keepcomments);
-			$this->content = Minify_HTML::minify($this->content,$options);
+			$tmp_content = Minify_HTML::minify($this->content,$options);
+			if (!empty($tmp_content)) {
+				$this->content = $tmp_content;
+				unset($tmp_content);
+			}
 
 			// restore noptimize
 			$this->content = $this->restore_noptimize($this->content);
