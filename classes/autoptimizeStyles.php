@@ -382,7 +382,7 @@ class autoptimizeStyles extends autoptimizeBase {
 		// quick fix for import-troubles in e.g. arras theme
 		$code=preg_replace('#@import ("|\')(.+?)\.css("|\')#','@import url("${2}.css")',$code);
 
-		if(preg_match_all('#url?\((?!data)(.*)\)#Usi',$code,$matches))
+		if(preg_match_all('#url\((?!data)(.*)\)#Usi',$code,$matches))
 		{
 			$replace = array();
 			foreach($matches[1] as $k => $url)
