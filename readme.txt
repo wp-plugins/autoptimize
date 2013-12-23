@@ -44,6 +44,24 @@ CSS in general should go in the head of the document. Recently a.o. Google start
 * put the resulting CSS in the head of your page (should be in the header.php file of your theme)
 * check the option to defer CSS
 
+= Should you inline all CSS? =
+
+The short answer: if you just want to improve your (mobile) pagespeed score; yes, otherwise maybe not.
+
+Back in the days CSS optimization was easy; put all CSS in your head, aggregating everything in one CSS-file per media-type and you were good to go. But ever since Google included mobile in PageSpeed Insights and started complaining about redering blocking CSS, things got messy (see "deferring CSS" elsewhere in this FAQ). One of the solutions is inlining all your CSS, which as of Autoptimize 1.8.0 is supported.
+
+Inlining all CSS has one clear advantage (better PageSpeed score) and one big disadvantage; your base HTML-page gets significantly bigger. The fact that the HTML gets heavier as such is not a huge issue; when looking at performance for a single page request/ response, performance will be better, as there's no overhead of one or more extra requests for CSS-files. But when looking at a test that includes multiple requests (let's say 5), performance will be worse, as the CSS-payload is sent over whereas normally the seperate CSS-files would not need to be sent any more as they would be in cache.
+
+So the choice should be based on your answer to some site-specific questions; what is your site's bounce rate? How many pages per visit do your visitors request? If you have a high bounce rate and a low number of average pages per visit, inlining CSS looks like a good idea. But with a high number of pages/ visit, it's probably not a good idea. Except if all you care about is a stellar PageSpeed-score, off course.
+
+= What can I do with the API? =
+
+A whole lot; there are filters you can use to conditionally disable Autoptimize per request, to change the CSS- and JS-excludes, to change the limit for CSS background-images to be inlined in the CSS, to define what JS-files are moved behing the aggregated on, to change the defer-attribute on the aggregated JS script-tag,  There are examples for all filters in autoptimize_helper.php_example.
+
+= How can I use/ activate autoptimize_helper.php_example? =
+
+Copy it to /wp-content/plugins/autoptimize_helper.php and activate it in WordPress' plugin page. After that you can simple remove the one of the comment-sequences (double-slash) to activate one (or more) of the functions in there.
+
 = How does CDN work? =
 
 Starting from version 1.7.0, CDN is activated upon entering the CDN blog root directory (e.g. http://cdn.example.net/wordpress/). If that URL is present, it will used for all Autoptimize-generated files (i.e. aggregated CSS and JS), includinng background-images in the CSS (when not using data-uri's).
@@ -64,7 +82,7 @@ There have been reports of sightings of javascript errors when using Autoptimize
 
 = Problems with CSS of Kickstart theme when on WP Engine =
 
-Although multiple users are succesfully running Autoptimize on WP Engine, there is [one confirmed issue when using the Kickstart-theme with Autoptimize on WP Engine](http://wordpress.org/support/topic/zero-lenght-file-with-css-optimization). The problem is that Autoptimize can't source in the import, leading to an empty CSS-file (which does not happen wen not on WP Engine). As a workaround you can link to the CSS-file from within your header.php, as suggested by [Ozum of fortibase.com](http://www.fortibase.com/)
+Although multiple users are succesfully running Autoptimize on WP Engine, there is [one confirmed issue when using the Kickstart-theme with Autoptimize on WP Engine](http://wordpress.org/support/topic/zero-lenght-file-with-css-optimization). The problem is that Autoptimize can't source in the import, leading to an empty CSS-file (which does not happen when not on WP Engine). As a workaround you can link to the CSS-file from within your header.php, as suggested by [Ozum of fortibase.com](http://www.fortibase.com/)
 
 = Configuring & Troubleshooting Autoptimize =
 
