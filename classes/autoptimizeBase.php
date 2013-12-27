@@ -87,4 +87,8 @@ abstract class autoptimizeBase
 		}
 		return $url;
 	}
+
+	protected function warn_html() {
+		$this->content .= "<!--noptimize--><!-- Autoptimize found a problem with the HTML in your Theme, check if the title or body-tags are missing --><!--/noptimize-->";
+	}
 }

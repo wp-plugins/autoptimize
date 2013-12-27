@@ -209,7 +209,13 @@ class autoptimizeScripts extends autoptimizeBase
 		$bodyreplacement = implode('',$this->move['first']);
 		$bodyreplacement .= '<script type="text/javascript" '.$defer.'src="'.$this->url.'"></script>';
 		$bodyreplacement .= implode('',$this->move['last']).$replaceTag;
-		$this->content = str_replace($replaceTag,$bodyreplacement,$this->content);
+
+		if (strpos($this->content,$replaceTag)!== false) {
+			$this->content = str_replace($replaceTag,$bodyreplacement,$this->content);
+		} else {
+			$this->content .= $bodyreplacement;
+			$this->warn_html();
+		}
 
 		// Restore IE hacks
 		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);

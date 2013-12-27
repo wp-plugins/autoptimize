@@ -333,7 +333,8 @@ class autoptimizeStyles extends autoptimizeBase {
 				),
 				$this->content
 			);
-		}		
+		}
+
 		// restore noptimize
 		$this->content = $this->restore_noptimize($this->content);
 		
@@ -346,8 +347,13 @@ class autoptimizeStyles extends autoptimizeBase {
 		//Add the new stylesheets
 		if ($this->inline == true) {
 			foreach($this->csscode as $media => $code) {
-				$this->content = str_replace('<title>','<style type="text/css" media="'.$media.'">'.$code.'</style><title>',$this->content);
+				if (strpos($this->content,"<title>")!==false) {
+					$this->content = str_replace('<title>','<style type="text/css" media="'.$media.'">'.$code.'</style><title>',$this->content);
+				} else {
+					$warn_html_template=true;
+					$this->content .= '<style type="text/css" media="'.$media.'">'.$code.'</style>';
 				}
+			}
 		} else {
 			if($this->defer == true) {
 				$deferredCssBlock = "<script>function lCss(url,media) {var d=document;var l=d.createElement('link');l.rel='stylesheet';l.type='text/css';l.href=url;l.media=media; d.getElementsByTagName('head')[0].appendChild(l);}function deferredCSS() {";
@@ -360,14 +366,28 @@ class autoptimizeStyles extends autoptimizeBase {
 				if($this->defer == true) {
 					$deferredCssBlock .= "lCss('".$url."','".$media."');";
 				} else {
-					$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
+					if (strpos($this->content,"<title>")!==false) {
+						$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
+					} else {
+						$warn_html_template=true;
+						$this->content .= '<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" />';
+					}
 				}
 			}
 			
 			if($this->defer == true) {
 				$deferredCssBlock .= "}if(window.addEventListener){window.addEventListener('DOMContentLoaded',deferredCSS,false);}else{window.onload = deferredCSS;}</script>";
-				$this->content = str_replace('</body>',$deferredCssBlock.'</body>',$this->content);
+				if (strpos($this->content,"</body>")!==false) {
+					$this->content = str_replace('</body>',$deferredCssBlock.'</body>',$this->content);
+				} else {
+					$warn_html_template=true;
+					$this->content .= $deferredCssBlock;
+				}
 			}
+		}
+
+		if ($warn_html_template) {
+			$this->warn_html();
 		}
 
 		//Return the modified stylesheet

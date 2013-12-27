@@ -128,7 +128,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Improvement: switch default delivery of optimized CSS/JS-files from PHP to static files
 * Updated [upstream CSS minifier](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/commit/fb33d2ffd0963692747101330b175a80173ce21b)
 * Improvement (force gzip of static files) and Bugfix (force expiry for dynamic files, thanks to [Willem Razenberg](http://www.column-razenberg.nl/) in .htaccess
-* Improvement: fail gracefully when things go wrong (e.g. CSS import resulting in empty aggregated CSS-files [reported by Danka](http://wordpress.org/support/topic/very-good-332))
+* Improvement: fail gracefully when things go wrong (e.g. CSS import resulting in empty aggregated CSS-files [reported by Danka](http://wordpress.org/support/topic/very-good-332) or when the theme is broken [as seen by Prateek Gupta](http://wordpress.org/support/topic/js-optimization-break-site-white-page-issue?replies=14#post-5038941))
 * Bugfix: stop import-statements in CSS comments to be taken into acccount [hat tip to Joseph from blog-it-solutions.de](http://www.blog-it-solutions.de/)
 * Bugfix: fix for blur in CSS breakeage as [reported by Chris of clickpanic.com](http://blog.clickpanic.com/)
 * TODO Updated translations
