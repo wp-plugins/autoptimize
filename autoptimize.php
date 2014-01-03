@@ -124,6 +124,8 @@ function autoptimize_update_config_notice() {
 
 // Set up the buffering
 function autoptimize_start_buffering() {
+	$ao_noptimize = false;
+
 	// filter you can use to block autoptimization on your own terms
 	$ao_noptimize = (bool) apply_filters( 'autoptimize_filter_noptimize', $ao_noptimize );
 
@@ -183,7 +185,7 @@ function autoptimize_end_buffering($content) {
 	if ( stripos($content,"<html") === false || stripos($content,"<xsl:stylesheet") !== false ) { return $content;}
 
 	// load URL constants as late as possible to allow domain mapper to kick in
-	if (function_exists(domain_mapping_siteurl)) {
+	if (function_exists("domain_mapping_siteurl")) {
 		define('AUTOPTIMIZE_WP_SITE_URL',domain_mapping_siteurl(get_current_blog_id()));
 		define('AUTOPTIMIZE_WP_CONTENT_URL',str_replace(get_original_url(AUTOPTIMIZE_WP_SITE_URL),AUTOPTIMIZE_WP_SITE_URL,content_url()));
 	} else {
