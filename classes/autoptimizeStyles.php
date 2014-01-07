@@ -345,6 +345,8 @@ class autoptimizeStyles extends autoptimizeBase {
 			$this->restofcontent = '';
 		}
 		
+		$warn_html_template=false;
+
 		//Add the new stylesheets
 		if ($this->inline == true) {
 			foreach($this->csscode as $media => $code) {
