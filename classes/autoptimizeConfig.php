@@ -173,8 +173,8 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 </tr>
 <tr valign="top" class="hidden ao_adv">
 <th scope="row"><?php _e('Save aggregated script/css as static files?','autoptimize'); ?></th>
-<td><label for="autoptimize_cache_nogzip"><input type="checkbox" name="autoptimize_cache_nogzip" <?php echo get_option('autoptimize_cache_nogzip')?'checked="checked" ':''; ?>/>
-<?php _e('By default files saved are static css/js, disable this if your webserver doesn\'t properly handle the compression and expiry.','autoptimize'); ?></label></td>
+<td><label for="autoptimize_cache_nogzip"><input type="checkbox" name="autoptimize_cache_nogzip" <?php echo get_option('autoptimize_cache_nogzip','1')?'checked="checked" ':''; ?>/>
+<?php _e('By default files saved are static css/js, uncheck this option if your webserver doesn\'t properly handle the compression and expiry.','autoptimize'); ?></label></td>
 </tr>
 </table>
 <input type="hidden" id="autoptimize_show_adv" name="autoptimize_show_adv" value="<?php echo get_option('autoptimize_show_adv','0'); ?>">
