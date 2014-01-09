@@ -171,7 +171,7 @@ function autoptimize_start_buffering() {
 			}
 		} else {
 			if (!class_exists('CSSmin')) {
-				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/yui-php-cssmin-2.4.8-2.php');
+				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/yui-php-cssmin-2.4.8-2_fgo.php');
 			}
 		}
 		define('COMPRESS_CSS',false);
