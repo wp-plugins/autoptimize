@@ -180,8 +180,8 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <input type="hidden" id="autoptimize_show_adv" name="autoptimize_show_adv" value="<?php echo get_option('autoptimize_show_adv','0'); ?>">
 
 <p class="submit">
-<input type="submit" class="button-secondary" value="<?php _e('Save Changes') ?>" />
-<input type="submit" class="button-primary" name="autoptimize_cache_clean" value="<?php _e('Save Changes and Empty Cache') ?>" />
+<input type="submit" class="button-secondary" value="<?php _e('Save Changes','autoptimize') ?>" />
+<input type="submit" class="button-primary" name="autoptimize_cache_clean" value="<?php _e('Save Changes and Empty Cache','autoptimize') ?>" />
 </p>
 
 </form>
