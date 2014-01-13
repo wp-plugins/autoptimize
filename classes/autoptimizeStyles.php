@@ -154,12 +154,13 @@ class autoptimizeStyles extends autoptimizeBase {
 		foreach($this->csscode as &$thiscss) {
 			// Flag to trigger import reconstitution
 			$fiximports = false;
+			$external_imports = "";
+
 			while(preg_match_all('#^(/*\s?)@import.*(?:;|$)#Um',$thiscss,$matches))	{
 				foreach($matches[0] as $import)	{
 					$url = trim(preg_replace('#^.*((?:https?|ftp)://.*\.css).*$#','$1',$import)," \t\n\r\0\x0B\"'");
 					$path = $this->getpath($url);
 					$import_ok = false;
-					$external_imports = "";
 					if (file_exists($path) && is_readable($path)) {
 						$code = addcslashes($this->fixurls($path,file_get_contents($path)),"\\");
 						$code = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$code);

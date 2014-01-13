@@ -293,7 +293,7 @@ class CSSmin
         // Swap out any pseudo-class colons with the token, and then swap back.
 	// fgo; simpler regex to avoid stack overflow in PCRE, cfr. https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/issues/11
         // $css = preg_replace_callback('/(?:^|\})(?:(?:[^\{\:])+\:)+(?:[^\{]*\{)/', array($this, 'replace_colon'), $css);
-	$css = preg_replace_callback('/(^[^\{]*)(\s(:.*\{))/', array($this, 'replace_colon'), $css);
+	$css = preg_replace_callback('/(?:(?:^|\})([^\{]*\s:))/', array($this, 'replace_colon'), $css);
 
         // Remove spaces before the things that should not have spaces before them.
         $css = preg_replace('/\s+([\!\{\}\;\:\>\+\(\)\]\~\=,])/', '$1', $css);
