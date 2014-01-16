@@ -42,7 +42,7 @@ class autoptimizeStyles extends autoptimizeBase {
 		$this->content = $this->hide_noptimize($this->content);
 		
 		// exclude noscript, as those may contain CSS
-		if ( preg_match( '/<noscript>/', $this->content ) ) { 
+		if ( strpos( $this->content, '<noscript>' ) !== false ) { 
 			$this->content = preg_replace_callback(
 				'#<noscript>.*?</noscript>#is',
 				create_function(
@@ -54,7 +54,7 @@ class autoptimizeStyles extends autoptimizeBase {
 		}
 
 		// Save IE hacks
-		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
+		$this->content = $this->hide_iehacks($this->content);
 		
 		// Get <style> and <link>
 		if(preg_match_all('#(<style[^>]*>.*</style>)|(<link[^>]*stylesheet[^>]*>)#Usmi',$this->content,$matches)) {
@@ -152,7 +152,7 @@ class autoptimizeStyles extends autoptimizeBase {
 		
 		//Manage @imports, while is for recursive import management
 		foreach($this->csscode as &$thiscss) {
-			// Flag to trigger import reconstitution
+			// Flag to trigger import reconstitution and var to hold external imports
 			$fiximports = false;
 			$external_imports = "";
 
@@ -323,10 +323,10 @@ class autoptimizeStyles extends autoptimizeBase {
 	//Returns the content
 	public function getcontent() {
 		//Restore IE hacks
-		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);
+		$this->content = $this->restore_iehacks($this->content);
 		
 		// restore noscript
-		if ( preg_match( '/%%NOSCRIPT%%/', $this->content ) ) { 
+		if ( strpos( $this->content, '%%NOSCRIPT%%' ) !== false ) { 
 			$this->content = preg_replace_callback(
 				'#%%NOSCRIPT%%(.*?)%%NOSCRIPT%%#is',
 				create_function(

@@ -51,7 +51,7 @@ class autoptimizeScripts extends autoptimizeBase
 		$this->content = $this->hide_noptimize($this->content);
 
 		//Save IE hacks
-		$this->content = preg_replace('#(<\!--\[if.*\]>.*<\!\[endif\]-->)#Usie','\'%%IEHACK%%\'.base64_encode("$1").\'%%IEHACK%%\'',$this->content);
+		$this->content = $this->hide_iehacks($this->content);
 
 		//Get script files
 		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches)) {
@@ -218,7 +218,7 @@ class autoptimizeScripts extends autoptimizeBase
 		}
 
 		// Restore IE hacks
-		$this->content = preg_replace('#%%IEHACK%%(.*)%%IEHACK%%#Usie','stripslashes(base64_decode("$1"))',$this->content);
+		$this->content = $this->restore_iehacks($this->content);
 		
 		// Restore noptimize
 		$this->content = $this->restore_noptimize($this->content);

@@ -63,7 +63,7 @@ abstract class autoptimizeBase
 	
 	// unhide noptimize-tags
 	protected function restore_noptimize($noptimize_in) {
-		if ( preg_match( '/%%NOPTIMIZE%%/', $noptimize_in ) ) { 
+		if ( strpos( $noptimize_in, '%%NOPTIMIZE%%' ) !== false ) { 
 			$noptimize_out = preg_replace_callback(
 				'#%%NOPTIMIZE%%(.*?)%%NOPTIMIZE%%#is',
 				create_function(
@@ -77,13 +77,42 @@ abstract class autoptimizeBase
 		}
 		return $noptimize_out;
 	}
+
+	protected function hide_iehacks($iehacks_in) {
+		if ( strpos( $iehacks_in, '<!--[if' ) !== false ) { 
+			$iehacks_out = preg_replace_callback(
+				'#<!--[if.*?[endif]-->#is',
+				create_function(
+					'$matches',
+					'return "%%IEHACK%%".base64_encode($matches[0])."%%IEHACK%%";'
+				),
+				$iehacks_in
+			);
+		} else {
+			$iehacks_out = $iehacks_in;
+		}
+		return $iehacks_out;
+	}
+
+	protected function restore_iehacks($iehacks_in) {
+		if ( strpos( $iehacks_in, '%%IEHACK%%' ) !== false ) { 
+			$iehacks_out = preg_replace_callback(
+				'#%%IEHACK%%(.*?)%%IEHACK%%#is',
+				create_function(
+					'$matches',
+					'return stripslashes(base64_decode($matches[1]));'
+				),
+				$iehacks_in
+			);
+		} else {
+			$iehacks_out=$iehacks_in;
+		}
+		return $iehacks_out;
+	}
 	
 	protected function url_replace_cdn($url) {		
 		if (!empty($this->cdn_url)) {
-			// this check is too expensive, is done on admin-screen instead
-			// if (preg_match("/^(https?)?:\/\/([\da-z\.-]+)\.([\da-z\.]{2,6})([\/\w \.-]*)*\/?$/",$this->cdn_url)) {
-				$url=str_replace(AUTOPTIMIZE_WP_SITE_URL,rtrim($this->cdn_url,'/'),$url);
-			// }
+			$url=str_replace(AUTOPTIMIZE_WP_SITE_URL,rtrim($this->cdn_url,'/'),$url);
 		}
 		return $url;
 	}

@@ -2,8 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-class autoptimizeHTML extends autoptimizeBase
-{
+class autoptimizeHTML extends autoptimizeBase {
 	private $keepcomments = false;
 	
 	//Does nothing
