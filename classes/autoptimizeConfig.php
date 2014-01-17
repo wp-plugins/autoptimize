@@ -49,7 +49,7 @@ class autoptimizeConfig
 	public function show()
 	{
 ?>
-<style>input[type=url]:invalid {color: red; border-color:red;}</style>
+<style>input[type=url]:invalid {color: red; border-color:red;} .form-table th{font-weight:100;}</style>
 
 <div class="wrap">
 
@@ -104,9 +104,9 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <?php _e('Mostly usefull in combination with previous option when using jQuery-based templates, but might help keeping cache size under control.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv">
-<th scope="row"><?php _e('Exclude scripts from autoptimize:','autoptimize'); ?></th>
+<th scope="row"><?php _e('Exclude scripts from Autoptimize:','autoptimize'); ?></th>
 <td><label for="autoptimize_js_exclude"><input type="text" style="width:100%;" name="autoptimize_js_exclude" value="<?php echo get_option('autoptimize_js_exclude',"s_sid,smowtion_size,sc_project,WAU_,wau_add,comment-form-quicktags,edToolbar,ch_client"); ?>"/><br />
-<?php _e('A comma-seperated list of scripts you want to exclude from being Autoptimized, for example \'whatever.js, another.js\' (without the quotes) to exclude those scripts from being aggregated and minimized by Autoptimize.','autoptimize'); ?></label></td>
+<?php _e('A comma-seperated list of scripts you want to exclude from being optimized, for example \'whatever.js, another.js\' (without the quotes) to exclude those scripts from being aggregated and minimized by Autoptimize.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv">
 <th scope="row"><?php _e('Add try-catch wrapping?','autoptimize'); ?></th>
@@ -142,9 +142,9 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <?php _e('Inlining all CSS can improve performance for sites with a low pageviews/ visitor-rate, but may slow down performance otherwise. CSS inlining disables CSS deferring.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv">
-<th scope="row"><?php _e('Exclude CSS from autoptimize:','autoptimize'); ?></th>
+<th scope="row"><?php _e('Exclude CSS from Autoptimize:','autoptimize'); ?></th>
 <td><label for="autoptimize_css_exclude"><input type="text" style="width:100%;" name="autoptimize_css_exclude" value="<?php echo get_option('autoptimize_css_exclude','admin-bar.min.css, dashicons.min.css'); ?>"/><br />
-<?php _e('A comma-seperated list of CSS you want to exclude from being Autoptimized.','autoptimize'); ?></label></td>
+<?php _e('A comma-seperated list of CSS you want to exclude from being optimized.','autoptimize'); ?></label></td>
 </tr>
 </table>
 
@@ -153,7 +153,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <tr valign="top">
 <th scope="row"><?php _e('CDN Base URL','autoptimize'); ?></th>
 <td><label for="autoptimize_url"><input id="cdn_url" type="url" name="autoptimize_cdn_url" pattern="^(https?:)?\/\/([\da-z\.-]+)\.([\da-z\.]{2,6})([\/\w \.-]*)*\/?$" style="width:100%" value="<?php $it = get_option('autoptimize_cdn_url','');echo htmlentities($it); ?>" /><br />
-<?php _e('Enter your CDN blog root directory URL if you want to enable CDN.','autoptimize'); ?></label></td>
+<?php _e('Enter your CDN blog root directory URL if you want to enable CDN for images referenced in the CSS.','autoptimize'); ?></label></td>
 </tr>
 </table>
 
