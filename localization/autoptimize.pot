@@ -1,25 +1,25 @@
-# Copyright (C) 2013 Autoptimize
+# Copyright (C) 2014 Autoptimize
 # This file is distributed under the same license as the Autoptimize package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Autoptimize 1.7.0\n"
+"Project-Id-Version: Autoptimize 1.8.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/autoptimize\n"
-"POT-Creation-Date: 2013-10-21 07:38:13+00:00\n"
+"POT-Creation-Date: 2014-01-17 18:16:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2013-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: autoptimize.php:66
+#: autoptimize.php:117
 msgid ""
 "Thank you for installing and activating Autoptimize. Please configure it "
 "under \"Settings\" -> \"Autoptimize\" to start improving your site's "
 "performance."
 msgstr ""
 
-#: autoptimize.php:72
+#: autoptimize.php:123
 msgid ""
 "Autoptimize has just been updated. Please <strong>test your site now</"
 "strong> and adapt Autoptimize config if needed."
@@ -85,14 +85,14 @@ msgid ""
 msgstr ""
 
 #: classes/autoptimizeConfig.php:107
-msgid "Exclude scripts from autoptimize:"
+msgid "Exclude scripts from Autoptimize:"
 msgstr ""
 
 #: classes/autoptimizeConfig.php:109
 msgid ""
-"A comma-seperated list of scripts you want to exclude from being "
-"Autoptimized, for example 'whatever.js, another.js' (without the quotes) to "
-"exclude those scripts from being aggregated and minimized by Autoptimize."
+"A comma-seperated list of scripts you want to exclude from being optimized, "
+"for example 'whatever.js, another.js' (without the quotes) to exclude those "
+"scripts from being aggregated and minimized by Autoptimize."
 msgstr ""
 
 #: classes/autoptimizeConfig.php:112
@@ -123,113 +123,128 @@ msgid ""
 msgstr ""
 
 #: classes/autoptimizeConfig.php:130
-msgid "Defer CSS loading?"
-msgstr ""
-
-#: classes/autoptimizeConfig.php:132
-msgid ""
-"Normally CSS is loaded in the &lt;head&gt;-section of the HTML, but for "
-"mobile performance reasons having it deferred can be better."
-msgstr ""
-
-#: classes/autoptimizeConfig.php:135
 msgid "Look for styles only in &lt;head&gt;?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:137
+#: classes/autoptimizeConfig.php:132
 msgid ""
 "Don't autoptimize CSS outside the head-section. If the cache gets big, you "
 "might want to enable this."
 msgstr ""
 
+#: classes/autoptimizeConfig.php:135
+msgid "Defer CSS loading?"
+msgstr ""
+
+#: classes/autoptimizeConfig.php:137
+msgid ""
+"Load optimized CSS only after page load (disables CSS inlining). "
+"<strong>Warning</strong>: <a href=\"http://wordpress.org/plugins/autoptimize/"
+"faq/\" target=\"_blank\">check the FAQ</a> before activating this option!"
+msgstr ""
+
 #: classes/autoptimizeConfig.php:140
-msgid "Exclude CSS from autoptimize:"
+msgid "Inline all CSS?"
 msgstr ""
 
 #: classes/autoptimizeConfig.php:142
 msgid ""
-"A comma-seperated list of CSS you want to exclude from being Autoptimized."
+"Inlining all CSS can improve performance for sites with a low pageviews/ "
+"visitor-rate, but may slow down performance otherwise. CSS inlining disables "
+"CSS deferring."
 msgstr ""
 
-#: classes/autoptimizeConfig.php:146
-msgid "CDN Options"
+#: classes/autoptimizeConfig.php:145
+msgid "Exclude CSS from Autoptimize:"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:149
-msgid "CDN Base URL"
+#: classes/autoptimizeConfig.php:147
+msgid "A comma-seperated list of CSS you want to exclude from being optimized."
 msgstr ""
 
 #: classes/autoptimizeConfig.php:151
-msgid "Enter your CDN blog root directory URL if you want to enable CDN."
+msgid "CDN Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:155
+#: classes/autoptimizeConfig.php:154
+msgid "CDN Base URL"
+msgstr ""
+
+#: classes/autoptimizeConfig.php:156
+msgid ""
+"Enter your CDN blog root directory URL if you want to enable CDN for images "
+"referenced in the CSS."
+msgstr ""
+
+#: classes/autoptimizeConfig.php:160
 msgid "Cache Info"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:158
+#: classes/autoptimizeConfig.php:163
 msgid "Cache folder"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:162
+#: classes/autoptimizeConfig.php:167
 msgid "Can we write?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:163
+#: classes/autoptimizeConfig.php:168
 msgid "Yes"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:163
+#: classes/autoptimizeConfig.php:168
 msgid "No"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:166
+#: classes/autoptimizeConfig.php:171
 msgid "Cached styles and scripts"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:170
+#: classes/autoptimizeConfig.php:175
 msgid "Save aggregated script/css as static files?"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:172
-msgid "Enable this if your webserver can handle the compression and expiry."
+#: classes/autoptimizeConfig.php:177
+msgid ""
+"By default files saved are static css/js, uncheck this option if your "
+"webserver doesn't properly handle the compression and expiry."
 msgstr ""
 
-#: classes/autoptimizeConfig.php:178
+#: classes/autoptimizeConfig.php:183
 msgid "Save Changes"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:179
+#: classes/autoptimizeConfig.php:184
 msgid "Save Changes and Empty Cache"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:185
-msgid "Do not donate for this plugin!"
-msgstr ""
-
-#: classes/autoptimizeConfig.php:188
+#: classes/autoptimizeConfig.php:192
 msgid "futtta about"
 msgstr ""
 
-#. #-#-#-#-#  plugin.pot (Autoptimize 1.7.0)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Autoptimize 1.8.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: classes/autoptimizeConfig.php:190
+#: classes/autoptimizeConfig.php:194
 msgid "Autoptimize"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:191
+#: classes/autoptimizeConfig.php:195
 msgid "WordPress"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:192
+#: classes/autoptimizeConfig.php:196
 msgid "Web Technology"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:245
+#: classes/autoptimizeConfig.php:201
+msgid "Do not donate for this plugin!"
+msgstr ""
+
+#: classes/autoptimizeConfig.php:262
 msgid "Autoptimize Options"
 msgstr ""
 
-#: classes/autoptimizeConfig.php:291 classes/autoptimizeConfig.php:298
+#: classes/autoptimizeConfig.php:309 classes/autoptimizeConfig.php:316
 msgid "Settings"
 msgstr ""
 
