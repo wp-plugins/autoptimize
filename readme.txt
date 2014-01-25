@@ -129,9 +129,9 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Updated [upstream CSS minifier](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/commit/fb33d2ffd0963692747101330b175a80173ce21b)
 * Improvement (force gzip of static files) and Bugfix (force expiry for dynamic files, thanks to [Willem Razenberg](http://www.column-razenberg.nl/) in .htaccess
 * Improvement: fail gracefully when things go wrong (e.g. CSS import resulting in empty aggregated CSS-files [reported by Danka](http://wordpress.org/support/topic/very-good-332) or when the theme is broken [as seen by Prateek Gupta](http://wordpress.org/support/topic/js-optimization-break-site-white-page-issue?replies=14#post-5038941))
-* Bugfix: stop import-statements in CSS comments to be taken into acccount [hat tip to Joseph from blog-it-solutions.de](http://www.blog-it-solutions.de/)
+* Updated translations and Polish added (thanks to [Jakub Sierpinski](http://www.sierpinski.pl/)).
+* Bugfix: stop import-statements in CSS comments to be taken into acccount [hat tip to Josef from blog-it-solutions.de](http://www.blog-it-solutions.de/)
 * Bugfix: fix for blur in CSS breakeage as [reported by Chris of clickpanic.com](http://blog.clickpanic.com/)
-* TODO Updated translations
 
 = 1.7.3 =
 * improvement: remove cache + options on uninstall as [requested by Gingerbreadmen](http://wordpress.org/support/topic/wp_options-entries)
@@ -147,7 +147,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 = 1.7.1 =
 * New: support for mapped domains as suggested by [Michael for tiremoni.com](http://tiremoni.com/)
 * Added an .htaccess to wp-content/cache/autoptimize to overwrite other caching directives (fixing a problem with WP Super Cache's .htaccess really, [as reported](http://wordpress.org/support/topic/expiresmax-age-compatibility-with-supercache) by [Hugh of www.unitedworldschools.org](http://www.unitedworldschools.org/))
-* bugfix: Autoptimize broke data:uri's in CSS in some cases as reported by [Joseph from blog-it-solutions.de](http://www.blog-it-solutions.de/)
+* bugfix: Autoptimize broke data:uri's in CSS in some cases as reported by [Josef from blog-it-solutions.de](http://www.blog-it-solutions.de/)
 * bugfix: avoid PHP notice if CSS exclusion list is empty
 * moved "do not donate"-image into plugin
 
