@@ -6,6 +6,8 @@ Description: Optimizes your website, concatenating the CSS and JavaScript code, 
 Version: 1.8.0
 Author: Frank Goossens (futtta)
 Author URI: http://blog.futtta.be/
+Domain Path: localization/
+Text Domain: autoptimize
 Released under the GNU General Public License (GPL)
 http://www.gnu.org/licenses/gpl.txt
 */
