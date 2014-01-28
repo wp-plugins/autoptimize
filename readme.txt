@@ -4,7 +4,7 @@ Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, mi
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
 Tested up to: 3.8
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
 
@@ -120,6 +120,9 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.8.1 =
+* bugfix: CSS in conditional comments was not excluded from aggregation as reported by [Rolf](http://www.finkbeiner-holz.de/) and [bottapress](http://www.wordpress-hebergement.fr/)
 
 = 1.8.0 =
 * New: Option to inline all CSS [as suggested by Hamed](http://wordpress.org/support/topic/make-style-sheet-inline)

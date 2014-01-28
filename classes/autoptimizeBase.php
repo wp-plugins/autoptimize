@@ -81,7 +81,7 @@ abstract class autoptimizeBase
 	protected function hide_iehacks($iehacks_in) {
 		if ( strpos( $iehacks_in, '<!--[if' ) !== false ) { 
 			$iehacks_out = preg_replace_callback(
-				'#<!--[if.*?[endif]-->#is',
+				'#<!--\[if.*?\[endif\]-->#is',
 				create_function(
 					'$matches',
 					'return "%%IEHACK%%".base64_encode($matches[0])."%%IEHACK%%";'
