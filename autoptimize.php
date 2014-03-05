@@ -34,7 +34,7 @@ $conf = autoptimizeConfig::instance();
 /* Check if we're updating, in which case we might need to do stuff and flush the cache
 to avoid old versions of aggregated files lingering around */
 
-$autoptimize_version="1.8.1";
+$autoptimize_version="1.8.2";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
@@ -184,7 +184,7 @@ function autoptimize_start_buffering() {
 	}
 }
 
-//Action on end - 
+// Action on end, this is where the magic happens
 function autoptimize_end_buffering($content) {
 	if ( stripos($content,"<html") === false || stripos($content,"<xsl:stylesheet") !== false ) { return $content;}
 

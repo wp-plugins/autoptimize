@@ -121,6 +121,13 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 
 == Changelog ==
 
+= 1.8.2 =
+* Improvement: more graceful failure when minifier classes exist but method does not, based on [bug-report by Franck160](http://wordpress.org/support/topic/confict-with-dynamic-to-top)
+* Improvement: deferred CSS is also outputted in noscript-tags
+* Improvement: differentiate between Apache version in .htaccess file as suggested by [iMadalin](http://www.imadalin.ro/)
+* Bugfix: some CSS-imports were not being aggregated/ minified
+* Updates in FAQ
+
 = 1.8.1 =
 * bugfix: CSS in conditional comments was not excluded from aggregation as reported by [Rolf](http://www.finkbeiner-holz.de/) and [bottapress](http://www.wordpress-hebergement.fr/)
 

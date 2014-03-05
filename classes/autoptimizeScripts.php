@@ -164,12 +164,16 @@ class autoptimizeScripts extends autoptimizeBase
 		
 		//$this->jscode has all the uncompressed code now. 
 		if(class_exists('JSMin')) {
-			$tmp_jscode = trim(JSMin::minify($this->jscode));
-			if (!empty($tmp_jscode)) {
-				$this->jscode = $tmp_jscode;
-				unset($tmp_jscode);
+			if (is_callable(array(new JSMin,"minify"))) {
+				$tmp_jscode = trim(JSMin::minify($this->jscode));
+				if (!empty($tmp_jscode)) {
+					$this->jscode = $tmp_jscode;
+					unset($tmp_jscode);
 				}
-			return true;
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}

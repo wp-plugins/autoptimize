@@ -158,7 +158,7 @@ class autoptimizeStyles extends autoptimizeBase {
 
 			while(preg_match_all('#^(/*\s?)@import.*(?:;|$)#Um',$thiscss,$matches))	{
 				foreach($matches[0] as $import)	{
-					$url = trim(preg_replace('#^.*((?:https?|ftp)://.*\.css).*$#','$1',$import)," \t\n\r\0\x0B\"'");
+					$url = trim(preg_replace('#^.*((?:https?|ftp)://.*\.css).*$#','$1',trim($import))," \t\n\r\0\x0B\"'");
 					$path = $this->getpath($url);
 					$import_ok = false;
 					if (file_exists($path) && is_readable($path)) {
@@ -270,11 +270,14 @@ class autoptimizeStyles extends autoptimizeBase {
 			
 			//Minify
 			if (class_exists('Minify_CSS_Compressor')) {
-				// legacy
 				$tmp_code = trim(Minify_CSS_Compressor::process($code));
 			} else if(class_exists('CSSmin')) {
 				$cssmin = new CSSmin();
-				$tmp_code = trim($cssmin->run($code));
+				if (method_exists($cssmin,"run")) {
+					$tmp_code = trim($cssmin->run($code));
+				} elseif (is_callable(array($cssmin,"minify"))) {
+					$tmp_code = trim(CssMin::minify($code));
+				}
 			}
 			
 			if (!empty($tmp_code)) {
@@ -361,6 +364,7 @@ class autoptimizeStyles extends autoptimizeBase {
 		} else {
 			if($this->defer == true) {
 				$deferredCssBlock = "<script>function lCss(url,media) {var d=document;var l=d.createElement('link');l.rel='stylesheet';l.type='text/css';l.href=url;l.media=media; d.getElementsByTagName('head')[0].appendChild(l);}function deferredCSS() {";
+				$noScriptCssBlock = "<noscript>";
 			}
 
 			foreach($this->url as $media => $url) {
@@ -369,6 +373,7 @@ class autoptimizeStyles extends autoptimizeBase {
 				//Add the stylesheet either deferred (import at bottom) or normal links in head
 				if($this->defer == true) {
 					$deferredCssBlock .= "lCss('".$url."','".$media."');";
+					$noScriptCssBlock .= '<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" />';
 				} else {
 					if (strpos($this->content,"<title>")!==false) {
 						$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
@@ -381,6 +386,13 @@ class autoptimizeStyles extends autoptimizeBase {
 			
 			if($this->defer == true) {
 				$deferredCssBlock .= "}if(window.addEventListener){window.addEventListener('DOMContentLoaded',deferredCSS,false);}else{window.onload = deferredCSS;}</script>";
+				$noScriptCssBlock .= "</noscript>";
+				if (strpos($this->content,"<title>")!==false) {
+						$this->content = str_replace('<title>',$noScriptCssBlock.'<title>',$this->content);
+				} else {
+						$warn_html_template=true;
+						$this->content .= $noScriptCssBlock;
+				}
 				if (strpos($this->content,"</body>")!==false) {
 					$this->content = str_replace('</body>',$deferredCssBlock.'</body>',$this->content);
 				} else {
