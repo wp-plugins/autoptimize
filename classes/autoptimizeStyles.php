@@ -354,8 +354,8 @@ class autoptimizeStyles extends autoptimizeBase {
 		//Add the new stylesheets
 		if ($this->inline == true) {
 			foreach($this->csscode as $media => $code) {
-				if (strpos($this->content,"<title>")!==false) {
-					$this->content = str_replace('<title>','<style type="text/css" media="'.$media.'">'.$code.'</style><title>',$this->content);
+				if (strpos($this->content,"<title")!==false) {
+					$this->content = str_replace('<title','<style type="text/css" media="'.$media.'">'.$code.'</style><title',$this->content);
 				} else {
 					$warn_html_template=true;
 					$this->content .= '<style type="text/css" media="'.$media.'">'.$code.'</style>';
@@ -375,8 +375,8 @@ class autoptimizeStyles extends autoptimizeBase {
 					$deferredCssBlock .= "lCss('".$url."','".$media."');";
 					$noScriptCssBlock .= '<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" />';
 				} else {
-					if (strpos($this->content,"<title>")!==false) {
-						$this->content = str_replace('<title>','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title>',$this->content);
+					if (strpos($this->content,"<title")!==false) {
+						$this->content = str_replace('<title','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title',$this->content);
 					} else {
 						$warn_html_template=true;
 						$this->content .= '<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" />';
@@ -387,8 +387,8 @@ class autoptimizeStyles extends autoptimizeBase {
 			if($this->defer == true) {
 				$deferredCssBlock .= "}if(window.addEventListener){window.addEventListener('DOMContentLoaded',deferredCSS,false);}else{window.onload = deferredCSS;}</script>";
 				$noScriptCssBlock .= "</noscript>";
-				if (strpos($this->content,"<title>")!==false) {
-						$this->content = str_replace('<title>',$noScriptCssBlock.'<title>',$this->content);
+				if (strpos($this->content,"<title")!==false) {
+						$this->content = str_replace('<title',$noScriptCssBlock.'<title',$this->content);
 				} else {
 						$warn_html_template=true;
 						$this->content .= $noScriptCssBlock;

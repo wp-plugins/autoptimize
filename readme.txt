@@ -126,6 +126,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Improvement: deferred CSS is also outputted in noscript-tags
 * Improvement: differentiate between Apache version in .htaccess file as suggested by [iMadalin](http://www.imadalin.ro/)
 * Bugfix: some CSS-imports were not being aggregated/ minified
+* Bugfix: add CSS before <title instead of <title> to avoid breakage when title includes other attributes (e.g. itemscope)
 * Updates in FAQ
 
 = 1.8.1 =
