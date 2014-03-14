@@ -3,7 +3,7 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: 1.8.1
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
@@ -125,8 +125,10 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Improvement: more graceful failure when minifier classes exist but method does not, based on [bug-report by Franck160](http://wordpress.org/support/topic/confict-with-dynamic-to-top)
 * Improvement: deferred CSS is also outputted in noscript-tags
 * Improvement: differentiate between Apache version in .htaccess file as suggested by [iMadalin](http://www.imadalin.ro/)
+* Improvement: also aggregate protocol-less CSS/JS URI's (as [suggested by Ross](http://wordpress.org/support/topic/protocol-less-url-support)
 * Bugfix: some CSS-imports were not being aggregated/ minified
 * Bugfix: add CSS before <title instead of <title> to avoid breakage when title includes other attributes (e.g. itemscope)
+* Tested with WordPress 3.9 (beta 1)
 * Updates in FAQ
 
 = 1.8.1 =

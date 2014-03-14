@@ -25,7 +25,9 @@ abstract class autoptimizeBase
 	
 	//Converts an URL to a full path
 	protected function getpath($url) {
-		if ((strpos($url,'//')===false) && (strpos($url,parse_url(AUTOPTIMIZE_WP_SITE_URL,PHP_URL_HOST))===false)) {
+	if (strpos($url,'//')===0) {
+		$url = "http:".$url;
+	} else if ((strpos($url,'//')===false) && (strpos($url,parse_url(AUTOPTIMIZE_WP_SITE_URL,PHP_URL_HOST))===false)) {
 			$url = AUTOPTIMIZE_WP_SITE_URL.$url;
 		}
         $path = str_replace(AUTOPTIMIZE_WP_ROOT_URL,'',$url);
