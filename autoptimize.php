@@ -34,7 +34,7 @@ $conf = autoptimizeConfig::instance();
 /* Check if we're updating, in which case we might need to do stuff and flush the cache
 to avoid old versions of aggregated files lingering around */
 
-$autoptimize_version="1.8.2";
+$autoptimize_version="1.8.1";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
@@ -132,6 +132,13 @@ function autoptimize_start_buffering() {
 
 	// filter you can use to block autoptimization on your own terms
 	$ao_noptimize = (bool) apply_filters( 'autoptimize_filter_noptimize', $ao_noptimize );
+
+	// noptimize in qs to get non-optimized page for debugging
+	if (array_key_exists("ao_noptimize",$_GET)) {
+		if ($_GET["ao_noptimize"]==="1") {
+			$ao_noptimize = true;
+		}
+	}
 
 	if (!is_feed() && !$ao_noptimize ) {
 
