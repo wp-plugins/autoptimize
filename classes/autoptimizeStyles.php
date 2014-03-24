@@ -35,7 +35,7 @@ class autoptimizeStyles extends autoptimizeBase {
 		// get cdn url
 		$this->cdn_url = $options['cdn_url'];
 		
-		//Store data: URIs setting for later use
+		// Store data: URIs setting for later use
 		$this->datauris = $options['datauris'];
 		
 		// noptimize me
@@ -55,6 +55,9 @@ class autoptimizeStyles extends autoptimizeBase {
 
 		// Save IE hacks
 		$this->content = $this->hide_iehacks($this->content);
+
+		// hide comments
+		$this->content = $this->hide_comments($this->content);
 		
 		// Get <style> and <link>
 		if(preg_match_all('#(<style[^>]*>.*</style>)|(<link[^>]*stylesheet[^>]*>)#Usmi',$this->content,$matches)) {
@@ -325,8 +328,11 @@ class autoptimizeStyles extends autoptimizeBase {
 	
 	//Returns the content
 	public function getcontent() {
-		//Restore IE hacks
+		// restore IE hacks
 		$this->content = $this->restore_iehacks($this->content);
+
+		// restore comments
+		$this->content = $this->restore_comments($this->content);
 		
 		// restore noscript
 		if ( strpos( $this->content, '%%NOSCRIPT%%' ) !== false ) { 

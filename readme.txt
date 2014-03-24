@@ -54,6 +54,14 @@ Inlining all CSS has one clear advantage (better PageSpeed score) and one big di
 
 So the choice should be based on your answer to some site-specific questions; what is your site's bounce rate? How many pages per visit do your visitors request? If you have a high bounce rate and a low number of average pages per visit, inlining CSS looks like a good idea. But with a high number of pages/ visit, it's probably not a good idea. Except if all you care about is a stellar PageSpeed-score, off course.
 
+You can find more information on this topic [in this blog post](http://blog.futtta.be/2014/02/13/should-you-inline-or-defer-blocking-css/).
+
+= My cache is getting huge, doesn't Autoptimize purge the cache? =
+
+Autoptimize does not have its proper cache purging mechanism, as this could remove optimized CSS/JS which is still referred to in other caches which would break your site.
+
+You can however keep the cache size at an acceptable level by excludinng JS-variables (or sometimes CSS-selectors) that change on a per page (or per pageload) basis. You can read how you can do that [in this blogpost](http://blog.futtta.be/2014/03/19/how-to-keep-autoptimizes-cache-size-under-control-and-improve-visitor-experience/).
+
 = What can I do with the API? =
 
 A whole lot; there are filters you can use to conditionally disable Autoptimize per request, to change the CSS- and JS-excludes, to change the limit for CSS background-images to be inlined in the CSS, to define what JS-files are moved behing the aggregated on, to change the defer-attribute on the aggregated JS script-tag,  There are examples for all filters in autoptimize_helper.php_example.
@@ -70,11 +78,7 @@ If you want your uploaded images to be on the CDN as well, you can change the up
 
 = How can I force the aggregated files to be static CSS or JS instead of PHP? =
 
-If your webserver is properly configured to handle compression (gzip or deflate) and cache expiry (expires and cache-control with sufficient cacheability), you don't need Autoptimize to handle that for you. In that case you can check the "Save aggregated script/css as static files?"-option, which will force Autoptimize to save the aggregated files as .css and .js-files (meaning no PHP is needed to serve these files).
-
-= Does Autoptimize work with BuddyPress? =
-
-Based on earlier feedback received from BuddyPress users, CSS and JS-Autoptimization do not seem to work correctly, leaving you with only HTML optimizations. This might be due to problems in Autoptimize which have already been fixed, so feel free to give it a shot anyhow.
+If your webserver is properly configured to handle compression (gzip or deflate) and cache expiry (expires and cache-control with sufficient cacheability), you don't need Autoptimize to handle that for you. In that case you can check the "Save aggregated script/css as static files?"-option, which will force Autoptimize to save the aggregated files as .css and .js-files (meaning no PHP is needed to serve these files). This setting is default as of Autoptimize 1.8.
 
 = Compatibility with WP SlimSat =
 
@@ -129,6 +133,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Improvement: disable autoptimization based on parameter in querystring (for debugging)
 * Bugfix: some CSS-imports were not being aggregated/ minified
 * Bugfix: add CSS before <title instead of <title> to avoid breakage when title includes other attributes (e.g. itemscope)
+* Bugfix: make sure javascript or css between comments is not aggregated as reported by [Milap Gajjar](http://wordpress.org/support/topic/the-optimized-css-contains-duplicate-classes)
 * Tested with WordPress 3.9 (beta 1)
 * Updates in FAQ
 

@@ -50,8 +50,11 @@ class autoptimizeScripts extends autoptimizeBase
 		// noptimize me
 		$this->content = $this->hide_noptimize($this->content);
 
-		//Save IE hacks
+		// Save IE hacks
 		$this->content = $this->hide_iehacks($this->content);
+
+		// comments
+		$this->content = $this->hide_comments($this->content);
 
 		//Get script files
 		if(preg_match_all('#<script.*</script>#Usmi',$this->content,$matches)) {
@@ -220,6 +223,9 @@ class autoptimizeScripts extends autoptimizeBase
 			$this->content .= $bodyreplacement;
 			$this->warn_html();
 		}
+
+		// restore comments
+		$this->content = $this->restore_comments($this->content);
 
 		// Restore IE hacks
 		$this->content = $this->restore_iehacks($this->content);

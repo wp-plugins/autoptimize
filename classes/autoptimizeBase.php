@@ -111,6 +111,38 @@ abstract class autoptimizeBase
 		}
 		return $iehacks_out;
 	}
+
+        protected function hide_comments($comments_in) {
+                if ( strpos( $comments_in, '<!--' ) !== false ) {
+                        $comments_out = preg_replace_callback(
+                                '#<!--.*?-->#is',
+                                create_function(
+                                        '$matches',
+                                        'return "%%COMMENTS%%".base64_encode($matches[0])."%%COMMENTS%%";'
+                                ),
+                                $comments_in
+                        );
+                } else {
+                        $comments_out = $comments_in;
+                }
+                return $comments_out;
+        }
+
+        protected function restore_comments($comments_in) {
+                if ( strpos( $comments_in, '%%COMMENTS%%' ) !== false ) {
+                        $comments_out = preg_replace_callback(
+                                '#%%COMMENTS%%(.*?)%%COMMENTS%%#is',
+                                create_function(
+                                        '$matches',
+                                        'return stripslashes(base64_decode($matches[1]));'
+                                ),
+                                $comments_in
+                        );
+                } else {
+                        $comments_out=$comments_in;
+                }
+                return $comments_out;
+	}
 	
 	protected function url_replace_cdn($url) {		
 		if (!empty($this->cdn_url)) {
