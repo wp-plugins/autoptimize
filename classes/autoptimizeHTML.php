@@ -1,7 +1,8 @@
 <?php
 
-class autoptimizeHTML extends autoptimizeBase
-{
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+class autoptimizeHTML extends autoptimizeBase {
 	private $keepcomments = false;
 	
 	//Does nothing
@@ -19,9 +20,22 @@ class autoptimizeHTML extends autoptimizeBase
 	{
 		if(class_exists('Minify_HTML'))
 		{
-			//Minify html
+			// noptimize me
+			$this->content = $this->hide_noptimize($this->content);
+
+			// Minify html
 			$options = array('keepComments' => $this->keepcomments);
-			$this->content = Minify_HTML::minify($this->content,$options);
+
+			if (is_callable(array(new Minify_HTML,"minify"))) {
+				$tmp_content = Minify_HTML::minify($this->content,$options);
+				if (!empty($tmp_content)) {
+					$this->content = $tmp_content;
+					unset($tmp_content);
+				}
+			}
+
+			// restore noptimize
+			$this->content = $this->restore_noptimize($this->content);
 			return true;
 		}
 		
