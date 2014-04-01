@@ -90,8 +90,13 @@ class autoptimizeStyles extends autoptimizeBase {
 							$tag = '';
 						}
 					} else {
-						//<style>
+						// inline css in style tags can be wrapped in comment tags, so restore comments
+						$tag = $this->restore_comments($tag);
 						preg_match('#<style.*>(.*)</style>#Usmi',$tag,$code);
+
+						// and re-hide them to be able to to the removal based on tag
+						$tag = $this->hide_comments($tag);
+
 						$code = preg_replace('#^.*<!\[CDATA\[(?:\s*\*/)?(.*)(?://|/\*)\s*?\]\]>.*$#sm','$1',$code[1]);
 						$this->css[] = array($media,'INLINE;'.$code);
 					}

@@ -125,6 +125,9 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 
 == Changelog ==
 
+= 1.8.4 =
+* Bugfix: code inline JS (or CSS) can be wrapped inside HTML-comments, but these got removed since 1.8.2 as part of a bugfix.
+
 = 1.8.3 =
 * Bugfix: avoid useless warnings on is_callable to flood php error log as [reported by Praveen Kumar](http://wordpress.org/support/topic/182-breaks-css-and-js?replies=14#post-5377604)
 

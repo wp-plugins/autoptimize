@@ -97,7 +97,9 @@ class autoptimizeScripts extends autoptimizeBase
 						}
 					}
 				} else {
-					//Inline script
+					// Inline script
+					// unhide comments, as javascript may be wrapped in comment-tags for old times' sake
+					$tag = $this->restore_comments($tag);
 					if($this->ismergeable($tag)) {
 						preg_match('#<script.*>(.*)</script>#Usmi',$tag,$code);
 						$code = preg_replace('#.*<!\[CDATA\[(?:\s*\*/)?(.*)(?://|/\*)\s*?\]\]>.*#sm','$1',$code[1]);
@@ -116,6 +118,8 @@ class autoptimizeScripts extends autoptimizeBase
 							$tag = '';
 						}
 					}
+					// re-hide comments to be able to do the removal based on tag from $this->content
+					$tag = $this->hide_comments($tag);
 				}
 				
 				//Remove the original script tag
@@ -155,7 +159,7 @@ class autoptimizeScripts extends autoptimizeBase
 				}*/
 			}
 		}
-		
+
 		//Check for already-minified code
 		$this->md5hash = md5($this->jscode);
 		$ccheck = new autoptimizeCache($this->md5hash,'js');
