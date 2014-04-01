@@ -126,7 +126,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 == Changelog ==
 
 = 1.8.4 =
-* Bugfix: code inline JS (or CSS) can be wrapped inside HTML-comments, but these got removed since 1.8.2 as part of a bugfix.
+* Bugfix: code in inline JS (or CSS) can be wrapped inside HTML-comments, but these got removed since 1.8.2 as part of a bugfix.
 
 = 1.8.3 =
 * Bugfix: avoid useless warnings on is_callable to flood php error log as [reported by Praveen Kumar](http://wordpress.org/support/topic/182-breaks-css-and-js?replies=14#post-5377604)
@@ -135,7 +135,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Improvement: more graceful failure when minifier classes exist but method does not, based on [bug-report by Franck160](http://wordpress.org/support/topic/confict-with-dynamic-to-top)
 * Improvement: deferred CSS is also outputted in noscript-tags
 * Improvement: differentiate between Apache version in .htaccess file as suggested by [iMadalin](http://www.imadalin.ro/)
-* Improvement: also aggregate protocol-less CSS/JS URI's (as [suggested by Ross](http://wordpress.org/support/topic/protocol-less-url-support)
+* Improvement: also aggregate protocol-less CSS/JS URI's (as [suggested by Ross](http://wordpress.org/support/topic/protocol-less-url-support))
 * Improvement: disable autoptimization based on parameter in querystring (for debugging)
 * Bugfix: some CSS-imports were not being aggregated/ minified
 * Bugfix: add CSS before <title instead of <title> to avoid breakage when title includes other attributes (e.g. itemscope)
