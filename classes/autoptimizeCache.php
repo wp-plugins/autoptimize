@@ -176,6 +176,7 @@ class autoptimizeCache
 		$htAccess=AUTOPTIMIZE_CACHE_DIR.'/.htaccess';
 		if(!is_file($htAccess)) {
 			if (is_multisite() || AUTOPTIMIZE_CACHE_NOGZIP == false) {
+
 				@file_put_contents($htAccess,'<IfModule mod_headers.c>
         Header set Vary "Accept-Encoding"
         Header set Cache-Control "max-age=10672000, must-revalidate"
@@ -191,9 +192,17 @@ class autoptimizeCache
         SetOutputFilter DEFLATE
     </FilesMatch>
 </IfModule>
-<Files *.php>
+<IfModule mod_authz_core.c>
+    <Files *.php>
+	Require all granted
+    </Files>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <Files *.php>
+	Order allow,deny
         Allow from all
-</Files>');
+    </Files>
+</IfModule>');
 			} else {
 			@file_put_contents($htAccess,'<IfModule mod_headers.c>
 	Header set Vary "Accept-Encoding"
@@ -210,9 +219,17 @@ class autoptimizeCache
         SetOutputFilter DEFLATE
     </FilesMatch>
 </IfModule>
-<Files *.php>
+<IfModule mod_authz_core.c>
+    <Files *.php>
+	Require all denied
+    </Files>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <Files *.php>
+	Order deny,allow
         Deny from all
-</Files>');
+    </Files>
+</IfModule>');
 			}
 		}
 		//All OK
