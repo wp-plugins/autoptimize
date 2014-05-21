@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class autoptimizeScripts extends autoptimizeBase
 {
 	private $scripts = array();
-	private $dontmove = array('document.write','html5.js','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','histats.com/js','ads.smowtion.com/ad.js','statcounter.com/counter/counter.js','widgets.amung.us','ws.amazon.com/widgets','media.fastclick.net','/ads/','comment-form-quicktags/quicktags.php','edToolbar','intensedebate.com','scripts.chitika.net/','_gaq.push','jotform.com/','admin-bar.min.js');
+	private $dontmove = array('document.write','html5.js','show_ads.js','google_ad','blogcatalog.com/w','tweetmeme.com/i','mybloglog.com/','histats.com/js','ads.smowtion.com/ad.js','statcounter.com/counter/counter.js','widgets.amung.us','ws.amazon.com/widgets','media.fastclick.net','/ads/','comment-form-quicktags/quicktags.php','edToolbar','intensedebate.com','scripts.chitika.net/','_gaq.push','jotform.com/','admin-bar.min.js','GoogleAnalyticsObject','plupload.full.min.js','syntaxhighlighter3/scripts');
 	private $domove = array('gaJsHost','load_cmc','jd.gallery.transitions.js','swfobject.embedSWF(','tiny_mce.js','tinyMCEPreInit.go');
 	private $domovelast = array('addthis.com','/afsonline/show_afs_search.js','disqus.js','networkedblogs.com/getnetworkwidget','infolinks.com/js/','jd.gallery.js.php','jd.gallery.transitions.js','swfobject.embedSWF(','linkwithin.com/widget.js','tiny_mce.js','tinyMCEPreInit.go');
 	private $trycatch = false;
@@ -219,10 +219,10 @@ class autoptimizeScripts extends autoptimizeBase
 
 		$bodyreplacement = implode('',$this->move['first']);
 		$bodyreplacement .= '<script type="text/javascript" '.$defer.'src="'.$this->url.'"></script>';
-		$bodyreplacement .= implode('',$this->move['last']).$replaceTag;
+		$bodyreplacement .= implode('',$this->move['last']);
 
 		if (strpos($this->content,$replaceTag)!== false) {
-			$this->content = str_replace($replaceTag,$bodyreplacement,$this->content);
+			$this->content = str_replace($replaceTag,$bodyreplacement.$replaceTag,$this->content);
 		} else {
 			$this->content .= $bodyreplacement;
 			$this->warn_html();

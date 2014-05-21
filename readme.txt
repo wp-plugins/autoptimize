@@ -3,7 +3,7 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
-Tested up to: 3.9
+Tested up to: 3.9.1
 Stable tag: 1.8.4
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
@@ -95,7 +95,7 @@ After having installed and activated the plugin, you'll have access to an admin 
 If your blog doesn't function normally after having turned on Autoptimize, here are some pointers to identify & solve such issues using "advanced settings":
 
 * In case your blog looks weird, i.e. when the layout gets messed up, there is problem with CSS optimization. In this case you can turn on the option "Look for styles on just head?" and see if that solves the problem. You can also force CSS not to be aggregated by wrapping it in noptimize-tags in your theme or widget or by adding filename (for external stylesheets) or string (for inline styles) to the exclude-list.
-* In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and/or "Force JavaScript in <head>?" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript or excluding it from within your template files or widgets by wrapping the code between noptimize-tags. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
+* In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and/or "Force JavaScript in <head>?" and/or "Add try/catch wrapping" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript or excluding it from within your template files or widgets by wrapping the code between noptimize-tags. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
 * If your theme uses jQuery, you can try either forcing all in head or excluding jquery(-min).js (and jQuery-plugins if needed).
 * If you can't get either CSS or JS optimization working, you can off course always continue using the other two optimization-techniques.
 * If you tried the troubleshooting tips above and you still can't get CSS and JS working at all, you can ask for support on the [WordPress Autoptimize support forum](http://wordpress.org/support/plugin/autoptimize). See below for a description of what information you should provide in your "trouble ticket"
@@ -124,6 +124,9 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 == Changelog ==
+
+= 1.8.5 =
+* changelog to be added
 
 = 1.8.4 =
 * Bugfix: code in inline JS (or CSS) can be wrapped inside HTML-comments, but these got removed since 1.8.2 as part of a bugfix.

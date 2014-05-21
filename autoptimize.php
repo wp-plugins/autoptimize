@@ -24,7 +24,12 @@ define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) get_option('autoptimize_cache_nogzip'))
 include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
 
 // Plugin dir constants (plugin url's defined later to accomodate domain mapped sites)
-define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
+if (is_multisite()) {
+	$blog_id = get_current_blog_id();
+	define('AUTOPTIMIZE_CACHE_DIR' , WP_CONTENT_DIR.'/cache/autoptimize/'.$blog_id.'/' );
+} else {
+	define('AUTOPTIMIZE_CACHE_DIR',WP_CONTENT_DIR.'/cache/autoptimize/');
+}
 define('AUTOPTIMIZE_CACHE_DELAY',true);
 define('WP_ROOT_DIR',str_replace('/wp-content','',WP_CONTENT_DIR));
 
@@ -140,7 +145,7 @@ function autoptimize_start_buffering() {
 		}
 	}
 
-	if (!is_feed() && !$ao_noptimize ) {
+	if (!is_feed() && !$ao_noptimize && !is_admin()) {
 
 	// Config element
 	$conf = autoptimizeConfig::instance();
@@ -180,7 +185,7 @@ function autoptimize_start_buffering() {
 			}
 		} else {
 			if (!class_exists('CSSmin')) {
-				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/yui-php-cssmin-2.4.8-2_fgo.php');
+				@include(WP_PLUGIN_DIR.'/autoptimize/classes/external/php/yui-php-cssmin-2.4.8-3.php');
 			}
 		}
 		define('COMPRESS_CSS',false);
@@ -203,7 +208,12 @@ function autoptimize_end_buffering($content) {
 		define('AUTOPTIMIZE_WP_SITE_URL',site_url());
 		define('AUTOPTIMIZE_WP_CONTENT_URL',content_url());
 	}
-	define('AUTOPTIMIZE_CACHE_URL',AUTOPTIMIZE_WP_CONTENT_URL.'/cache/autoptimize/');
+	if ( is_multisite() ) {
+        	$blog_id = get_current_blog_id();
+        	define('AUTOPTIMIZE_CACHE_URL' , AUTOPTIMIZE_WP_CONTENT_URL.'/cache/autoptimize/'.$blog_id.'/' );
+	} else {
+		define('AUTOPTIMIZE_CACHE_URL',AUTOPTIMIZE_WP_CONTENT_URL.'/cache/autoptimize/');
+	}
 	define('AUTOPTIMIZE_WP_ROOT_URL',str_replace('/wp-content','',AUTOPTIMIZE_WP_CONTENT_URL));
 
 	// Config element

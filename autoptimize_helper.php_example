@@ -1,4 +1,13 @@
 <?php
+/*
+Plugin Name: Autoptimize Helper
+Plugin URI: http://blog.futtta.be/autoptimize
+Description: Autoptimize Helper contains some helper functions to make Autoptimize even more flexible
+Author: Frank Goossens (futtta)
+Version: 0.1
+Author URI: http://blog.futtta.be/ 
+*/
+
 // add_filter('autoptimize_filter_css_datauri_maxsize','my_ao_override_dataursize',10,1);
 function my_ao_override_dataursize($urisizeIn) {
 	return 10000;
