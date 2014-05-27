@@ -4,7 +4,7 @@ Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, mi
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
 Tested up to: 3.9.1
-Stable tag: 1.8.4
+Stable tag: 1.8.5
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
 
@@ -31,7 +31,7 @@ It concatenates all scripts and styles, minifies and compresses them, adds expir
 
 = Will this work with my blog? =
 
-Yes, most of the time, but there will always be exceptions. Although Autoptimize goes through great lengths to work with as many themes and plugins possible, there undoubtably are circumstances in which Autoptimize will not work to the full extent (full HTML, JS and CSS optimization). See "Troubleshooting" below for info on how to proceed if you encounter issues.
+Although Autoptimize comes without any warranties, it will in general work flawlessly if you configure it correctly. See "Troubleshooting" below for info on how to configure in case of problems.
 
 = What is the use of deferring CSS? =
 
@@ -123,10 +123,22 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * the Theme used (including the Theme's download link)
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
+= I want out, how should I remove Autoptimize? =
+* Disable the plugin (this will remove options and cache)
+* Remove the plugin
+* Clear any cache that might still have pages which reference Autoptimized CSS/JS (e.g. of a page caching plugin such as WP Super Cache)
+
 == Changelog ==
 
 = 1.8.5 =
-* changelog to be added
+* Updated to lastest version of [CSS minification component](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/)
+* Improvement: for multi-sites the cache is now written to seperate directories, avoiding one site to clean out the cache for the entire installation. Code [contributed by Joern Lund](http://wordpress.org/support/topic/multisite-blog-admin-can-delete-entire-network-cache), kudo's Joern!!
+* Improvement: add WordPress plugin header to autoptimize_helper.php_example to make it easier to enable it as a module
+* Improvement: nonce and post_id are added to default configuration for JS exclusion
+* Improvement: explicitely exclude wp-admin from being Autoptimized
+* Bugfix: plupload.min.js, syntaxhighlighter and "adsbygoogle" are excluded from JS aggregation.
+* Bugfix: avoid double closing body-tags when Autoptimize adds JS to HTML as [reported by Can](http://wordpress.org/support/topic/works-like-a-charm-but-i-have-two-problems)
+* Bugfix: make .htaccess compatible with both Apache 2.2 and 2.4 (http://wordpress.org/support/topic/feature-request-support-generating-htaccess-files-for-apache-24?replies=3)
 
 = 1.8.4 =
 * Bugfix: code in inline JS (or CSS) can be wrapped inside HTML-comments, but these got removed since 1.8.2 as part of a bugfix.
