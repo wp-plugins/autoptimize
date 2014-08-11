@@ -102,7 +102,7 @@ load_plugin_textdomain('autoptimize','wp-content/plugins/'.$plugin_dir.'/localiz
 function autoptimize_uninstall(){
 	autoptimizeCache::clearall();
 	
-	$delete_options=array("autoptimize_cache_clean", "autoptimize_cache_nogzip", "autoptimize_css", "autoptimize_css_datauris", "autoptimize_css_justhead", "autoptimize_css_defer", "autoptimize_css_inline", "autoptimize_css_exclude", "autoptimize_html", "autoptimize_html_keepcomments", "autoptimize_js", "autoptimize_js_exclude", "autoptimize_js_forcehead", "autoptimize_js_justhead", "autoptimize_js_trycatch", "autoptimize_version", "autoptimize_show_adv", "autoptimize_cdn_url");
+	$delete_options=array("autoptimize_cache_clean", "autoptimize_cache_nogzip", "autoptimize_css", "autoptimize_css_datauris", "autoptimize_css_justhead", "autoptimize_css_defer", "autoptimize_css_defer_inline", "autoptimize_css_inline", "autoptimize_css_exclude", "autoptimize_html", "autoptimize_html_keepcomments", "autoptimize_js", "autoptimize_js_exclude", "autoptimize_js_forcehead", "autoptimize_js_justhead", "autoptimize_js_trycatch", "autoptimize_version", "autoptimize_show_adv", "autoptimize_cdn_url");
 	
 	if ( !is_multisite() ) {
 		foreach ($delete_options as $del_opt) {	delete_option( $del_opt ); }
@@ -241,6 +241,7 @@ function autoptimize_end_buffering($content) {
 			'justhead' => $conf->get('autoptimize_css_justhead'),
 			'datauris' => $conf->get('autoptimize_css_datauris'),
 			'defer' => $conf->get('autoptimize_css_defer'),
+			'defer_inline' => $conf->get('autoptimize_css_defer_inline'),
 			'inline' => $conf->get('autoptimize_css_inline'),
 			'css_exclude' => $conf->get('autoptimize_css_exclude'),
 			'cdn_url' => $conf->get('autoptimize_cdn_url')
@@ -269,7 +270,7 @@ if(autoptimizeCache::cacheavail()) {
 	$conf = autoptimizeConfig::instance();
 	if( $conf->get('autoptimize_html') || $conf->get('autoptimize_js') || $conf->get('autoptimize_css') || $conf->get('autoptimize_cdn_js') || $conf->get('autoptimize_cdn_css')) 	{
 		// Hook to wordpress
-		add_action('template_redirect','autoptimize_start_buffering',2);
+		add_action('template_redirect','autoptimize_start_buffering',11);
 	}
 }
 

@@ -12,8 +12,8 @@ class autoptimizeStyles extends autoptimizeBase {
 	
 	//Reads the page and collects style tags
 	public function read($options) {
-		//Remove everything that's not the header
-		if($options['justhead'] == true) {
+		// Remove everything that's not the header
+		if ($options['justhead'] == true) {
 			$content = explode('</head>',$this->content,2);
 			$this->content = $content[0].'</head>';
 			$this->restofcontent = $content[1];
@@ -28,7 +28,10 @@ class autoptimizeStyles extends autoptimizeBase {
 
 		// should we defer css?
 		$this->defer = $options['defer'];
-		
+
+		// should we inline while deferring?
+		$this->defer_inline = $options['defer_inline'];
+
 		// should we inline?
 		$this->inline = $options['inline'];
 		
@@ -97,8 +100,12 @@ class autoptimizeStyles extends autoptimizeBase {
 						// and re-hide them to be able to to the removal based on tag
 						$tag = $this->hide_comments($tag);
 
-						$code = preg_replace('#^.*<!\[CDATA\[(?:\s*\*/)?(.*)(?://|/\*)\s*?\]\]>.*$#sm','$1',$code[1]);
-						$this->css[] = array($media,'INLINE;'.$code);
+						if (apply_filters('autoptimize_css_include_inline',true)) {
+							$code = preg_replace('#^.*<!\[CDATA\[(?:\s*\*/)?(.*)(?://|/\*)\s*?\]\]>.*$#sm','$1',$code[1]);
+							$this->css[] = array($media,'INLINE;'.$code);
+						} else {
+							$tag = '';
+						}
 					}
 					
 					//Remove the original style tag
@@ -159,7 +166,7 @@ class autoptimizeStyles extends autoptimizeBase {
 		unset($tmpcss);
 		
 		//Manage @imports, while is for recursive import management
-		foreach($this->csscode as &$thiscss) {
+		foreach ($this->csscode as &$thiscss) {
 			// Flag to trigger import reconstitution and var to hold external imports
 			$fiximports = false;
 			$external_imports = "";
@@ -213,50 +220,65 @@ class autoptimizeStyles extends autoptimizeBase {
 				continue;
 			}
 			unset($ccheck);			
-			//Do the imaging!
+
+			// Do the imaging!
 			$imgreplace = array();
 			preg_match_all('#(background[^;}]*url\((?!data)(.*)\)[^;}]*)(?:;|$|})#Usm',$code,$matches);
 			
 			if(($this->datauris == true) && (function_exists('base64_encode')) && (is_array($matches)))	{
 				foreach($matches[2] as $count => $quotedurl) {
-					$url = trim($quotedurl," \t\n\r\0\x0B\"'");
+					$iurl = trim($quotedurl," \t\n\r\0\x0B\"'");
 
 					// if querystring, remove it from url
-					if (strpos($url,'?') !== false) { $url = reset(explode('?',$url)); }
+					if (strpos($iurl,'?') !== false) { $iurl = reset(explode('?',$iurl)); }
 					
-					$path = $this->getpath($url);
+					$ipath = $this->getpath($iurl);
 
-					$datauri_max_size = 2560;
+					$datauri_max_size = 4096;
 					$datauri_max_size = (int) apply_filters( 'autoptimize_filter_css_datauri_maxsize', $datauri_max_size );
 					
-					if($path != false && preg_match('#\.(jpe?g|png|gif|bmp)$#',$path) && file_exists($path) && is_readable($path) && filesize($path) <= $datauri_max_size) {
-						//It's an image, get the type
-						$type=end(explode('.',$path));
-						switch($type) {
-							case 'jpeg':
-								$dataurihead = 'data:image/jpeg;base64,';
-								break;
-							case 'jpg':
-								$dataurihead = 'data:image/jpeg;base64,';
-								break;
-							case 'gif':
-								$dataurihead = 'data:image/gif;base64,';
-								break;
-							case 'png':
-								$dataurihead = 'data:image/png;base64,';
-								break;
-							case 'bmp':
-								$dataurihead = 'data:image/bmp;base64,';
-								break;
-							default:
-								$dataurihead = 'data:application/octet-stream;base64,';
+					if($ipath != false && preg_match('#\.(jpe?g|png|gif|bmp)$#',$ipath) && file_exists($ipath) && is_readable($ipath) && filesize($ipath) <= $datauri_max_size) {
+						$ihash=md5($ipath);
+						$icheck = new autoptimizeCache($ihash,'img');
+						if($icheck->check()) {
+							// we have the base64 image in cache
+							$headAndData=$icheck->retrieve();
+						} else {
+							// It's an image and we don't have it in cache, get the type
+							$explA=explode('.',$ipath);
+							$type=end($explA);
+
+							switch($type) {
+								case 'jpeg':
+									$dataurihead = 'data:image/jpeg;base64,';
+									break;
+								case 'jpg':
+									$dataurihead = 'data:image/jpeg;base64,';
+									break;
+								case 'gif':
+									$dataurihead = 'data:image/gif;base64,';
+									break;
+								case 'png':
+									$dataurihead = 'data:image/png;base64,';
+									break;
+								case 'bmp':
+									$dataurihead = 'data:image/bmp;base64,';
+									break;
+								default:
+									$dataurihead = 'data:application/octet-stream;base64,';
+							}
+						
+							// Encode the data
+							$base64data = base64_encode(file_get_contents($ipath));
+						 	$headAndData=$dataurihead.$base64data;
+
+							// Save in cache
+							$icheck->cache($headAndData,"text/plain");
 						}
-						
-						//Encode the data
-						$base64data = base64_encode(file_get_contents($path));
-						
+						unset($icheck);
+
 						//Add it to the list for replacement
-						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$dataurihead.$base64data,$matches[1][$count]).';\n*'.str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
+						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$headAndData,$matches[1][$count]).';\n*'.str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
 						
 						//Store image on the mhtml document
 						$this->mhtml .= "--_\r\nContent-Location:{$mhtmlcount}\r\nContent-Transfer-Encoding:base64\r\n\r\n{$base64data}\r\n";
@@ -277,20 +299,22 @@ class autoptimizeStyles extends autoptimizeBase {
 				}
 			
 			//Minify
-			if (class_exists('Minify_CSS_Compressor')) {
-				$tmp_code = trim(Minify_CSS_Compressor::process($code));
-			} else if(class_exists('CSSmin')) {
-				$cssmin = new CSSmin();
-				if (method_exists($cssmin,"run")) {
-					$tmp_code = trim($cssmin->run($code));
-				} elseif (@is_callable(array($cssmin,"minify"))) {
-					$tmp_code = trim(CssMin::minify($code));
+			if (apply_filters( "autoptimize_css_do_minify", true)) {
+				if (class_exists('Minify_CSS_Compressor')) {
+					$tmp_code = trim(Minify_CSS_Compressor::process($code));
+				} else if(class_exists('CSSmin')) {
+					$cssmin = new CSSmin();
+					if (method_exists($cssmin,"run")) {
+						$tmp_code = trim($cssmin->run($code));
+					} elseif (@is_callable(array($cssmin,"minify"))) {
+						$tmp_code = trim(CssMin::minify($code));
+					}
 				}
-			}
 			
-			if (!empty($tmp_code)) {
-				$code = $tmp_code;
-				unset($tmp_code);
+				if (!empty($tmp_code)) {
+					$code = $tmp_code;
+					unset($tmp_code);
+				}
 			}
 			
 			$this->hashmap[md5($code)] = $hash;
@@ -360,22 +384,44 @@ class autoptimizeStyles extends autoptimizeBase {
 			$this->restofcontent = '';
 		}
 		
-		$warn_html_template=false;
+		// Inject the new stylesheets
+		$replaceTag = array("<title","before");
+		$replaceTag = apply_filters( 'autoptimize_filter_css_replacetag', $replaceTag );
 
-		//Add the new stylesheets
 		if ($this->inline == true) {
 			foreach($this->csscode as $media => $code) {
-				if (strpos($this->content,"<title")!==false) {
-					$this->content = str_replace('<title','<style type="text/css" media="'.$media.'">'.$code.'</style><title',$this->content);
-				} else {
-					$warn_html_template=true;
-					$this->content .= '<style type="text/css" media="'.$media.'">'.$code.'</style>';
-				}
+				$this->inject_in_html('<style type="text/css" media="'.$media.'">'.$code.'</style>',$replaceTag);
 			}
 		} else {
-			if($this->defer == true) {
+			if ($this->defer == true) {
 				$deferredCssBlock = "<script>function lCss(url,media) {var d=document;var l=d.createElement('link');l.rel='stylesheet';l.type='text/css';l.href=url;l.media=media; d.getElementsByTagName('head')[0].appendChild(l);}function deferredCSS() {";
 				$noScriptCssBlock = "<noscript>";
+				$defer_inline_code=$this->defer_inline;
+				$defer_inline_code=apply_filters( 'autoptimize_filter_css_defer_inline', $defer_inline_code );
+				if(!empty($defer_inline_code)){
+
+					$iCssHash=md5($defer_inline_code);
+					$iCssCache = new autoptimizeCache($iCssHash,'css');
+					if($iCssCache->check()) { 
+						// we have the optimized inline CSS in cache
+    						$defer_inline_code=$iCssCache->retrieve();
+					} else {
+					     if (class_exists('Minify_CSS_Compressor')) {
+						$tmp_code = trim(Minify_CSS_Compressor::process($this->defer_inline));
+					     } else if(class_exists('CSSmin')) {
+						$cssmin = new CSSmin();
+						$tmp_code = trim($cssmin->run($defer_inline_code));
+					     }
+			
+					     if (!empty($tmp_code)) {
+						$defer_inline_code = $tmp_code;
+						$iCssCache->cache($defer_inline_code,"text/css");
+						unset($tmp_code);
+					     }
+					}
+					$code_out='<style type="text/css" media="all">'.$defer_inline_code.'</style>';
+					$this->inject_in_html($code_out,$replaceTag);
+				}
 			}
 
 			foreach($this->url as $media => $url) {
@@ -386,35 +432,16 @@ class autoptimizeStyles extends autoptimizeBase {
 					$deferredCssBlock .= "lCss('".$url."','".$media."');";
 					$noScriptCssBlock .= '<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" />';
 				} else {
-					if (strpos($this->content,"<title")!==false) {
-						$this->content = str_replace('<title','<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" /><title',$this->content);
-					} else {
-						$warn_html_template=true;
-						$this->content .= '<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" />';
-					}
+					$this->inject_in_html('<link type="text/css" media="'.$media.'" href="'.$url.'" rel="stylesheet" />',$replaceTag);
 				}
 			}
 			
 			if($this->defer == true) {
 				$deferredCssBlock .= "}if(window.addEventListener){window.addEventListener('DOMContentLoaded',deferredCSS,false);}else{window.onload = deferredCSS;}</script>";
 				$noScriptCssBlock .= "</noscript>";
-				if (strpos($this->content,"<title")!==false) {
-						$this->content = str_replace('<title',$noScriptCssBlock.'<title',$this->content);
-				} else {
-						$warn_html_template=true;
-						$this->content .= $noScriptCssBlock;
-				}
-				if (strpos($this->content,"</body>")!==false) {
-					$this->content = str_replace('</body>',$deferredCssBlock.'</body>',$this->content);
-				} else {
-					$warn_html_template=true;
-					$this->content .= $deferredCssBlock;
-				}
+				$this->inject_in_html($noScriptCssBlock,array('<title>','before'));
+				$this->inject_in_html($deferredCssBlock,array('</body>','before'));
 			}
-		}
-
-		if ($warn_html_template) {
-			$this->warn_html();
 		}
 
 		//Return the modified stylesheet
@@ -422,37 +449,43 @@ class autoptimizeStyles extends autoptimizeBase {
 	}
 	
 	private function fixurls($file,$code) {
-		// $file = str_replace(ABSPATH,'/',$file); //Sth like /wp-content/file.css
 		$file = str_replace(WP_ROOT_DIR,'/',$file);
 		$dir = dirname($file); //Like /wp-content
 
 		// quick fix for import-troubles in e.g. arras theme
 		$code=preg_replace('#@import ("|\')(.+?)\.css("|\')#','@import url("${2}.css")',$code);
 
-		if(preg_match_all('#url\((?!data)(.*)\)#Usi',$code,$matches))
-		{
+		if(preg_match_all('#url\((?!data)(.*)\)#Usi',$code,$matches)) {
 			$replace = array();
-			foreach($matches[1] as $k => $url)
-			{
-				//Remove quotes
+			foreach($matches[1] as $k => $url) {
+				// Remove quotes
 				$url = trim($url," \t\n\r\0\x0B\"'");
-				if(substr($url,0,1)=='/' || preg_match('#^(https?://|ftp://|data:)#i',$url))
-				{
+				$noQurl = trim($url,"\"'");
+				if ($url!==$noQurl) {
+					$removedQuotes=true;
+				} else {
+					$removedQuotes=false;
+				}
+				$url=$noQurl;
+				if(substr($url,0,1)=='/' || preg_match('#^(https?://|ftp://|data:)#i',$url)) {
 					//URL is absolute
 					continue;
-				}else{
+				} else {
 					// relative URL
-					$newurl = AUTOPTIMIZE_WP_ROOT_URL.str_replace('//','/',$dir.'/'.$url);
+					$newurl = preg_replace('/https?:/','',AUTOPTIMIZE_WP_ROOT_URL.str_replace('//','/',$dir.'/'.$url));
 					$hash = md5($url);
 					$code = str_replace($matches[0][$k],$hash,$code);
-					$replace[$hash] = 'url('.$newurl.')';
+
+					if (!empty($removedQuotes)) {
+						$replace[$hash] = 'url(\''.$newurl.'\')';
+					} else {
+						$replace[$hash] = 'url('.$newurl.')';
+					}
 				}
-			}
-			
+			}	
 			//Do the replacing here to avoid breaking URLs
 			$code = str_replace(array_keys($replace),array_values($replace),$code);
-		}
-		
+		}	
 		return $code;
 	}
 	

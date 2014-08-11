@@ -25,25 +25,45 @@ abstract class autoptimizeBase
 	
 	//Converts an URL to a full path
 	protected function getpath($url) {
-	if (strpos($url,'//')===0) {
-		$url = "http:".$url;
-	} else if ((strpos($url,'//')===false) && (strpos($url,parse_url(AUTOPTIMIZE_WP_SITE_URL,PHP_URL_HOST))===false)) {
+		if (strpos($url,'%')!==false) {
+			$url=urldecode($url);
+		}
+
+		// normalize
+		if (strpos($url,'//')===0) {
+			if (is_ssl()) {
+				$url = "https:".$url;
+			} else {
+				$url = "http:".$url;
+			}
+		} else if ((strpos($url,'//')===false) && (strpos($url,parse_url(AUTOPTIMIZE_WP_SITE_URL,PHP_URL_HOST))===false)) {
 			$url = AUTOPTIMIZE_WP_SITE_URL.$url;
 		}
-        $path = str_replace(AUTOPTIMIZE_WP_ROOT_URL,'',$url);
-	    if(preg_match('#^((https?|ftp):)?//#i',$path)) {
-            /** External script/css (adsense, etc) */
-       		return false;
-       	}
-        $path = str_replace('//','/',WP_ROOT_DIR.$path);
-        return $path;
+
+		// first check; hostname wp site should be hostname of url
+		if (parse_url($url,PHP_URL_HOST)!==parse_url(AUTOPTIMIZE_WP_SITE_URL,PHP_URL_HOST)) {
+			return false;
+		}
+		
+		// try to remove "wp root url" from url while not minding http<>https
+		$tmp_ao_root = preg_replace('/https?/','',AUTOPTIMIZE_WP_ROOT_URL);
+		$tmp_url = preg_replace('/https?/','',$url);
+        	$path = str_replace($tmp_ao_root,'',$tmp_url);
+		
+		// final check; if path starts with :// or //, this is not a URL in the WP context and we have to assume we can't aggregate
+		if (preg_match('#^:?//#',$path)) {
+         		/** External script/css (adsense, etc) */
+			return false;
+       		}
+
+        	$path = str_replace('//','/',WP_ROOT_DIR.$path);
+        	return $path;
 	}
-	
+
 	// logger
 	protected function ao_logger($logmsg) {
-		$logfile=WP_CONTENT_DIR.'/ao_log.txt';
-		$logmsg.="\n";
-		file_put_contents($logfile,$logmsg,FILE_APPEND);
+		$logmsg="<!--noptimize--><!-- ".$logmsg." --><!--/noptimize-->";
+		$this->content.=$logmsg;
 	}
 
 	// hide everything between noptimize-comment tags
@@ -151,7 +171,22 @@ abstract class autoptimizeBase
 		return $url;
 	}
 
-	protected function warn_html() {
-		$this->content .= "<!--noptimize--><!-- Autoptimize found a problem with the HTML in your Theme, check if the title or body-tags are missing --><!--/noptimize-->";
+	protected function inject_in_html($payload,$replaceTag) {
+		if (strpos($this->content,$replaceTag[0])!== false) {
+			if ($replaceTag[1]==="after") {
+				$replaceBlock=$replaceTag[0].$payload;
+			} else if ($replaceTag[1]==="replace"){
+				$replaceBlock=$payload;
+			} else {
+				$replaceBlock=$payload.$replaceTag[0];
+			}
+			$this->content = str_replace($replaceTag[0],$replaceBlock,$this->content);
+		} else {
+			$this->content .= $payload;
+			if (!$tagWarning) {
+				$this->content .= "<!--noptimize--><!-- Autoptimize found a problem with the HTML in your Theme, tag ".$replaceTag[0]." missing --><!--/noptimize-->";
+				$tagWarning=true;
+			}
+		}
 	}
 }

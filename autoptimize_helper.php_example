@@ -4,13 +4,13 @@ Plugin Name: Autoptimize Helper
 Plugin URI: http://blog.futtta.be/autoptimize
 Description: Autoptimize Helper contains some helper functions to make Autoptimize even more flexible
 Author: Frank Goossens (futtta)
-Version: 0.1
+Version: 0.2
 Author URI: http://blog.futtta.be/ 
 */
 
 // add_filter('autoptimize_filter_css_datauri_maxsize','my_ao_override_dataursize',10,1);
 function my_ao_override_dataursize($urisizeIn) {
-	return 10000;
+	return 100000;
 }
 
 // add_filter('autoptimize_filter_js_defer','my_ao_override_defer',10,1);
@@ -41,4 +41,39 @@ function my_ao_override_cssexclude($exclude) {
 function my_ao_override_movelast($movelast) {
 	$movelast[]="console.log";
 	return $movelast;
+	}
+
+// add_filter('autoptimize_filter_css_replacetag','my_ao_override_css_replacetag',10,1);
+function my_ao_override_css_replacetag($replacetag) {
+	return array("<head>","after");
+	}
+
+// add_filter('autoptimize_filter_js_replacetag','my_ao_override_js_replacetag',10,1);
+function my_ao_override_js_replacetag($replacetag) {
+        return array("<injectjs />","replace");
+        }
+
+// add_filter('autoptimize_js_do_minify','my_ao_js_minify',10,1);
+function my_ao_js_minify() {
+	return false;
+	}
+
+// add_filter('autoptimize_css_do_minify','my_ao_css_minify',10,1);
+function my_ao_css_minify() {
+        return false;
+	}
+
+// add_filter('autoptimize_js_include_inline','my_ao_js_include_inline',10,1);
+function my_ao_js_include_inline() {
+	return false;
+	}
+
+// add_filter('autoptimize_css_include_inline','my_ao_css_include_inline',10,1);
+function my_ao_css_include_inline() {
+        return false;
+	}
+
+// add_filter('autoptimize_filter_css_defer_inline','my_ao_css_defer_inline',10,1);
+function my_ao_css_defer_inline($inlined) {
+	return $inlined."h2,h1{color:red !important;}";
 	}
