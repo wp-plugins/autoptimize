@@ -97,7 +97,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 </tr>
 <tr valign="top" class="hidden js_sub ao_adv">
 <th scope="row"><?php _e('Exclude scripts from Autoptimize:','autoptimize'); ?></th>
-<td><label for="autoptimize_js_exclude"><input type="text" style="width:100%;" name="autoptimize_js_exclude" value="<?php echo get_option('autoptimize_js_exclude',"s_sid,smowtion_size,sc_project,WAU_,wau_add,comment-form-quicktags,edToolbar,ch_client,nonce,post_id"); ?>"/><br />
+<td><label for="autoptimize_js_exclude"><input type="text" style="width:100%;" name="autoptimize_js_exclude" value="<?php echo get_option('autoptimize_js_exclude',"s_sid,smowtion_size,sc_project,WAU_,wau_add,comment-form-quicktags,edToolbar,ch_client,nonce,post_id,syntaxhighlighter"); ?>"/><br />
 <?php _e('A comma-seperated list of scripts you want to exclude from being optimized, for example \'whatever.js, another.js\' (without the quotes) to exclude those scripts from being aggregated and minimized by Autoptimize.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden js_sub ao_adv">
@@ -124,18 +124,18 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 <?php _e('Don\'t autoptimize CSS outside the head-section. If the cache gets big, you might want to enable this.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden css_sub ao_adv">
-<th scope="row"><?php _e('Defer CSS loading?','autoptimize'); ?></th>
+<th scope="row"><?php _e('Inline and Defer CSS?','autoptimize'); ?></th>
 <td><label for="autoptimize_css_defer"><input type="checkbox" name="autoptimize_css_defer" id="autoptimize_css_defer" <?php echo get_option('autoptimize_css_defer')?'checked="checked" ':''; ?>/>
-<?php _e('Load optimized CSS only after page load, except for specific CSS which will be inlined. <strong>Warning</strong>: <a href="http://wordpress.org/plugins/autoptimize/faq/" target="_blank">check the FAQ</a> before activating this option!','autoptimize'); ?></label></td>
+<?php _e('Inline "above the fold CSS" while loading the main autoptimized CSS only after page load. <a href="http://wordpress.org/plugins/autoptimize/faq/" target="_blank">Check the FAQ</a> before activating this option!','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden css_sub ao_adv" id="autoptimize_css_defer_inline">
 <th scope="row"></th>
-<td><label for="autoptimize_css_defer_inline"><textarea rows="10" cols="10" style="width:100%;" name="autoptimize_css_defer_inline"><?php echo get_option('autoptimize_css_defer_inline'); ?></textarea></label></td>
+<td><label for="autoptimize_css_defer_inline"><textarea rows="10" cols="10" style="width:100%;" placeholder="<?php _e('Enter your above the fold CSS here, which will be inlined.'); ?>" name="autoptimize_css_defer_inline"><?php echo get_option('autoptimize_css_defer_inline'); ?></textarea></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv css_sub">
 <th scope="row"><?php _e('Inline all CSS?','autoptimize'); ?></th>
 <td><label for="autoptimize_css_inline"><input type="checkbox" id="autoptimize_css_inline" name="autoptimize_css_inline" <?php echo get_option('autoptimize_css_inline')?'checked="checked" ':''; ?>/>
-<?php _e('Inlining all CSS can improve performance for sites with a low pageviews/ visitor-rate, but may slow down performance otherwise. CSS inlining disables CSS deferring.','autoptimize'); ?></label></td>
+<?php _e('Inlining all CSS can improve performance for sites with a low pageviews/ visitor-rate, but may slow down performance otherwise.','autoptimize'); ?></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv css_sub">
 <th scope="row"><?php _e('Exclude CSS from Autoptimize:','autoptimize'); ?></th>
@@ -375,7 +375,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 			$config = array('autoptimize_html' => 0,
 				'autoptimize_html_keepcomments' => 0,
 				'autoptimize_js' => 0,
-				'autoptimize_js_exclude' => "s_sid, smowtion_size, sc_project, WAU_, wau_add, comment-form-quicktags, edToolbar, ch_client, nonce, post_id",
+				'autoptimize_js_exclude' => "s_sid, smowtion_size, sc_project, WAU_, wau_add, comment-form-quicktags, edToolbar, ch_client, nonce, post_id, syntaxhighlighter",
 				'autoptimize_js_trycatch' => 0,
 				'autoptimize_js_justhead' => 0,
 				'autoptimize_js_forcehead' => 0,
