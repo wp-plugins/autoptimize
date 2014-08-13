@@ -118,6 +118,8 @@ class autoptimizeCache {
 				prune_super_cache($cache_path.'supercache/',true);
                 		prune_super_cache($cache_path,true);
             		}
+		} else if ( has_action('cachify_flush_cache') ) {
+		    do_action('cachify_flush_cache');
 		}
 		
 		return true;
