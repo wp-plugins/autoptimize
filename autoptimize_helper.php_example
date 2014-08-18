@@ -13,10 +13,15 @@ function my_ao_override_dataursize($urisizeIn) {
 	return 100000;
 }
 
+// add_filter('autoptimize_filter_css_datauri_exclude','my_ao_exclude_image',10,1);
+function my_ao_exclude_image($imageexcl) {
+	return "adfreebutton.jpg, otherimage.png";
+	}
+
 // add_filter('autoptimize_filter_js_defer','my_ao_override_defer',10,1);
 function my_ao_override_defer($defer) {
 	return $defer."async ";
-}
+} 
 
 // add_filter('autoptimize_filter_noptimize','my_ao_noptimize',10,0);
 function my_ao_noptimize() {

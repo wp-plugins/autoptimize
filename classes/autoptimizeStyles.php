@@ -171,9 +171,9 @@ class autoptimizeStyles extends autoptimizeBase {
 			$fiximports = false;
 			$external_imports = "";
 
-			while(preg_match_all('#^(/*\s?)@import.*(?:;|$)#Um',$thiscss,$matches))	{
+			while(preg_match_all('#^(/*\s?)@import.*(?:;|$)#Um',$thiscss,$matches)) {
 				foreach($matches[0] as $import)	{
-					$url = trim(preg_replace('#^.*((?:https?|ftp)://.*\.css).*$#','$1',trim($import))," \t\n\r\0\x0B\"'");
+					$url = trim(preg_replace('#^.*((?:https?:|ftp:)?//.*\.css).*$#','$1',trim($import))," \t\n\r\0\x0B\"'");
 					$path = $this->getpath($url);
 					$import_ok = false;
 					if (file_exists($path) && is_readable($path)) {
@@ -236,7 +236,17 @@ class autoptimizeStyles extends autoptimizeBase {
 
 					$datauri_max_size = 4096;
 					$datauri_max_size = (int) apply_filters( 'autoptimize_filter_css_datauri_maxsize', $datauri_max_size );
-					
+					$datauri_exclude = apply_filters( 'autoptimize_filter_css_datauri_exclude', "");
+					if (!empty($datauri_exclude)) {
+						$no_datauris=array_filter(array_map('trim',explode(",",$datauri_exclude)));
+						foreach ($no_datauris as $no_datauri) {
+							if (strpos($iurl,$no_datauri)!==false) {
+								$ipath=false;
+								break;
+							}
+						}
+					}
+
 					if($ipath != false && preg_match('#\.(jpe?g|png|gif|bmp)$#',$ipath) && file_exists($ipath) && is_readable($ipath) && filesize($ipath) <= $datauri_max_size) {
 						$ihash=md5($ipath);
 						$icheck = new autoptimizeCache($ihash,'img');
@@ -278,7 +288,7 @@ class autoptimizeStyles extends autoptimizeBase {
 						unset($icheck);
 
 						//Add it to the list for replacement
-						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$headAndData,$matches[1][$count]).';\n*'.str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
+						$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$headAndData,$matches[1][$count]).";\n*".str_replace($quotedurl,'mhtml:%%MHTML%%!'.$mhtmlcount,$matches[1][$count]).";\n_".$matches[1][$count].';';
 						
 						//Store image on the mhtml document
 						$this->mhtml .= "--_\r\nContent-Location:{$mhtmlcount}\r\nContent-Transfer-Encoding:base64\r\n\r\n{$base64data}\r\n";

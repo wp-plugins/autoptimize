@@ -65,11 +65,10 @@ class autoptimizeCache {
 	}
 	
 	static function clearall() {
-		// Cache not available :(
 		if(!autoptimizeCache::cacheavail()) {
 			return false;
 		}
-		
+	
 		// scan the cachedirs		
 		foreach (array("","js","css") as $scandirName) {
 			$scan[$scandirName] = scandir(AUTOPTIMIZE_CACHE_DIR.$scandirName);
@@ -89,13 +88,14 @@ class autoptimizeCache {
 		
 		// Do we need to clean any caching plugins cache-files?
 		if(function_exists('wp_cache_clear_cache')) {
-			// wp super cache
 			if (is_multisite()) {
 				$blog_id = get_current_blog_id();
-                wp_cache_clear_cache($blog_id);
+                		wp_cache_clear_cache($blog_id);
 			} else {
 				wp_cache_clear_cache();
 			}
+		} else if ( has_action('cachify_flush_cache') ) {
+			do_action('cachify_flush_cache');
 		} else if ( function_exists('w3tc_pgcache_flush') ) {
 			w3tc_pgcache_flush(); // w3 total cache
 		} else if ( function_exists('hyper_cache_invalidate') ) {
@@ -118,10 +118,7 @@ class autoptimizeCache {
 				prune_super_cache($cache_path.'supercache/',true);
                 		prune_super_cache($cache_path,true);
             		}
-		} else if ( has_action('cachify_flush_cache') ) {
-		    do_action('cachify_flush_cache');
 		}
-		
 		return true;
 	}
 	

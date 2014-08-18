@@ -61,9 +61,15 @@ abstract class autoptimizeBase
 	}
 
 	// logger
-	protected function ao_logger($logmsg) {
-		$logmsg="<!--noptimize--><!-- ".$logmsg." --><!--/noptimize-->";
-		$this->content.=$logmsg;
+	protected function ao_logger($logmsg,$appendHTML=true) {
+		if ($appendHTML) {
+			$logmsg="<!--noptimize--><!-- ".$logmsg." --><!--/noptimize-->";
+			$this->content.=$logmsg;
+		} else {
+			$logfile=WP_CONTENT_DIR.'/ao_log.txt';
+			$logmsg.="\n--\n";
+			file_put_contents($logfile,$logmsg,FILE_APPEND);
+		}
 	}
 
 	// hide everything between noptimize-comment tags
