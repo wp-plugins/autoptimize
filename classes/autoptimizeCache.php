@@ -94,8 +94,6 @@ class autoptimizeCache {
 			} else {
 				wp_cache_clear_cache();
 			}
-		} else if ( has_action('cachify_flush_cache') ) {
-			do_action('cachify_flush_cache');
 		} else if ( function_exists('w3tc_pgcache_flush') ) {
 			w3tc_pgcache_flush(); // w3 total cache
 		} else if ( function_exists('hyper_cache_invalidate') ) {
@@ -118,6 +116,9 @@ class autoptimizeCache {
 				prune_super_cache($cache_path.'supercache/',true);
                 		prune_super_cache($cache_path,true);
             		}
+		} else {
+			// fallback; schedule event and try to clear there
+			wp_schedule_single_event( time() + 1, 'ao_flush_pagecache' , array(time()));
 		}
 		return true;
 	}
