@@ -212,6 +212,9 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 			jQuery( ".ao_adv" ).show("slow");
 			if (jQuery("#autoptimize_css").attr('checked')) {
 				jQuery(".css_sub:visible").fadeTo("fast",1);
+				if (!jQuery("#autoptimize_css_defer").attr('checked')) {
+					jQuery("#autoptimize_css_defer_inline").hide();
+				}
 			}
 			if (jQuery("#autoptimize_js").attr('checked')) {
 				jQuery(".js_sub:visible").fadeTo("fast",1);
