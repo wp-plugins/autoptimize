@@ -130,7 +130,7 @@ if (get_option('autoptimize_show_adv','0')=='1') {
 </tr>
 <tr valign="top" class="hidden css_sub ao_adv" id="autoptimize_css_defer_inline">
 <th scope="row"></th>
-<td><label for="autoptimize_css_defer_inline"><textarea rows="10" cols="10" style="width:100%;" placeholder="<?php _e('Paste the above the fold CSS here.'); ?>" name="autoptimize_css_defer_inline"><?php echo get_option('autoptimize_css_defer_inline'); ?></textarea></label></td>
+<td><label for="autoptimize_css_defer_inline"><textarea rows="10" cols="10" style="width:100%;" placeholder="<?php _e('Paste the above the fold CSS here.','autoptimize'); ?>" name="autoptimize_css_defer_inline"><?php echo get_option('autoptimize_css_defer_inline'); ?></textarea></label></td>
 </tr>
 <tr valign="top" class="hidden ao_adv css_sub">
 <th scope="row"><?php _e('Inline all CSS?','autoptimize'); ?></th>

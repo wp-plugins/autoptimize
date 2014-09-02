@@ -3,7 +3,7 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
-Tested up to: 3.9.1
+Tested up to: 4.0
 Stable tag: 1.8.5
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
@@ -129,6 +129,16 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Clear any cache that might still have pages which reference Autoptimized CSS/JS (e.g. of a page caching plugin such as WP Super Cache)
 
 == Changelog ==
+
+= 1.9.0 =
+* Inlined Base64-encoded background Images will now be cached as well and the threshold for inlining these images has been bumped up to 4096 bytes (from 2560).
+* Separate cache-directories for CSS and JS in /wp-content/cache/autoptimize, which should result in faster cache pruning (and in some cases possibly faster serving of individual aggregated files).
+* CSS is now added before the <title>-tag, JS before </body> (and after </title> when forced in head). This can be overridden in the API.
+* Some usability Improvements of the administration-page
+* Multiple hooks added to the API a.o. filters to not aggregate inline CSS or JS and filters to aggregate but not minify CSS or JS.
+* Updated translations for Dutch, French, German, Persian and Polish and new translations for Brazilian Portuguese (thanks to Leonardo Antonioli) and Turkish (kudo's [Baris Unver](http://beyn.org/))
+* Multiple bugfixes & improvements
+* Tested with WordPress 4.0 beta 4
 
 = 1.8.5 =
 * Updated to lastest version of [CSS minification component](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/)
