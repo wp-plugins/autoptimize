@@ -33,18 +33,15 @@ It concatenates all scripts and styles, minifies and compresses them, adds expir
 
 Although Autoptimize comes without any warranties, it will in general work flawlessly if you configure it correctly. See "Troubleshooting" below for info on how to configure in case of problems.
 
-= What is the use of deferring CSS? =
+= What is the use of "inline and defer CSS"? =
 
-CSS in general should go in the head of the document. Recently a.o. Google started promoting deferring non-essential CSS, while inlining those styles needed to build the page above the fold. This is especially important to render pages as quickly as possible on mobile devices. To implement this, you'll need to:
+CSS in general should go in the head of the document. Recently a.o. Google started promoting deferring non-essential CSS, while inlining those styles needed to build the page above the fold. This is especially important to render pages as quickly as possible on mobile devices. As from Autoptimize 1.9.0 this is easy; select "inline and defer CSS", paste the block of "above the fold CSS" in the input field (text area) and you're good to go!
 
-* identify the essential CSS to style your average page (be strict, keep this as light a possible)
-* minimize that using one of the many online minimizing tools
-* wrap the minimized CSS between style-tags
-* wrap style-block between noptimize-tags (see above)
-* put the resulting CSS in the head of your page (should be in the header.php file of your theme)
-* check the option to defer CSS
+= But how can one find out what the "above the fold CSS" is? =
 
-= Should you inline all CSS? =
+There's no easy solution for that as "above the fold" depends on where the fold is, which in turn depends on screensize. There are some tools available however, which try to identify just what is "above the fold". [This list of tools](https://github.com/addyosmani/above-the-fold-css-tools) is a great starting point and esp. [http://jonassebastianohlsson.com/criticalpathcssgenerator/](http://jonassebastianohlsson.com/criticalpathcssgenerator/) is an easy solution if you're not into node.js yourself.
+
+= Or should you inline all CSS? =
 
 The short answer: if you just want to improve your (mobile) pagespeed score; yes, otherwise maybe not.
 
@@ -84,9 +81,13 @@ If your webserver is properly configured to handle compression (gzip or deflate)
 
 There have been reports of sightings of javascript errors when using Autoptimize together with WP SlimStat. Both [Camu (WP SlimStat developer)](http://profiles.wordpress.org/coolmann/) and I have installed both plugins on test-environments and [found no proof of such incompatibility](http://wordpress.org/support/topic/dropdown-menus-dont-work-when-slimstat-is-enabled?replies=14#post-4086894). Our common conclusion is that there are rare cases in which yet another theme or plugin's JavaScript are triggering these errors. If you do encounter JavaScript-errors when you have both WP SlimStat and Autoptimize installed, add "SlimStatParams, wp-slimstat.js" in the "Exclude scripts from autoptimize:" option on the admin-page and all should be well.
 
-= Problems with CSS of Kickstart theme when on WP Engine =
+= How does "exclude from optimizing" work? =
 
-Although multiple users are succesfully running Autoptimize on WP Engine, there is [one confirmed issue when using the Kickstart-theme with Autoptimize on WP Engine](http://wordpress.org/support/topic/zero-lenght-file-with-css-optimization). The problem is that Autoptimize can't source in the import, leading to an empty CSS-file (which does not happen when not on WP Engine). As a workaround you can link to the CSS-file from within your header.php, as suggested by [Ozum of fortibase.com](http://www.fortibase.com/)
+Both CSS and JS optimization can skip code from being aggregated and minimized by adding "identifiers" to the comma-seperated exclusion list. The exact identifier string to use can be determined this way:
+
+* if you want to exclude a specific file, e.g. wp-content/plugins/funkyplugin/css/style.css, you could simply exclude "funkyplugin/css/style.css"
+* if you want to exclude all files of a specific plugin, e.g. wp-content/plugins/funkyplugin/js/*, you can exclude for example "funkyplugin/js/" or "plugins/funkyplugin"
+* if you want to exclude inline code, you'll have to find a specific, unique string in that block of code and add that to the exclusion list. Example: to exclude "<script>funky_data='Won\'t you take me to, Funky Town'</script>", the identifier is "funky_data".
 
 = Configuring & Troubleshooting Autoptimize =
 
@@ -95,7 +96,7 @@ After having installed and activated the plugin, you'll have access to an admin 
 If your blog doesn't function normally after having turned on Autoptimize, here are some pointers to identify & solve such issues using "advanced settings":
 
 * In case your blog looks weird, i.e. when the layout gets messed up, there is problem with CSS optimization. In this case you can turn on the option "Look for styles on just head?" and see if that solves the problem. You can also force CSS not to be aggregated by wrapping it in noptimize-tags in your theme or widget or by adding filename (for external stylesheets) or string (for inline styles) to the exclude-list.
-* In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and/or "Force JavaScript in <head>?" and/or "Add try/catch wrapping" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript or excluding it from within your template files or widgets by wrapping the code between noptimize-tags. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
+* In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and/or "Force JavaScript in <head>?" and/or "[Add try/catch wrapping](http://blog.futtta.be/2014/08/18/when-should-you-trycatch-javascript/)" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript or excluding it from within your template files or widgets by wrapping the code between noptimize-tags. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
 * If your theme uses jQuery, you can try either forcing all in head or excluding jquery(-min).js (and jQuery-plugins if needed).
 * If you can't get either CSS or JS optimization working, you can off course always continue using the other two optimization-techniques.
 * If you tried the troubleshooting tips above and you still can't get CSS and JS working at all, you can ask for support on the [WordPress Autoptimize support forum](http://wordpress.org/support/plugin/autoptimize). See below for a description of what information you should provide in your "trouble ticket"
@@ -131,12 +132,13 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 == Changelog ==
 
 = 1.9.0 =
+* "Inline and defer CSS" allows one to specify which "above the fold CSS" should be inlined, while the normal optimized CSS is deferred.
 * Inlined Base64-encoded background Images will now be cached as well and the threshold for inlining these images has been bumped up to 4096 bytes (from 2560).
 * Separate cache-directories for CSS and JS in /wp-content/cache/autoptimize, which should result in faster cache pruning (and in some cases possibly faster serving of individual aggregated files).
 * CSS is now added before the <title>-tag, JS before </body> (and after </title> when forced in head). This can be overridden in the API.
-* Some usability Improvements of the administration-page
+* Some usability improvements of the administration-page
 * Multiple hooks added to the API a.o. filters to not aggregate inline CSS or JS and filters to aggregate but not minify CSS or JS.
-* Updated translations for Dutch, French, German, Persian and Polish and new translations for Brazilian Portuguese (thanks to Leonardo Antonioli) and Turkish (kudo's [Baris Unver](http://beyn.org/))
+* Updated translations for Dutch, French, German, Persian and Polish and new translations for Brazilian Portuguese (thanks to [Leonardo Antonioli](http://tobeguarany.com/)) and Turkish (kudo's [Baris Unver](http://beyn.org/))
 * Multiple bugfixes & improvements
 * Tested with WordPress 4.0 beta 4
 
