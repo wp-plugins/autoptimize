@@ -149,6 +149,7 @@ class autoptimizeScripts extends autoptimizeBase
 				if($script !== false && file_exists($script) && is_readable($script)) {
 					$script = file_get_contents($script);
 					$script = preg_replace('/\x{EF}\x{BB}\x{BF}/','',$script);
+					$script = rtrim($script,";\n\t\r").';';
 					//Add try-catch?
 					if($this->trycatch) {
 						$script = 'try{'.$script.'}catch(e){}';

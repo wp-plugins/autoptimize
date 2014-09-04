@@ -140,7 +140,7 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Multiple hooks added to the API a.o. filters to not aggregate inline CSS or JS and filters to aggregate but not minify CSS or JS.
 * Updated translations for Dutch, French, German, Persian and Polish and new translations for Brazilian Portuguese (thanks to [Leonardo Antonioli](http://tobeguarany.com/)) and Turkish (kudo's [Baris Unver](http://beyn.org/))
 * Multiple bugfixes & improvements
-* Tested with WordPress 4.0 beta 4
+* Tested with WordPress 4.0 rc3
 
 = 1.8.5 =
 * Updated to lastest version of [CSS minification component](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/)
