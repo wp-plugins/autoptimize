@@ -4,7 +4,7 @@ Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, mi
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
 Tested up to: 4.0
-Stable tag: 1.9.0
+Stable tag: 1.9.1
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
 
@@ -101,10 +101,6 @@ If your blog doesn't function normally after having turned on Autoptimize, here 
 * If you can't get either CSS or JS optimization working, you can off course always continue using the other two optimization-techniques.
 * If you tried the troubleshooting tips above and you still can't get CSS and JS working at all, you can ask for support on the [WordPress Autoptimize support forum](http://wordpress.org/support/plugin/autoptimize). See below for a description of what information you should provide in your "trouble ticket"
 
-= How does "Exclude from autoptimize" work? =
-
-You can exclude both JS and CSS from being processed by Autoptimize by using the appropriate settings in the admin-screen. If you want to exclude an external file from being Autoptimized, add the filename (e.g. jquery.js). If you want to exclude inline CSS or JS, add a (unique) string that is in that block of code.
-
 = What is noptimize? =
 
 Starting with version 1.6.6 Autoptimize excludes everything inside noptimize tags, e.g.:
@@ -130,6 +126,10 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Clear any cache that might still have pages which reference Autoptimized CSS/JS (e.g. of a page caching plugin such as WP Super Cache)
 
 == Changelog ==
+
+= 1.9.1 =
+* hard-exclude [the sidelink-search-box introduced in WP SEO v1.6](http://wordpress.org/plugins/wordpress-seo/changelog/) from JS optimization (this [broke some JS-optimization badly](http://wordpress.org/support/topic/190-breaks-js?replies=4))
+* bugfix: first add semi-colon to inline script, only then add try-catch if required instead of the other way around.
 
 = 1.9.0 =
 * "Inline and defer CSS" allows one to specify which "above the fold CSS" should be inlined, while the normal optimized CSS is deferred.
