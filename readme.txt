@@ -3,7 +3,7 @@ Contributors: futtta, turl
 Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: 1.9.1
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
@@ -126,6 +126,9 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * Clear any cache that might still have pages which reference Autoptimized CSS/JS (e.g. of a page caching plugin such as WP Super Cache)
 
 == Changelog ==
+
+= 1.9.2 =
+* hard-exclude all linked-data json objects (and not only Sidelink Search Box)
 
 = 1.9.1 =
 * hard-exclude [the sidelink-search-box introduced in WP SEO v1.6](http://wordpress.org/plugins/wordpress-seo/changelog/) from JS optimization (this [broke some JS-optimization badly](http://wordpress.org/support/topic/190-breaks-js?replies=4))
