@@ -55,13 +55,16 @@ You can find more information on this topic [in this blog post](http://blog.futt
 
 = My cache is getting huge, doesn't Autoptimize purge the cache? =
 
-Autoptimize does not have its proper cache purging mechanism, as this could remove optimized CSS/JS which is still referred to in other caches which would break your site.
+Autoptimize does not have its proper cache purging mechanism, as this could remove optimized CSS/JS which is still referred to in other caches, which would break your site.
 
-You can however keep the cache size at an acceptable level by excludinng JS-variables (or sometimes CSS-selectors) that change on a per page (or per pageload) basis. You can read how you can do that [in this blogpost](http://blog.futtta.be/2014/03/19/how-to-keep-autoptimizes-cache-size-under-control-and-improve-visitor-experience/).
+You can however keep the cache size at an acceptable level by either:
+* ticking the "look only in head" option for JS and/or CSS.
+* using the API to force AO not to aggregate inline CSS or JS (see example-code in autoptimize_helper.php_example).
+* excluding JS-variables (or sometimes CSS-selectors) that change on a per page (or per pageload) basis. You can read how you can do that [in this blogpost](http://blog.futtta.be/2014/03/19/how-to-keep-autoptimizes-cache-size-under-control-and-improve-visitor-experience/).
 
 = What can I do with the API? =
 
-A whole lot; there are filters you can use to conditionally disable Autoptimize per request, to change the CSS- and JS-excludes, to change the limit for CSS background-images to be inlined in the CSS, to define what JS-files are moved behing the aggregated on, to change the defer-attribute on the aggregated JS script-tag,  There are examples for all filters in autoptimize_helper.php_example.
+A whole lot; there are filters you can use to conditionally disable Autoptimize per request, to change the CSS- and JS-excludes, to change the limit for CSS background-images to be inlined in the CSS, to define what JS-files are moved behing the aggregated on, to change the defer-attribute on the aggregated JS script-tag, ... There are examples for many filters in autoptimize_helper.php_example.
 
 = How can I use/ activate autoptimize_helper.php_example? =
 
@@ -69,7 +72,7 @@ Copy it to /wp-content/plugins/autoptimize_helper.php and activate it in WordPre
 
 = How does CDN work? =
 
-Starting from version 1.7.0, CDN is activated upon entering the CDN blog root directory (e.g. http://cdn.example.net/wordpress/). If that URL is present, it will used for all Autoptimize-generated files (i.e. aggregated CSS and JS), includinng background-images in the CSS (when not using data-uri's).
+Starting from version 1.7.0, CDN is activated upon entering the CDN blog root directory (e.g. http://cdn.example.net/wordpress/). If that URL is present, it will used for all Autoptimize-generated files (i.e. aggregated CSS and JS), including background-images in the CSS (when not using data-uri's).
 
 If you want your uploaded images to be on the CDN as well, you can change the upload_url_path in your WordPress configuration (/wp-admin/options.php) to the target CDN upload directory (e.g. http://cdn.example.net/wordpress/wp-content/uploads/). Do take into consideration this only works for images uploaded from that point onwards, not for images that already were uploaded. Thanks to [BeautyPirate for the tip](http://wordpress.org/support/topic/please-don%c2%b4t-remove-cdn?replies=15#post-4720048)!
 
@@ -108,6 +111,14 @@ Starting with version 1.6.6 Autoptimize excludes everything inside noptimize tag
 
 You can do this in your page/ post content, in widgets and in your theme files (consider creating [a child theme](http://codex.wordpress.org/Child_Themes) to avoid your work being overwritten by theme updates).
 
+= Can I change the directory & filename of cached autoptimize files? =
+
+Yes, if you want to serve files from e.g. /wp-content/resources/aggregated_12345.css instead of the default /wp-content/cache/autoptimize/autoptimize_12345.css, then add this to wp-config.php: 
+`
+define('AUTOPTIMIZE_CACHE_CHILD_DIR','/resources/');
+define('AUTOPTIMIZE_CACHE_FILE_PREFIX','aggregated_');
+`
+
 = Where can I report an error? =
 
 You can report problems on the [wordpress.org support forum](http://wordpress.org/support/plugin/autoptimize), or [contact the maintainer using this contact form](http://blog.futtta.be/contact/).
@@ -121,14 +132,29 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 * optionally plugins used (if you suspect one or more plugins are raising havoc)
 
 = I want out, how should I remove Autoptimize? =
+
 * Disable the plugin (this will remove options and cache)
 * Remove the plugin
 * Clear any cache that might still have pages which reference Autoptimized CSS/JS (e.g. of a page caching plugin such as WP Super Cache)
 
+= How can I help/ contribute? =
+
+Just [fork Autoptimize on Github](https://github.com/futtta/autoptimize) and code away!
+
 == Changelog ==
 
 = 1.9.2 =
-* hard-exclude all linked-data json objects (and not only Sidelink Search Box)
+First of all; Happy holidays, all the best for 2015!
+
+* New: support for alternative cache-directory and file-prefix as requested by many.
+* Improvement: hard-exclude all linked-data json objects (script type=application/ld+json)
+* Improvement: several filters added to the API, e.g. to alter optimized HTML, CSS or JS
+* Bugfix: set Autoptimize priority back from 11 to 2 (as previously) to avoid some pages not being optimized. (link to wp.org post)
+* Bugfix (in YUI-CSS-compressor-PHP-port): don't convert bools to percentages in rotate3D-transforms (link to bugreport)
+* Bugfix: background images in SVG (link to bugreport)
+* Updated translation for Swedish, new translation for Ukrainian (thanks to ...)
+* Updated readme.txt
+* Confirmed working with WordPress 4.1
 
 = 1.9.1 =
 * hard-exclude [the sidelink-search-box introduced in WP SEO v1.6](http://wordpress.org/plugins/wordpress-seo/changelog/) from JS optimization (this [broke some JS-optimization badly](http://wordpress.org/support/topic/190-breaks-js?replies=4))

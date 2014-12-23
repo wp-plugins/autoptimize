@@ -268,7 +268,7 @@ function autoptimize_end_buffering($content) {
 		}
 		unset($instance);
 	}
-	$content = apply_filters( 'autoptimize_filter_optimized_content', $content );
+	$content = apply_filters( 'autoptimize_html_after_minify', $content );
 	return $content;
 }
 
