@@ -116,7 +116,12 @@ You can do this in your page/ post content, in widgets and in your theme files (
 Yes, if you want to serve files from e.g. /wp-content/resources/aggregated_12345.css instead of the default /wp-content/cache/autoptimize/autoptimize_12345.css, then add this to wp-config.php: 
 `
 define('AUTOPTIMIZE_CACHE_CHILD_DIR','/resources/');
-define('AUTOPTIMIZE_CACHE_FILE_PREFIX','aggregated_');
+define('AUTOPTIMIZE_CACHEFILE_PREFIX','aggregated_');
+`
+
+If you renamed your wp-content-folder, you can tell Autoptimize about that with;
+`
+define( 'AUTOPTIMIZE_WP_CONTENT_NAME','/content' );
 `
 
 = Where can I report an error? =
@@ -146,13 +151,14 @@ Just [fork Autoptimize on Github](https://github.com/futtta/autoptimize) and cod
 = 1.9.2 =
 First of all; Happy holidays, all the best for 2015!
 
-* New: support for alternative cache-directory and file-prefix as requested by many.
+* New: support for alternative cache-directory and file-prefix as requested by a.o. [Jassi Bacha](https://wordpress.org/support/topic/requesthelp-add-ability-to-specify-cache-folder?replies=1#post-6300128), [Cluster666](https://wordpress.org/support/topic/rewrite-js-path?replies=6#post-6363535) and Baris Unver.
 * Improvement: hard-exclude all linked-data json objects (script type=application/ld+json)
 * Improvement: several filters added to the API, e.g. to alter optimized HTML, CSS or JS
-* Bugfix: set Autoptimize priority back from 11 to 2 (as previously) to avoid some pages not being optimized. (link to wp.org post)
-* Bugfix (in YUI-CSS-compressor-PHP-port): don't convert bools to percentages in rotate3D-transforms (link to bugreport)
-* Bugfix: background images in SVG (link to bugreport)
-* Updated translation for Swedish, new translation for Ukrainian (thanks to ...)
+* Bugfix: set Autoptimize priority back from 11 to 2 (as previously) to avoid some pages not being optimized (thanks to [CaveatLector for investigating & reporting](https://wordpress.org/support/topic/wp-property-plugin-add_action-priority-incompatibility?replies=1))
+* Bugfix (in YUI-CSS-compressor-PHP-port): don't convert bools to percentages in rotate3D-transforms (cfr. [bugreport on Github](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/issues/17))
+* Bugfix: background images with a space in the path didn't load, [reported by johnh10](https://wordpress.org/support/topic/optimize-css-code-error-with-background-image-elements?replies=6#post-6201582).
+* Bugfix: SVG image with fill:url broken after CSS optimization as [reported by Tkama](https://wordpress.org/support/topic/one-more-broblem-with-plugin?replies=2)
+* Updated translation for Swedish, new translation for Ukrainian by [Zanatoly of SebWeo.com](http://SebWeo.com)
 * Updated readme.txt
 * Confirmed working with WordPress 4.1
 
