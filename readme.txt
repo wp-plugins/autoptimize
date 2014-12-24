@@ -104,6 +104,14 @@ If your blog doesn't function normally after having turned on Autoptimize, here 
 * If you can't get either CSS or JS optimization working, you can off course always continue using the other two optimization-techniques.
 * If you tried the troubleshooting tips above and you still can't get CSS and JS working at all, you can ask for support on the [WordPress Autoptimize support forum](http://wordpress.org/support/plugin/autoptimize). See below for a description of what information you should provide in your "trouble ticket"
 
+= Help, I have a blank page after enabling Autoptimize!! =
+
+In some rare cases the [CSS minification component](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/) currently used by Autoptimize crashes due to a lack of resources (see [detailed technical explanation here](http://blog.futtta.be/2014/01/14/irregular-expressions-have-your-stack-for-lunch/)). You can in that case either disable CSS optimization, try to exclude specific CSS from being aggregated or activate the legacy minifiers which don't have that problem. The latter can be accomplished by adding this to your wp-config.php:
+
+`define("AUTOPTIMIZE_LEGACY_MINIFIERS","true");`
+
+The "legacy minifiers" will remain in Autoptimize "for ever" and changes to wp-config.php are not affected by core-, theme- or plugin-upgrades so you should be good to go.
+
 = What is noptimize? =
 
 Starting with version 1.6.6 Autoptimize excludes everything inside noptimize tags, e.g.:
