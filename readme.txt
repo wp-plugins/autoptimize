@@ -157,7 +157,7 @@ Just [fork Autoptimize on Github](https://github.com/futtta/autoptimize) and cod
 == Changelog ==
 
 = 1.9.2 =
-First of all; Happy holidays, all the best for 2015!
+First of all; Happy holidays, all the best for 2015!!
 
 * New: support for alternative cache-directory and file-prefix as requested by a.o. [Jassi Bacha](https://wordpress.org/support/topic/requesthelp-add-ability-to-specify-cache-folder?replies=1#post-6300128), [Cluster666](https://wordpress.org/support/topic/rewrite-js-path?replies=6#post-6363535) and Baris Unver.
 * Improvement: hard-exclude all linked-data json objects (script type=application/ld+json)
