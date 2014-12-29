@@ -33,6 +33,12 @@ It concatenates all scripts and styles, minifies and compresses them, adds expir
 
 Although Autoptimize comes without any warranties, it will in general work flawlessly if you configure it correctly. See "Troubleshooting" below for info on how to configure in case of problems.
 
+= I activated Autoptimize, but Google Pagespeed Insight still complains? =
+
+If you have render-blocking JS: be sure not to tick the "force JS in head" if not absolutely needed.
+
+If you have render-blocking CSS: consider to "inline" or "inline and defer" your CSS. There's more info on these topics below.
+
 = What is the use of "inline and defer CSS"? =
 
 CSS in general should go in the head of the document. Recently a.o. Google started promoting deferring non-essential CSS, while inlining those styles needed to build the page above the fold. This is especially important to render pages as quickly as possible on mobile devices. As from Autoptimize 1.9.0 this is easy; select "inline and defer CSS", paste the block of "above the fold CSS" in the input field (text area) and you're good to go!
