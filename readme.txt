@@ -1,6 +1,6 @@
 === Autoptimize ===
 Contributors: futtta, turl
-Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite, minify
+Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, minimize, minification, performance, pagespeed, booster, multisite
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
 Tested up to: 4.1
@@ -32,12 +32,6 @@ It concatenates all scripts and styles, minifies and compresses them, adds expir
 = Will this work with my blog? =
 
 Although Autoptimize comes without any warranties, it will in general work flawlessly if you configure it correctly. See "Troubleshooting" below for info on how to configure in case of problems.
-
-= I activated Autoptimize, but Google Pagespeed Insight still complains? =
-
-If you have render-blocking JS: be sure not to tick the "force JS in head" if not absolutely needed.
-
-If you have render-blocking CSS: consider to "inline" or "inline and defer" your CSS. There's more info on these topics below.
 
 = What is the use of "inline and defer CSS"? =
 
@@ -161,6 +155,9 @@ You can report problems on the [wordpress.org support forum](http://wordpress.or
 Just [fork Autoptimize on Github](https://github.com/futtta/autoptimize) and code away!
 
 == Changelog ==
+
+= next up =
+* fix for PHP notices as [reported by dimitrov.adrian](https://wordpress.org/support/topic/php-errors-39)
 
 = 1.9.2 =
 First of all; Happy holidays, all the best for 2015!!
