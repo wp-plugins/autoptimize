@@ -196,8 +196,10 @@ class autoptimizeStyles extends autoptimizeBase {
 							$code=$tmpstyle;
 							$this->alreadyminified=true;
 						}
+
 						if(!empty($code)) {
 							$tmp_thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
+
 							if (!empty($tmp_thiscss)) {
 								$thiscss = $tmp_thiscss;
 								$import_ok = true;
@@ -339,11 +341,15 @@ class autoptimizeStyles extends autoptimizeBase {
 						$tmp_code = trim(CssMin::minify($code));
 					}
 				}
-				$tmp_code = apply_filters( 'autoptimize_css_after_minify',$tmp_code );
 				if (!empty($tmp_code)) {
-					$code = $tmp_code;
-					unset($tmp_code);
-				}
+                                	$code = $tmp_code;
+                                	unset($tmp_code);
+                        	}
+			}
+			$tmp_code = apply_filters( 'autoptimize_css_after_minify',$code );
+			if (!empty($tmp_code)) {
+				$code = $tmp_code;
+				unset($tmp_code);
 			}
 			
 			$this->hashmap[md5($code)] = $hash;
