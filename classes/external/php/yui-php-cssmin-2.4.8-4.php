@@ -1,7 +1,7 @@
 <?php
 
 /*!
- * cssmin.php 2.4.8-3
+ * cssmin.php v2.4.8-4
  * Author: Tubal Martin - http://tubalmartin.me/
  * Repo: https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port
  *
@@ -598,7 +598,7 @@ class CSSmin
 
 	private function replace_keyframe_zero($matches)
     {
-	return $matches[1] . preg_replace('/0(\{|,[^\)\{]+\{)/', '0%$1', $matches[2]) . $matches[3];
+        return $matches[1] . preg_replace('/0(\{|,[^\)\{]+\{)/', '0%$1', $matches[2]) . $matches[3];
     }
 
     private function rgb_to_hex($matches)
