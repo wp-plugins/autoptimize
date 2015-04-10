@@ -3,6 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 abstract class autoptimizeBase {
 	protected $content = '';
+	protected $tagWarning = false;
 	
 	public function __construct($content) {
 		$this->content = $content;
@@ -24,7 +25,7 @@ abstract class autoptimizeBase {
 	//Converts an URL to a full path
 	protected function getpath($url) {
 		$url=apply_filters( 'autoptimize_filter_cssjs_alter_url', $url);
-
+		
 		if (strpos($url,'%')!==false) {
 			$url=urldecode($url);
 		}
@@ -170,30 +171,30 @@ abstract class autoptimizeBase {
                 return $comments_out;
 	}
 	
-	protected function url_replace_cdn($url) {
-		if (!empty($this->cdn_url)) {
-			// first allow API filter to take care of CDN replacement
-			$tmp_url = apply_filters( 'autoptimize_base_replace_cdn',$url);
-			if ($tmp_url === $url) {
-				// secondly prepend domain-less absolute URL's
-				if((substr($url,0,1)==='/')&&(substr($url,1,1)!=='/')) {
-                         	       $url=rtrim($this->cdn_url,'/').$url;
-                        	} else {
-					// three: replace full url's with scheme
-	                                $tmp_url=str_replace(AUTOPTIMIZE_WP_SITE_URL,rtrim($this->cdn_url,'/'),$url);
-        	                        if ($tmp_url===$url) {
-						// last attempt; replace scheme-less URL's
-                	                        $url=str_replace(preg_replace('/https?:/','',AUTOPTIMIZE_WP_SITE_URL),rtrim($this->cdn_url,'/'),$url);
-                        	        } else {
-                                	        $url=$tmp_url;
-                                	}
-                        	}
-			} else {
-				$url=$tmp_url;
-			}
-		}
-		return $url;
-	}
+        protected function url_replace_cdn($url) {
+                if (!empty($this->cdn_url)) {
+                // first allow API filter to take care of CDN replacement
+                        $tmp_url = apply_filters( 'autoptimize_base_replace_cdn',$url);
+                        if ($tmp_url === $url) {
+                                // secondly prepend domain-less absolute URL's
+                                if((substr($url,0,1)==='/')&&(substr($url,1,1)!=='/')) {
+                                       $url=rtrim($this->cdn_url,'/').$url;
+                                } else {
+                                        // three: replace full url's with scheme
+                                        $tmp_url=str_replace(AUTOPTIMIZE_WP_SITE_URL,rtrim($this->cdn_url,'/'),$url);
+                                        if ($tmp_url===$url) {
+                                                // last attempt; replace scheme-less URL's
+                                                $url=str_replace(preg_replace('/https?:/','',AUTOPTIMIZE_WP_SITE_URL),rtrim($this->cdn_url,'/'),$url);
+                                        } else {
+                                                $url=$tmp_url;
+                                        }
+                                }
+                        } else {
+                                $url=$tmp_url;
+                        }
+                }
+                return $url;
+        }
 
 	protected function inject_in_html($payload,$replaceTag) {
 		if (strpos($this->content,$replaceTag[0])!== false) {
@@ -207,9 +208,9 @@ abstract class autoptimizeBase {
 			$this->content = str_replace($replaceTag[0],$replaceBlock,$this->content);
 		} else {
 			$this->content .= $payload;
-			if (!$tagWarning) {
+			if (!$this->tagWarning) {
 				$this->content .= "<!--noptimize--><!-- Autoptimize found a problem with the HTML in your Theme, tag ".$replaceTag[0]." missing --><!--/noptimize-->";
-				$tagWarning=true;
+				$this->tagWarning=true;
 			}
 		}
 	}

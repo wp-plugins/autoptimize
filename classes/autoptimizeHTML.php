@@ -70,7 +70,7 @@ class autoptimizeHTML extends autoptimizeBase {
 		return true;
 	}
 	
-	// Returns the content
+	//Returns the content
 	public function getcontent() {
 		return $this->content;
 	}

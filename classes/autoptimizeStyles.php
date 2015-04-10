@@ -10,6 +10,9 @@ class autoptimizeStyles extends autoptimizeBase {
 	private $datauris = false;
 	private $hashmap = array();
 	private $alreadyminified = false;
+	private $inline = false;
+	private $defer = false;
+	private $defer_inline = false;
 	
 	//Reads the page and collects style tags
 	public function read($options) {
@@ -40,7 +43,7 @@ class autoptimizeStyles extends autoptimizeBase {
 		// value: true/ false
 		$this->inline = $options['inline'];
 		$this->inline = apply_filters( 'autoptimize_filter_css_inline', $this->inline );
-
+		
 		// get cdn url
 		$this->cdn_url = $options['cdn_url'];
 		
@@ -201,10 +204,8 @@ class autoptimizeStyles extends autoptimizeBase {
 							$code=$tmpstyle;
 							$this->alreadyminified=true;
 						}
-
 						if(!empty($code)) {
 							$tmp_thiscss = preg_replace('#(/\*FILESTART\*/.*)'.preg_quote($import,'#').'#Us','/*FILESTART2*/'.$code.'$1',$thiscss);
-
 							if (!empty($tmp_thiscss)) {
 								$thiscss = $tmp_thiscss;
 								$import_ok = true;
@@ -320,12 +321,12 @@ class autoptimizeStyles extends autoptimizeBase {
 						$this->mhtml .= "--_\r\nContent-Location:{$mhtmlcount}\r\nContent-Transfer-Encoding:base64\r\n\r\n{$base64data}\r\n";
 						$mhtmlcount++;
 					} else {
-						// just cdn the URL if applicable
-						if (!empty($this->cdn_url)) {
-							$url = trim($quotedurl," \t\n\r\0\x0B\"'");
-							$cdn_url=$this->url_replace_cdn($url);
-							$imgreplace[$matches[1][$count]] = str_replace($quotedurl,$cdn_url,$matches[1][$count]);
-						}
+                                                // just cdn the URL if applicable
+                                                if (!empty($this->cdn_url)) {
+                                                        $url = trim($quotedurl," \t\n\r\0\x0B\"'");
+                                                        $cdn_url=$this->url_replace_cdn($url);
+                                                        $imgreplace[$matches[1][$count]] = str_replace($quotedurl,$cdn_url,$matches[1][$count]);
+                                                }
 					}
 				}
 			} else if ((is_array($matches)) && (!empty($this->cdn_url))) {
@@ -350,13 +351,13 @@ class autoptimizeStyles extends autoptimizeBase {
 					if (method_exists($cssmin,"run")) {
 						$tmp_code = trim($cssmin->run($code));
 					} elseif (@is_callable(array($cssmin,"minify"))) {
-						$tmp_code = trim(CssMin::minify($code));
+						$tmp_code = trim(CssMin::minify($code,false));
 					}
 				}
 				if (!empty($tmp_code)) {
-                                	$code = $tmp_code;
-                                	unset($tmp_code);
-                        	}
+					$code = $tmp_code;
+					unset($tmp_code);
+				}
 			}
 			$tmp_code = apply_filters( 'autoptimize_css_after_minify',$code );
 			if (!empty($tmp_code)) {

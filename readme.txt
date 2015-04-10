@@ -17,11 +17,11 @@ If you consider performance important, you really should use a caching-plugin su
 
 == Installation ==
 
-Just install form your WordPress "Plugins|Add New" screen and all will be well. Manual installation is very straightforward as well:
+Just install from your WordPress "Plugins > Add New" screen and all will be well. Manual installation is very straightforward as well:
 
-1. Upload the zip-file and unzip it in the /wp-content/plugins/ directory
+1. Upload the zip file and unzip it in the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Go to `Settings -> Autoptimize` and enable the options you want. Generally this means "Optimize HTML/ CSS/ JavaScript".
+1. Go to `Settings > Autoptimize` and enable the options you want. Generally this means "Optimize HTML/ CSS/ JavaScript".
 
 == Frequently Asked Questions ==
 
@@ -58,7 +58,6 @@ You can find more information on this topic [in this blog post](http://blog.futt
 Autoptimize does not have its proper cache purging mechanism, as this could remove optimized CSS/JS which is still referred to in other caches, which would break your site.
 
 You can however keep the cache size at an acceptable level by either:
-
 * ticking the "look only in head" option for JS and/or CSS.
 * using the API to force AO not to aggregate inline CSS or JS (see example-code in autoptimize_helper.php_example).
 * excluding JS-variables (or sometimes CSS-selectors) that change on a per page (or per pageload) basis. You can read how you can do that [in this blogpost](http://blog.futtta.be/2014/03/19/how-to-keep-autoptimizes-cache-size-under-control-and-improve-visitor-experience/).
@@ -81,10 +80,6 @@ If you want your uploaded images to be on the CDN as well, you can change the up
 
 If your webserver is properly configured to handle compression (gzip or deflate) and cache expiry (expires and cache-control with sufficient cacheability), you don't need Autoptimize to handle that for you. In that case you can check the "Save aggregated script/css as static files?"-option, which will force Autoptimize to save the aggregated files as .css and .js-files (meaning no PHP is needed to serve these files). This setting is default as of Autoptimize 1.8.
 
-= Compatibility with WP SlimSat =
-
-There have been reports of sightings of javascript errors when using Autoptimize together with WP SlimStat. Both [Camu (WP SlimStat developer)](http://profiles.wordpress.org/coolmann/) and I have installed both plugins on test-environments and [found no proof of such incompatibility](http://wordpress.org/support/topic/dropdown-menus-dont-work-when-slimstat-is-enabled?replies=14#post-4086894). Our common conclusion is that there are rare cases in which yet another theme or plugin's JavaScript are triggering these errors. If you do encounter JavaScript-errors when you have both WP SlimStat and Autoptimize installed, add "SlimStatParams, wp-slimstat.js" in the "Exclude scripts from autoptimize:" option on the admin-page and all should be well.
-
 = How does "exclude from optimizing" work? =
 
 Both CSS and JS optimization can skip code from being aggregated and minimized by adding "identifiers" to the comma-seperated exclusion list. The exact identifier string to use can be determined this way:
@@ -99,13 +94,16 @@ After having installed and activated the plugin, you'll have access to an admin 
 
 If your blog doesn't function normally after having turned on Autoptimize, here are some pointers to identify & solve such issues using "advanced settings":
 
+* If all works but you notice your blog is slower, ensure you have a page caching plugin installed (WP Super Cache or similar).
 * In case your blog looks weird, i.e. when the layout gets messed up, there is problem with CSS optimization. In this case you can turn on the option "Look for styles on just head?" and see if that solves the problem. You can also force CSS not to be aggregated by wrapping it in noptimize-tags in your theme or widget or by adding filename (for external stylesheets) or string (for inline styles) to the exclude-list.
 * In case some functionality on your site stops working (a carroussel, a menu, the search input, ...) you're likely hitting JavaScript optimization trouble. Enable the option "Look for scripts only in head?" and/or "Force JavaScript in <head>?" and/or "[Add try/catch wrapping](http://blog.futtta.be/2014/08/18/when-should-you-trycatch-javascript/)" and try again. Alternatively -for the technically savvy- you can exclude specific scripts from being treated (moved and/ or aggregated) by Autoptimize by adding a string that will match the offending Javascript or excluding it from within your template files or widgets by wrapping the code between noptimize-tags. Identifying the offending JavaScript and choosing the correct exclusion-string can be trial and error, but in the majority of cases JavaScript optimization issues can be solved this way.
 * If your theme uses jQuery, you can try either forcing all in head or excluding jquery(-min).js (and jQuery-plugins if needed).
 * If you can't get either CSS or JS optimization working, you can off course always continue using the other two optimization-techniques.
 * If you tried the troubleshooting tips above and you still can't get CSS and JS working at all, you can ask for support on the [WordPress Autoptimize support forum](http://wordpress.org/support/plugin/autoptimize). See below for a description of what information you should provide in your "trouble ticket"
 
-= Help, I have a blank page after enabling Autoptimize!! =
+= Help, I have a blank page or an internal server error after enabling Autoptimize!! =
+
+First of all make sure you're not running other HTML, CSS or JS minification plugins simultaneously with Autoptimize.
 
 In some rare cases the [CSS minification component](https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/) currently used by Autoptimize crashes due to a lack of resources (see [detailed technical explanation here](http://blog.futtta.be/2014/01/14/irregular-expressions-have-your-stack-for-lunch/)). You can in that case either disable CSS optimization, try to exclude specific CSS from being aggregated or activate the legacy minifiers which don't have that problem. The latter can be accomplished by adding this to your wp-config.php:
 
@@ -128,7 +126,7 @@ define('AUTOPTIMIZE_CACHE_CHILD_DIR','/resources/');
 define('AUTOPTIMIZE_CACHEFILE_PREFIX','aggregated_');
 `
 
-If you renamed your wp-content-folder, you can tell Autoptimize about that with;
+If you changed your wp-content-folder as per [the WordPress guidelines](http://codex.wordpress.org/Editing_wp-config.php#Moving_wp-content_folder), you can tell Autoptimize about that with;
 `
 define( 'AUTOPTIMIZE_WP_CONTENT_NAME','/content' );
 `
@@ -157,8 +155,8 @@ Just [fork Autoptimize on Github](https://github.com/futtta/autoptimize) and cod
 
 == Changelog ==
 
-= next up =
-* fix for PHP notices as [reported by dimitrov.adrian](https://wordpress.org/support/topic/php-errors-39)
+= 1.9.3 =
+* bufixes
 
 = 1.9.2 =
 First of all; Happy holidays, all the best for 2015!!
