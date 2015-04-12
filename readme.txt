@@ -4,7 +4,7 @@ Tags: css, html, javascript, js, optimize, speed, cache, data-uri, aggregate, mi
 Donate link: http://blog.futtta.be/2013/10/21/do-not-donate-to-me/
 Requires at least: 2.7
 Tested up to: 4.1
-Stable tag: 1.9.2
+Stable tag: 1.9.3
 
 Autoptimize speeds up your website and helps you save bandwidth by aggregating and minimizing JS, CSS and HTML.
 
@@ -61,6 +61,9 @@ You can however keep the cache size at an acceptable level by either:
 * ticking the "look only in head" option for JS and/or CSS.
 * using the API to force AO not to aggregate inline CSS or JS (see example-code in autoptimize_helper.php_example).
 * excluding JS-variables (or sometimes CSS-selectors) that change on a per page (or per pageload) basis. You can read how you can do that [in this blogpost](http://blog.futtta.be/2014/03/19/how-to-keep-autoptimizes-cache-size-under-control-and-improve-visitor-experience/).
+
+= Why is "look only in head" marked as deprecated =
+While "look only in head" still works, it will in the next major version be replaced by an option to choose if inline JS/ CSS should be autoptimized. So this is just a small heads up, really.
 
 = What can I do with the API? =
 
@@ -156,7 +159,7 @@ Just [fork Autoptimize on Github](https://github.com/futtta/autoptimize) and cod
 == Changelog ==
 
 = 1.9.3 =
-* bufixes
+* changes to be added
 
 = 1.9.2 =
 First of all; Happy holidays, all the best for 2015!!
