@@ -15,9 +15,13 @@ class autoptimizeScripts extends autoptimizeBase {
 	private $restofcontent = '';
 	private $md5hash = '';
 	
-	//Reads the page and collects script tags
+	// Reads the page and collects script tags
 	public function read($options) {
-		//Remove everything that's not the header
+		$noptimizeJS = apply_filters( 'autoptimize_filter_js_noptimize', false, $this->content );
+                if ($noptimizeJS)
+                        return false;
+
+		// Remove everything that's not the header
 		if($options['justhead'] == true) {
 			$content = explode('</head>',$this->content,2);
 			$this->content = $content[0].'</head>';
